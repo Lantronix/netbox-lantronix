@@ -1,0 +1,3 @@
+{
+  "versionFiles": ["pyproject.toml", "netbox_lantronix/__init__.py", "netbox_lantronix/percepxion/client.py"]
+}

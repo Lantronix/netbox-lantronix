@@ -1,0 +1,12 @@
+{% load helpers %}
+<div class="card">
+  <h2 class="card-header">{% if facts.attached %}Attached device{% else %}Last attached device{% endif %} (Percepxion)</h2>
+  <table class="table table-hover attr-table">
+    {% if facts.state %}<tr><th scope="row">Port state</th><td>{{ facts.state }}</td></tr>{% endif %}
+    <tr><th scope="row">Attached</th><td>{% if facts.attached %}Yes{% else %}No{% endif %}</td></tr>
+    <tr><th scope="row">Make / model</th><td>{{ facts.make|placeholder }} {{ facts.model }}</td></tr>
+    <tr><th scope="row">Serial</th><td>{{ facts.serial|placeholder }}</td></tr>
+    <tr><th scope="row">OS</th><td>{{ facts.os|placeholder }} {{ facts.os_version }}</td></tr>
+    <tr><th scope="row">Last reported</th><td>{{ facts.last_reported|isodatetime }}</td></tr>
+  </table>
+</div>

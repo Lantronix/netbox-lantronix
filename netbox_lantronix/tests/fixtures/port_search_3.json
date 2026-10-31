@@ -1,0 +1,995 @@
+{
+ "request": {
+  "limit": 50,
+  "order": "asc",
+  "pagination": "next",
+  "search_after": [
+   "Port-29",
+   "00204AFIXTURE0000000000000000032",
+   "00000000-0000-4000-8000-000000000001"
+  ],
+  "search_string": "*",
+  "sort": "name"
+ },
+ "response": {
+  "result": [
+   {
+    "connection": {
+     "remote_access": true,
+     "status": "Disconnected"
+    },
+    "device_cap": [
+     {
+      "feature": "connect"
+     }
+    ],
+    "hardware": {
+     "make": "",
+     "model": "",
+     "os": "",
+     "os_version": "",
+     "serial_number": ""
+    },
+    "name": "Port-29",
+    "network": {
+     "hostname": "",
+     "ipv4_address": ""
+    },
+    "parent_device": {
+     "attributes": {
+      "remote_access": true,
+      "status_update_interval": "2 minutes"
+     },
+     "comm_state": "Up",
+     "dev_type": "ltrx_itm",
+     "device_description": "SLC9000 Advanced Console Manager",
+     "device_id": "00204AFIXTURE0000000000000000042",
+     "device_name": "fixture-name-19",
+     "last_contacted": "2026-10-29T09:19:51.104196824Z",
+     "serial_num": "FIXSER000006"
+    },
+    "parent_device_id": "00204AFIXTURE0000000000000000042",
+    "parent_device_name": "fixture-name-19",
+    "port_number": 29,
+    "project_id": "fixture-id-0004",
+    "project_tag": "MYSTQ_PT_00000000-0000-4000-8000-000000000002",
+    "status_info": {
+     "cpu_usage": 0,
+     "flash_usage": 0,
+     "last_seen_time": "",
+     "memory_usage": 0,
+     "onboarded_time": "",
+     "temperature": 0,
+     "uptime": 0
+    },
+    "tenant": [
+     {
+      "id": "fixture-id-0002",
+      "name": "fixture-name-11"
+     }
+    ],
+    "usage": {
+     "bytes_in": 0,
+     "bytes_out": 0,
+     "errors": 0,
+     "num_users": 0
+    },
+    "user_group": {
+     "fixture-id-0002": [
+      {
+       "id": "fixture-id-0005"
+      }
+     ]
+    }
+   },
+   {
+    "connection": {
+     "remote_access": true,
+     "status": "Disconnected"
+    },
+    "device_cap": [
+     {
+      "feature": "connect"
+     }
+    ],
+    "hardware": {
+     "make": "",
+     "model": "",
+     "os": "",
+     "os_version": "",
+     "serial_number": ""
+    },
+    "name": "Port-30",
+    "network": {
+     "hostname": "",
+     "ipv4_address": ""
+    },
+    "parent_device": {
+     "attributes": {
+      "remote_access": true,
+      "status_update_interval": "2 minutes"
+     },
+     "comm_state": "Down",
+     "dev_type": "ltrx_itm",
+     "device_description": "SLC9000 Advanced Console Manager",
+     "device_id": "00204AFIXTURE0000000000000000040",
+     "device_name": "fixture-name-18",
+     "last_contacted": "2026-10-26T15:53:26.85843974Z",
+     "serial_num": "FIXSER000005"
+    },
+    "parent_device_id": "00204AFIXTURE0000000000000000040",
+    "parent_device_name": "fixture-name-28",
+    "port_number": 30,
+    "project_id": "fixture-id-0004",
+    "project_tag": "MYSTQ_PT_00000000-0000-4000-8000-000000000002",
+    "status_info": {
+     "cpu_usage": 0,
+     "flash_usage": 0,
+     "last_seen_time": "",
+     "memory_usage": 0,
+     "onboarded_time": "",
+     "temperature": 0,
+     "uptime": 0
+    },
+    "tenant": [
+     {
+      "id": "fixture-id-0002",
+      "name": "fixture-name-11"
+     }
+    ],
+    "usage": {
+     "bytes_in": 0,
+     "bytes_out": 0,
+     "errors": 0,
+     "num_users": 0
+    },
+    "user_group": {
+     "fixture-id-0002": [
+      {
+       "id": "fixture-id-0005"
+      }
+     ]
+    }
+   },
+   {
+    "connection": {
+     "remote_access": true,
+     "status": "Disconnected"
+    },
+    "device_cap": [
+     {
+      "feature": "connect"
+     }
+    ],
+    "hardware": {
+     "make": "",
+     "model": "",
+     "os": "",
+     "os_version": "",
+     "serial_number": ""
+    },
+    "name": "Port-30",
+    "network": {
+     "hostname": "",
+     "ipv4_address": ""
+    },
+    "parent_device": {
+     "attributes": {
+      "remote_access": true,
+      "status_update_interval": "2 minutes"
+     },
+     "comm_state": "Down",
+     "dev_type": "ltrx_itm",
+     "device_description": "SLC9000 Advanced Console Manager",
+     "device_id": "00204AFIXTURE0000000000000000032",
+     "device_name": "fixture-name-10",
+     "last_contacted": "2026-09-07T20:27:54.346236324Z",
+     "serial_num": "FIXSER000001"
+    },
+    "parent_device_id": "00204AFIXTURE0000000000000000032",
+    "parent_device_name": "fixture-name-23",
+    "port_number": 30,
+    "project_id": "fixture-id-0004",
+    "project_tag": "MYSTQ_PT_00000000-0000-4000-8000-000000000002",
+    "status_info": {
+     "cpu_usage": 0,
+     "flash_usage": 0,
+     "last_seen_time": "",
+     "memory_usage": 0,
+     "onboarded_time": "",
+     "temperature": 0,
+     "uptime": 0
+    },
+    "tenant": [
+     {
+      "id": "fixture-id-0002",
+      "name": "fixture-name-11"
+     }
+    ],
+    "usage": {
+     "bytes_in": 0,
+     "bytes_out": 0,
+     "errors": 0,
+     "num_users": 0
+    },
+    "user_group": {
+     "fixture-id-0002": [
+      {
+       "id": "fixture-id-0005"
+      }
+     ]
+    }
+   },
+   {
+    "connection": {
+     "remote_access": true,
+     "status": "Disconnected"
+    },
+    "device_cap": [
+     {
+      "feature": "connect"
+     }
+    ],
+    "hardware": {
+     "make": "",
+     "model": "",
+     "os": "",
+     "os_version": "",
+     "serial_number": ""
+    },
+    "name": "Port-30",
+    "network": {
+     "hostname": "",
+     "ipv4_address": ""
+    },
+    "parent_device": {
+     "attributes": {
+      "remote_access": true,
+      "status_update_interval": "2 minutes"
+     },
+     "comm_state": "Up",
+     "dev_type": "ltrx_itm",
+     "device_description": "SLC9000 Advanced Console Manager",
+     "device_id": "00204AFIXTURE0000000000000000042",
+     "device_name": "fixture-name-19",
+     "last_contacted": "2026-10-29T09:19:51.104196824Z",
+     "serial_num": "FIXSER000006"
+    },
+    "parent_device_id": "00204AFIXTURE0000000000000000042",
+    "parent_device_name": "fixture-name-19",
+    "port_number": 30,
+    "project_id": "fixture-id-0004",
+    "project_tag": "MYSTQ_PT_00000000-0000-4000-8000-000000000002",
+    "status_info": {
+     "cpu_usage": 0,
+     "flash_usage": 0,
+     "last_seen_time": "",
+     "memory_usage": 0,
+     "onboarded_time": "",
+     "temperature": 0,
+     "uptime": 0
+    },
+    "tenant": [
+     {
+      "id": "fixture-id-0002",
+      "name": "fixture-name-11"
+     }
+    ],
+    "usage": {
+     "bytes_in": 0,
+     "bytes_out": 0,
+     "errors": 0,
+     "num_users": 0
+    },
+    "user_group": {
+     "fixture-id-0002": [
+      {
+       "id": "fixture-id-0005"
+      }
+     ]
+    }
+   },
+   {
+    "connection": {
+     "remote_access": true,
+     "status": "Disconnected"
+    },
+    "device_cap": [
+     {
+      "feature": "connect"
+     }
+    ],
+    "hardware": {
+     "make": "",
+     "model": "",
+     "os": "",
+     "os_version": "",
+     "serial_number": ""
+    },
+    "name": "Port-31",
+    "network": {
+     "hostname": "",
+     "ipv4_address": ""
+    },
+    "parent_device": {
+     "attributes": {
+      "remote_access": true,
+      "status_update_interval": "2 minutes"
+     },
+     "comm_state": "Down",
+     "dev_type": "ltrx_itm",
+     "device_description": "SLC9000 Advanced Console Manager",
+     "device_id": "00204AFIXTURE0000000000000000040",
+     "device_name": "fixture-name-18",
+     "last_contacted": "2026-10-26T15:53:26.85843974Z",
+     "serial_num": "FIXSER000005"
+    },
+    "parent_device_id": "00204AFIXTURE0000000000000000040",
+    "parent_device_name": "fixture-name-28",
+    "port_number": 31,
+    "project_id": "fixture-id-0004",
+    "project_tag": "MYSTQ_PT_00000000-0000-4000-8000-000000000002",
+    "status_info": {
+     "cpu_usage": 0,
+     "flash_usage": 0,
+     "last_seen_time": "",
+     "memory_usage": 0,
+     "onboarded_time": "",
+     "temperature": 0,
+     "uptime": 0
+    },
+    "tenant": [
+     {
+      "id": "fixture-id-0002",
+      "name": "fixture-name-11"
+     }
+    ],
+    "usage": {
+     "bytes_in": 0,
+     "bytes_out": 0,
+     "errors": 0,
+     "num_users": 0
+    },
+    "user_group": {
+     "fixture-id-0002": [
+      {
+       "id": "fixture-id-0005"
+      }
+     ]
+    }
+   },
+   {
+    "connection": {
+     "remote_access": true,
+     "status": "Disconnected"
+    },
+    "device_cap": [
+     {
+      "feature": "connect"
+     }
+    ],
+    "hardware": {
+     "make": "",
+     "model": "",
+     "os": "",
+     "os_version": "",
+     "serial_number": ""
+    },
+    "name": "Port-31",
+    "network": {
+     "hostname": "",
+     "ipv4_address": ""
+    },
+    "parent_device": {
+     "attributes": {
+      "remote_access": true,
+      "status_update_interval": "2 minutes"
+     },
+     "comm_state": "Down",
+     "dev_type": "ltrx_itm",
+     "device_description": "SLC9000 Advanced Console Manager",
+     "device_id": "00204AFIXTURE0000000000000000032",
+     "device_name": "fixture-name-10",
+     "last_contacted": "2026-09-07T20:27:54.346236324Z",
+     "serial_num": "FIXSER000001"
+    },
+    "parent_device_id": "00204AFIXTURE0000000000000000032",
+    "parent_device_name": "fixture-name-23",
+    "port_number": 31,
+    "project_id": "fixture-id-0004",
+    "project_tag": "MYSTQ_PT_00000000-0000-4000-8000-000000000002",
+    "status_info": {
+     "cpu_usage": 0,
+     "flash_usage": 0,
+     "last_seen_time": "",
+     "memory_usage": 0,
+     "onboarded_time": "",
+     "temperature": 0,
+     "uptime": 0
+    },
+    "tenant": [
+     {
+      "id": "fixture-id-0002",
+      "name": "fixture-name-11"
+     }
+    ],
+    "usage": {
+     "bytes_in": 0,
+     "bytes_out": 0,
+     "errors": 0,
+     "num_users": 0
+    },
+    "user_group": {
+     "fixture-id-0002": [
+      {
+       "id": "fixture-id-0005"
+      }
+     ]
+    }
+   },
+   {
+    "connection": {
+     "remote_access": true,
+     "status": "Disconnected"
+    },
+    "device_cap": [
+     {
+      "feature": "connect"
+     }
+    ],
+    "hardware": {
+     "make": "",
+     "model": "",
+     "os": "",
+     "os_version": "",
+     "serial_number": ""
+    },
+    "name": "Port-31",
+    "network": {
+     "hostname": "",
+     "ipv4_address": ""
+    },
+    "parent_device": {
+     "attributes": {
+      "remote_access": true,
+      "status_update_interval": "2 minutes"
+     },
+     "comm_state": "Up",
+     "dev_type": "ltrx_itm",
+     "device_description": "SLC9000 Advanced Console Manager",
+     "device_id": "00204AFIXTURE0000000000000000042",
+     "device_name": "fixture-name-19",
+     "last_contacted": "2026-10-29T09:19:51.104196824Z",
+     "serial_num": "FIXSER000006"
+    },
+    "parent_device_id": "00204AFIXTURE0000000000000000042",
+    "parent_device_name": "fixture-name-19",
+    "port_number": 31,
+    "project_id": "fixture-id-0004",
+    "project_tag": "MYSTQ_PT_00000000-0000-4000-8000-000000000002",
+    "status_info": {
+     "cpu_usage": 0,
+     "flash_usage": 0,
+     "last_seen_time": "",
+     "memory_usage": 0,
+     "onboarded_time": "",
+     "temperature": 0,
+     "uptime": 0
+    },
+    "tenant": [
+     {
+      "id": "fixture-id-0002",
+      "name": "fixture-name-11"
+     }
+    ],
+    "usage": {
+     "bytes_in": 0,
+     "bytes_out": 0,
+     "errors": 0,
+     "num_users": 0
+    },
+    "user_group": {
+     "fixture-id-0002": [
+      {
+       "id": "fixture-id-0005"
+      }
+     ]
+    }
+   },
+   {
+    "connection": {
+     "remote_access": true,
+     "status": "Disconnected"
+    },
+    "device_cap": [
+     {
+      "feature": "connect"
+     }
+    ],
+    "hardware": {
+     "make": "",
+     "model": "",
+     "os": "",
+     "os_version": "",
+     "serial_number": ""
+    },
+    "name": "Port-32",
+    "network": {
+     "hostname": "",
+     "ipv4_address": ""
+    },
+    "parent_device": {
+     "attributes": {
+      "remote_access": true,
+      "status_update_interval": "2 minutes"
+     },
+     "comm_state": "Down",
+     "dev_type": "ltrx_itm",
+     "device_description": "SLC9000 Advanced Console Manager",
+     "device_id": "00204AFIXTURE0000000000000000040",
+     "device_name": "fixture-name-18",
+     "last_contacted": "2026-10-26T15:53:26.85843974Z",
+     "serial_num": "FIXSER000005"
+    },
+    "parent_device_id": "00204AFIXTURE0000000000000000040",
+    "parent_device_name": "fixture-name-28",
+    "port_number": 32,
+    "project_id": "fixture-id-0004",
+    "project_tag": "MYSTQ_PT_00000000-0000-4000-8000-000000000002",
+    "status_info": {
+     "cpu_usage": 0,
+     "flash_usage": 0,
+     "last_seen_time": "",
+     "memory_usage": 0,
+     "onboarded_time": "",
+     "temperature": 0,
+     "uptime": 0
+    },
+    "tenant": [
+     {
+      "id": "fixture-id-0002",
+      "name": "fixture-name-11"
+     }
+    ],
+    "usage": {
+     "bytes_in": 0,
+     "bytes_out": 0,
+     "errors": 0,
+     "num_users": 0
+    },
+    "user_group": {
+     "fixture-id-0002": [
+      {
+       "id": "fixture-id-0005"
+      }
+     ]
+    }
+   },
+   {
+    "connection": {
+     "remote_access": true,
+     "status": "Disconnected"
+    },
+    "device_cap": [
+     {
+      "feature": "connect"
+     }
+    ],
+    "hardware": {
+     "make": "",
+     "model": "",
+     "os": "",
+     "os_version": "",
+     "serial_number": ""
+    },
+    "name": "Port-32",
+    "network": {
+     "hostname": "",
+     "ipv4_address": ""
+    },
+    "parent_device": {
+     "attributes": {
+      "remote_access": true,
+      "status_update_interval": "2 minutes"
+     },
+     "comm_state": "Down",
+     "dev_type": "ltrx_itm",
+     "device_description": "SLC9000 Advanced Console Manager",
+     "device_id": "00204AFIXTURE0000000000000000032",
+     "device_name": "fixture-name-10",
+     "last_contacted": "2026-09-07T20:27:54.346236324Z",
+     "serial_num": "FIXSER000001"
+    },
+    "parent_device_id": "00204AFIXTURE0000000000000000032",
+    "parent_device_name": "fixture-name-23",
+    "port_number": 32,
+    "project_id": "fixture-id-0004",
+    "project_tag": "MYSTQ_PT_00000000-0000-4000-8000-000000000002",
+    "status_info": {
+     "cpu_usage": 0,
+     "flash_usage": 0,
+     "last_seen_time": "",
+     "memory_usage": 0,
+     "onboarded_time": "",
+     "temperature": 0,
+     "uptime": 0
+    },
+    "tenant": [
+     {
+      "id": "fixture-id-0002",
+      "name": "fixture-name-11"
+     }
+    ],
+    "usage": {
+     "bytes_in": 0,
+     "bytes_out": 0,
+     "errors": 0,
+     "num_users": 0
+    },
+    "user_group": {
+     "fixture-id-0002": [
+      {
+       "id": "fixture-id-0005"
+      }
+     ]
+    }
+   },
+   {
+    "connection": {
+     "remote_access": true,
+     "status": "Disconnected"
+    },
+    "device_cap": [
+     {
+      "feature": "connect"
+     }
+    ],
+    "hardware": {
+     "make": "",
+     "model": "",
+     "os": "",
+     "os_version": "",
+     "serial_number": ""
+    },
+    "name": "Port-32",
+    "network": {
+     "hostname": "",
+     "ipv4_address": ""
+    },
+    "parent_device": {
+     "attributes": {
+      "remote_access": true,
+      "status_update_interval": "2 minutes"
+     },
+     "comm_state": "Up",
+     "dev_type": "ltrx_itm",
+     "device_description": "SLC9000 Advanced Console Manager",
+     "device_id": "00204AFIXTURE0000000000000000042",
+     "device_name": "fixture-name-19",
+     "last_contacted": "2026-10-29T09:19:51.104196824Z",
+     "serial_num": "FIXSER000006"
+    },
+    "parent_device_id": "00204AFIXTURE0000000000000000042",
+    "parent_device_name": "fixture-name-19",
+    "port_number": 32,
+    "project_id": "fixture-id-0004",
+    "project_tag": "MYSTQ_PT_00000000-0000-4000-8000-000000000002",
+    "status_info": {
+     "cpu_usage": 0,
+     "flash_usage": 0,
+     "last_seen_time": "",
+     "memory_usage": 0,
+     "onboarded_time": "",
+     "temperature": 0,
+     "uptime": 0
+    },
+    "tenant": [
+     {
+      "id": "fixture-id-0002",
+      "name": "fixture-name-11"
+     }
+    ],
+    "usage": {
+     "bytes_in": 0,
+     "bytes_out": 0,
+     "errors": 0,
+     "num_users": 0
+    },
+    "user_group": {
+     "fixture-id-0002": [
+      {
+       "id": "fixture-id-0005"
+      }
+     ]
+    }
+   },
+   {
+    "connection": {
+     "remote_access": true,
+     "status": "Connected"
+    },
+    "device_cap": [
+     {
+      "feature": "connect"
+     }
+    ],
+    "hardware": {
+     "make": "",
+     "model": "",
+     "os": "",
+     "os_version": "",
+     "serial_number": ""
+    },
+    "name": "fixture-name-31",
+    "network": {
+     "hostname": "",
+     "ipv4_address": ""
+    },
+    "parent_device": {
+     "attributes": {
+      "remote_access": true,
+      "status_update_interval": "1 minutes"
+     },
+     "comm_state": "Up",
+     "dev_type": "ltrx",
+     "device_description": "fixture-name-16",
+     "device_id": "00204AFIXTURE0000000000000000036",
+     "device_name": "fixture-name-15",
+     "last_contacted": "2026-10-29T09:19:48.510563253Z",
+     "serial_num": "FIXSER000003"
+    },
+    "parent_device_id": "00204AFIXTURE0000000000000000036",
+    "parent_device_name": "fixture-name-32",
+    "port_number": 1,
+    "project_id": "fixture-id-0004",
+    "project_tag": "MYSTQ_PT_00000000-0000-4000-8000-000000000002",
+    "status_info": {
+     "cpu_usage": 0,
+     "flash_usage": 0,
+     "last_seen_time": "",
+     "memory_usage": 0,
+     "onboarded_time": "",
+     "temperature": 0,
+     "uptime": 0
+    },
+    "tenant": [
+     {
+      "id": "fixture-id-0002",
+      "name": "fixture-name-11"
+     }
+    ],
+    "usage": {
+     "bytes_in": 0,
+     "bytes_out": 11,
+     "errors": 0,
+     "num_users": 2
+    },
+    "user_group": {
+     "fixture-id-0002": [
+      {
+       "id": "fixture-id-0005"
+      }
+     ]
+    }
+   },
+   {
+    "connection": {
+     "remote_access": true,
+     "status": "Disconnected"
+    },
+    "device_cap": [
+     {
+      "feature": "connect"
+     }
+    ],
+    "hardware": {
+     "make": "",
+     "model": "",
+     "os": "",
+     "os_version": "",
+     "serial_number": ""
+    },
+    "name": "fixture-name-19",
+    "network": {
+     "hostname": "",
+     "ipv4_address": ""
+    },
+    "parent_device": {
+     "attributes": {
+      "remote_access": true,
+      "status_update_interval": "2 minutes"
+     },
+     "comm_state": "Up",
+     "dev_type": "ltrx_itm",
+     "device_description": "SLC9000 Advanced Console Manager",
+     "device_id": "00204AFIXTURE0000000000000000038",
+     "device_name": "fixture-name-17",
+     "last_contacted": "2026-10-29T09:18:52.107851111Z",
+     "serial_num": "FIXSER000004"
+    },
+    "parent_device_id": "00204AFIXTURE0000000000000000038",
+    "parent_device_name": "fixture-name-17",
+    "port_number": 1,
+    "project_id": "fixture-id-0004",
+    "project_tag": "MYSTQ_PT_00000000-0000-4000-8000-000000000002",
+    "status_info": {
+     "cpu_usage": 0,
+     "flash_usage": 0,
+     "last_seen_time": "",
+     "memory_usage": 0,
+     "onboarded_time": "",
+     "temperature": 0,
+     "uptime": 0
+    },
+    "tenant": [
+     {
+      "id": "fixture-id-0002",
+      "name": "fixture-name-11"
+     }
+    ],
+    "usage": {
+     "bytes_in": 0,
+     "bytes_out": 0,
+     "errors": 0,
+     "num_users": 0
+    },
+    "user_group": {
+     "fixture-id-0002": [
+      {
+       "id": "fixture-id-0005"
+      }
+     ]
+    }
+   },
+   {
+    "connection": {
+     "remote_access": true,
+     "status": "Disconnected"
+    },
+    "device_cap": [
+     {
+      "feature": "connect"
+     }
+    ],
+    "hardware": {
+     "make": "",
+     "model": "",
+     "os": "",
+     "os_version": "",
+     "serial_number": ""
+    },
+    "name": "fixture-name-33",
+    "network": {
+     "hostname": "",
+     "ipv4_address": ""
+    },
+    "parent_device": {
+     "attributes": {
+      "remote_access": true,
+      "status_update_interval": "1 minutes"
+     },
+     "comm_state": "Up",
+     "dev_type": "ltrx",
+     "device_description": "fixture-name-16",
+     "device_id": "00204AFIXTURE0000000000000000036",
+     "device_name": "fixture-name-15",
+     "last_contacted": "2026-10-29T09:19:48.510563253Z",
+     "serial_num": "FIXSER000003"
+    },
+    "parent_device_id": "00204AFIXTURE0000000000000000036",
+    "parent_device_name": "fixture-name-32",
+    "port_number": 2,
+    "project_id": "fixture-id-0004",
+    "project_tag": "MYSTQ_PT_00000000-0000-4000-8000-000000000002",
+    "status_info": {
+     "cpu_usage": 0,
+     "flash_usage": 0,
+     "last_seen_time": "",
+     "memory_usage": 0,
+     "onboarded_time": "",
+     "temperature": 0,
+     "uptime": 0
+    },
+    "tenant": [
+     {
+      "id": "fixture-id-0002",
+      "name": "fixture-name-11"
+     }
+    ],
+    "usage": {
+     "bytes_in": 0,
+     "bytes_out": 0,
+     "errors": 0,
+     "num_users": 0
+    },
+    "user_group": {
+     "fixture-id-0002": [
+      {
+       "id": "fixture-id-0005"
+      }
+     ]
+    }
+   },
+   {
+    "connection": {
+     "remote_access": true,
+     "status": "Connected"
+    },
+    "device_cap": [
+     {
+      "feature": "connect"
+     }
+    ],
+    "hardware": {
+     "make": "",
+     "model": "",
+     "os": "",
+     "os_version": "",
+     "serial_number": ""
+    },
+    "name": "fixture-name-34",
+    "network": {
+     "hostname": "",
+     "ipv4_address": ""
+    },
+    "parent_device": {
+     "attributes": {
+      "remote_access": true,
+      "status_update_interval": "2 minutes"
+     },
+     "comm_state": "Down",
+     "dev_type": "ltrx_itm",
+     "device_description": "SLC9000 Advanced Console Manager",
+     "device_id": "00204AFIXTURE0000000000000000032",
+     "device_name": "fixture-name-10",
+     "last_contacted": "2026-09-07T20:27:54.346236324Z",
+     "serial_num": "FIXSER000001"
+    },
+    "parent_device_id": "00204AFIXTURE0000000000000000032",
+    "parent_device_name": "fixture-name-23",
+    "port_number": 1,
+    "project_id": "fixture-id-0004",
+    "project_tag": "MYSTQ_PT_00000000-0000-4000-8000-000000000002",
+    "status_info": {
+     "cpu_usage": 0,
+     "flash_usage": 0,
+     "last_seen_time": "",
+     "memory_usage": 0,
+     "onboarded_time": "",
+     "temperature": 0,
+     "uptime": 0
+    },
+    "tenant": [
+     {
+      "id": "fixture-id-0002",
+      "name": "fixture-name-11"
+     }
+    ],
+    "usage": {
+     "bytes_in": 211,
+     "bytes_out": 29,
+     "errors": 0,
+     "num_users": 0
+    },
+    "user_group": {
+     "fixture-id-0002": [
+      {
+       "id": "fixture-id-0005"
+      }
+     ]
+    }
+   }
+  ],
+  "sort_first": [
+   "Port-29",
+   "00204AFIXTURE0000000000000000042",
+   "00000000-0000-4000-8000-000000000003"
+  ],
+  "sort_last": [
+   "fixture-name-34",
+   "00204AFIXTURE0000000000000000032",
+   "00000000-0000-4000-8000-000000000004"
+  ],
+  "total": 114
+ }
+}

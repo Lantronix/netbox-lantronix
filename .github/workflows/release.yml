@@ -1,0 +1,37 @@
+name: Release
+
+# A vX.Y.Z tag on main (pushed by hand, or dispatched by release-tag.yml)
+# runs CI, checks the tag against every version file and CHANGELOG.md, then
+# publishes a GitHub Release with that version's changelog section as notes.
+on:
+  push:
+    tags: ["v[0-9]+.[0-9]+.[0-9]+"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+
+  release:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - name: Check the tag
+        env:
+          BASE: main
+        run: |
+          [ "$GITHUB_REF_TYPE" = tag ] || { echo "::error::run this on a vX.Y.Z tag, not $GITHUB_REF_NAME"; exit 1; }
+          git merge-base --is-ancestor "$GITHUB_SHA" "origin/$BASE" || { echo "::error::$GITHUB_REF_NAME is not on $BASE"; exit 1; }
+          node scripts/release-pr.mjs --check "$GITHUB_REF_NAME" --notes notes.md
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file notes.md --verify-tag

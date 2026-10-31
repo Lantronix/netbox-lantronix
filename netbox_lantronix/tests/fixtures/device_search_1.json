@@ -1,0 +1,757 @@
+{
+ "request": {
+  "limit": 50,
+  "order": "asc",
+  "search_string": "*",
+  "sort": "device_name"
+ },
+ "response": {
+  "search_results": [
+   {
+    "attributes": {
+     "audit_log": true,
+     "config_update": true,
+     "content_check_interval": "24 hours",
+     "current_bank": 2,
+     "device_state": "Client Disabled",
+     "eth1_ipv4address": "192.0.2.112",
+     "eth1_ipv6address": "2001:db8::1/64",
+     "eth1_link": "Up",
+     "eth2_link": "Down",
+     "firmware_update": true,
+     "firmware_updated": "2026-08-12T20:02:12-00:00",
+     "firmware_ver": "9.7.0.1R2",
+     "firmware_ver_a": "9.7.0.0R22",
+     "internal_modem": "N/A",
+     "internal_temp": 57,
+     "ipaddress": "192.0.2.112",
+     "job_status": {
+      "id": "fixture-id-0033",
+      "last_updated": "2026-09-02T14:49:03.171478931Z",
+      "op_code": "execute",
+      "state": "Completed",
+      "type": "command"
+     },
+     "model": "SLC9032",
+     "num_ports": 32,
+     "num_rj45_ports": "16",
+     "num_usb_ports": "16",
+     "num_users": 3,
+     "power_supply_a": "Ok",
+     "power_supply_b": "No Power",
+     "primary_interface": "Eth1",
+     "product_family": "SLC",
+     "product_name": "fixture-name-12",
+     "reboot_after_update": false,
+     "remote_access": true,
+     "status_update_interval": "2 minutes",
+     "usb_u1_modem": "N/A",
+     "usb_u2_modem": "N/A"
+    },
+    "comm_state": "Down",
+    "created_at": "2026-04-17T22:16:49.035249379Z",
+    "dev_type": "ltrx_itm",
+    "device_cap": [
+     {
+      "feature": "reboot"
+     },
+     {
+      "feature": "shutdown"
+     },
+     {
+      "feature": "connect"
+     },
+     {
+      "connection_type": "ztc",
+      "feature": "web-connect"
+     },
+     {
+      "feature": "update-available"
+     },
+     {
+      "feature": "config-update-via-upload",
+      "product_family": "SLC"
+     },
+     {
+      "feature": "firmware-update-group",
+      "product_family": "SLC"
+     },
+     {
+      "feature": "firmware-update-via-upload",
+      "product_family": "SLC"
+     },
+     {
+      "feature": "cli-command"
+     },
+     {
+      "feature": "syslog-retrieve"
+     },
+     {
+      "feature": "config-retrieve"
+     },
+     {
+      "feature": "config-restore-from-saved-config"
+     },
+     {
+      "feature": "script-execute"
+     },
+     {
+      "feature": "restart-agent"
+     },
+     {
+      "feature": "config-editor"
+     },
+     {
+      "feature": "telemetry"
+     }
+    ],
+    "device_description": "SLC9000 Advanced Console Manager",
+    "device_group": {},
+    "device_id": "00204AFIXTURE0000000000000000032",
+    "device_key": "",
+    "device_name": "fixture-name-10",
+    "last_contacted": "2026-09-07T20:27:54.346236324Z",
+    "last_registered_at": "2026-09-02T14:56:51.057603448Z",
+    "project_id": "fixture-id-0004",
+    "project_tag": "MYSTQ_PT_00000000-0000-4000-8000-000000000001",
+    "registered_at": "2026-04-18T10:00:50.112499467Z",
+    "serial_num": "FIXSER000001",
+    "status": "Disconnected",
+    "tenant": [
+     {
+      "id": "fixture-id-0002",
+      "name": "fixture-name-11"
+     }
+    ],
+    "updated_at": "2026-09-02T14:56:51.057603448Z",
+    "user_group": {
+     "fixture-id-0002": [
+      {
+       "id": "fixture-id-0005"
+      }
+     ]
+    }
+   },
+   {
+    "attributes": {
+     "audit_log": true,
+     "config_update": true,
+     "content_check_interval": "48 hours",
+     "current_bank": 1,
+     "device_state": "Idle",
+     "firmware_update": true,
+     "firmware_updated": "2026-07-07T10:42:44-00:00",
+     "firmware_ver": "2.4.0.0R8",
+     "firmware_ver_a": "2.4.0.0R8",
+     "internal_temp": 32,
+     "ipaddress": "192.0.2.197",
+     "job_status": {
+      "id": "fixture-id-0035",
+      "last_updated": "2026-08-31T11:47:47.378112559Z",
+      "op_code": "execute",
+      "state": "Completed",
+      "type": "command"
+     },
+     "model": "NTC_501",
+     "num_ports": 1,
+     "num_usb_ports": "1",
+     "num_users": 1,
+     "primary_interface": "rmnet_data0",
+     "product_family": "N3",
+     "product_name": "fixture-name-14",
+     "reboot_after_update": true,
+     "remote_access": true,
+     "rssi": "Not associated",
+     "rssi_quality": "0",
+     "status_update_interval": "5 minutes"
+    },
+    "comm_state": "Down",
+    "created_at": "2026-04-01T19:59:30.722159235Z",
+    "dev_type": "ltrx",
+    "device_cap": [
+     {
+      "feature": "reboot"
+     },
+     {
+      "feature": "update-available"
+     },
+     {
+      "feature": "config-update-group",
+      "product_family": "N3"
+     },
+     {
+      "feature": "config-update-via-upload",
+      "product_family": "N3"
+     },
+     {
+      "feature": "firmware-update-group",
+      "product_family": "N3"
+     },
+     {
+      "feature": "firmware-update-via-upload",
+      "product_family": "N3"
+     },
+     {
+      "feature": "syslog-retrieve"
+     },
+     {
+      "feature": "cli-command"
+     },
+     {
+      "feature": "config-save-as-default"
+     },
+     {
+      "feature": "config-restore-from-default"
+     },
+     {
+      "feature": "restart-agent"
+     },
+     {
+      "feature": "telemetry"
+     },
+     {
+      "feature": "config-editor"
+     },
+     {
+      "connection_type": "ztc",
+      "feature": "web-connect"
+     },
+     {
+      "feature": "connect"
+     }
+    ],
+    "device_description": "fixture-name-14",
+    "device_group": {},
+    "device_id": "00204AFIXTURE0000000000000000034",
+    "device_key": "",
+    "device_name": "fixture-name-13",
+    "last_contacted": "2026-09-07T20:54:20.035068248Z",
+    "last_registered_at": "2026-09-02T10:35:33.376242081Z",
+    "project_id": "fixture-id-0004",
+    "project_tag": "MYSTQ_PT_00000000-0000-4000-8000-000000000001",
+    "registered_at": "2026-04-01T19:59:50.339570787Z",
+    "serial_num": "FIXSER000002",
+    "status": "Disconnected",
+    "tenant": [
+     {
+      "id": "fixture-id-0002",
+      "name": "fixture-name-11"
+     }
+    ],
+    "updated_at": "2026-09-02T10:35:33.376242081Z",
+    "user_group": {
+     "fixture-id-0002": [
+      {
+       "id": "fixture-id-0005"
+      }
+     ]
+    }
+   },
+   {
+    "attributes": {
+     "audit_log": true,
+     "config_update": true,
+     "content_check_interval": "24 hours",
+     "device_state": "Idle",
+     "eth0_link": "Up",
+     "eth1_link": "Down",
+     "firmware_update": true,
+     "firmware_updated": "",
+     "firmware_ver": "2.6.0.3R6",
+     "internal_temp": 38,
+     "ipaddress": "192.0.2.198",
+     "job_status": {
+      "id": "fixture-id-0037",
+      "last_updated": "2026-08-15T16:40:15.126Z",
+      "op_code": "execute",
+      "state": "Completed",
+      "type": "command"
+     },
+     "model": "G526",
+     "num_ports": 2,
+     "num_rj45_ports": "2",
+     "num_usb_ports": "0",
+     "num_users": 2,
+     "primary_interface": "wwan0",
+     "product_family": "U1",
+     "product_name": "fixture-name-16",
+     "reboot_after_update": false,
+     "remote_access": true,
+     "rssi": "Not associated",
+     "rssi_quality": "0",
+     "status_update_interval": "1 minutes",
+     "wlan0_link": "Down"
+    },
+    "comm_state": "Up",
+    "created_at": "2025-07-28T12:08:14.718159343Z",
+    "dev_type": "ltrx",
+    "device_cap": [
+     {
+      "feature": "reboot"
+     },
+     {
+      "feature": "update-available"
+     },
+     {
+      "feature": "config-update-group",
+      "product_family": "U1"
+     },
+     {
+      "feature": "config-update-via-upload",
+      "product_family": "U1"
+     },
+     {
+      "feature": "firmware-update-group",
+      "product_family": "U1"
+     },
+     {
+      "feature": "firmware-update-via-upload",
+      "product_family": "U1"
+     },
+     {
+      "feature": "cli-command"
+     },
+     {
+      "feature": "syslog-retrieve"
+     },
+     {
+      "feature": "config-save-as-default"
+     },
+     {
+      "feature": "config-restore-from-default"
+     },
+     {
+      "feature": "restart-agent"
+     },
+     {
+      "feature": "telemetry"
+     },
+     {
+      "feature": "config-editor"
+     },
+     {
+      "connection_type": "ztc",
+      "feature": "web-connect"
+     },
+     {
+      "feature": "connect"
+     }
+    ],
+    "device_description": "fixture-name-16",
+    "device_group": {},
+    "device_id": "00204AFIXTURE0000000000000000036",
+    "device_key": "",
+    "device_name": "fixture-name-15",
+    "last_contacted": "2026-10-29T09:19:48.510563253Z",
+    "last_registered_at": "2026-10-25T13:04:34.235078525Z",
+    "project_id": "fixture-id-0004",
+    "project_tag": "MYSTQ_PT_00000000-0000-4000-8000-000000000001",
+    "registered_at": "2025-11-23T16:26:18.884683988Z",
+    "serial_num": "FIXSER000003",
+    "status": "Connected",
+    "tenant": [
+     {
+      "id": "fixture-id-0002",
+      "name": "fixture-name-11"
+     }
+    ],
+    "updated_at": "2026-10-25T13:04:34.235078525Z",
+    "user_group": {
+     "fixture-id-0002": [
+      {
+       "id": "fixture-id-0005"
+      }
+     ]
+    }
+   },
+   {
+    "attributes": {
+     "audit_log": true,
+     "config_update": true,
+     "content_check_interval": "24 hours",
+     "current_bank": 2,
+     "device_state": "",
+     "eth1_ipv4address": "192.0.2.29",
+     "eth1_ipv6address": "2001:db8::1/64",
+     "eth1_link": "Up",
+     "eth2_ipv4address": "192.0.2.82",
+     "eth2_ipv6address": "2001:db8::1/64",
+     "eth2_link": "Up",
+     "firmware_update": true,
+     "firmware_updated": "2026-10-15T16:00:38-00:00",
+     "firmware_ver": "9.8.0.0R7",
+     "firmware_ver_a": "9.7.0.1R2",
+     "internal_modem": "N/A",
+     "internal_temp": 58,
+     "ipaddress": "192.0.2.29",
+     "job_status": {
+      "id": "fixture-id-0039",
+      "last_updated": "2026-10-22T09:40:35.290546336Z",
+      "op_code": "execute",
+      "state": "Completed",
+      "type": "command"
+     },
+     "model": "SLC9016",
+     "num_ports": 16,
+     "num_rj45_ports": "16",
+     "num_usb_ports": "0",
+     "num_users": 2,
+     "power_supply_a": "No Power",
+     "power_supply_b": "Ok",
+     "primary_interface": "Eth1",
+     "product_family": "SLC",
+     "product_name": "fixture-name-12",
+     "reboot_after_update": false,
+     "remote_access": true,
+     "status_update_interval": "2 minutes",
+     "usb_u1_modem": "N/A",
+     "usb_u2_modem": "N/A"
+    },
+    "comm_state": "Up",
+    "created_at": "2026-10-14T04:04:10.217565419Z",
+    "dev_type": "ltrx_itm",
+    "device_cap": [
+     {
+      "feature": "reboot"
+     },
+     {
+      "feature": "shutdown"
+     },
+     {
+      "feature": "connect"
+     },
+     {
+      "connection_type": "ztc",
+      "feature": "web-connect"
+     },
+     {
+      "feature": "update-available"
+     },
+     {
+      "feature": "config-update-via-upload",
+      "product_family": "SLC"
+     },
+     {
+      "feature": "firmware-update-group",
+      "product_family": "SLC"
+     },
+     {
+      "feature": "firmware-update-via-upload",
+      "product_family": "SLC"
+     },
+     {
+      "feature": "cli-command"
+     },
+     {
+      "feature": "syslog-retrieve"
+     },
+     {
+      "feature": "config-retrieve"
+     },
+     {
+      "feature": "config-restore-from-saved-config"
+     },
+     {
+      "feature": "script-execute"
+     },
+     {
+      "feature": "restart-agent"
+     },
+     {
+      "feature": "config-editor"
+     },
+     {
+      "feature": "telemetry"
+     }
+    ],
+    "device_description": "SLC9000 Advanced Console Manager",
+    "device_group": {},
+    "device_id": "00204AFIXTURE0000000000000000038",
+    "device_key": "",
+    "device_name": "fixture-name-17",
+    "last_contacted": "2026-10-29T09:18:52.107851111Z",
+    "last_registered_at": "2026-10-26T15:15:39.518254006Z",
+    "project_id": "fixture-id-0004",
+    "project_tag": "MYSTQ_PT_00000000-0000-4000-8000-000000000001",
+    "registered_at": "2026-10-14T04:04:10.217565419Z",
+    "serial_num": "FIXSER000004",
+    "status": "Connected",
+    "tenant": [
+     {
+      "id": "fixture-id-0002",
+      "name": "fixture-name-11"
+     }
+    ],
+    "updated_at": "2026-10-26T15:15:39.518254006Z",
+    "user_group": {
+     "fixture-id-0002": [
+      {
+       "id": "fixture-id-0005"
+      }
+     ]
+    }
+   },
+   {
+    "attributes": {
+     "audit_log": true,
+     "config_update": true,
+     "config_version": "1.0",
+     "content_check_interval": "24 hours",
+     "current_bank": 2,
+     "device_state": "Idle",
+     "eth1_ipv4address": "192.0.2.113",
+     "eth1_ipv6address": "2001:db8::1/64",
+     "eth1_link": "Up",
+     "eth2_ipv4address": "192.0.2.210",
+     "eth2_ipv6address": "2001:db8::1/64",
+     "eth2_link": "Up",
+     "firmware_update": true,
+     "firmware_updated": "2026-08-12T15:07:37-00:00",
+     "firmware_ver": "9.7.0.1R2",
+     "firmware_ver_a": "9.7.0.0R22",
+     "internal_modem": "N/A",
+     "internal_temp": 53,
+     "ipaddress": "192.0.2.113",
+     "job_status": {
+      "id": "fixture-id-0041",
+      "last_updated": "2026-10-25T13:18:26.373156498Z",
+      "op_code": "execute",
+      "state": "Completed",
+      "type": "command"
+     },
+     "model": "SLC9032",
+     "num_ports": 32,
+     "num_rj45_ports": "16",
+     "num_usb_ports": "16",
+     "num_users": 2,
+     "power_supply_a": "No Power",
+     "power_supply_b": "Ok",
+     "primary_interface": "Eth1",
+     "product_family": "SLC",
+     "product_name": "fixture-name-12",
+     "reboot_after_update": false,
+     "remote_access": true,
+     "status_update_interval": "2 minutes",
+     "usb_u1_modem": "N/A",
+     "usb_u2_modem": "N/A"
+    },
+    "comm_state": "Down",
+    "created_at": "2026-04-17T22:16:02.547058986Z",
+    "dev_type": "ltrx_itm",
+    "device_cap": [
+     {
+      "feature": "reboot"
+     },
+     {
+      "feature": "shutdown"
+     },
+     {
+      "feature": "connect"
+     },
+     {
+      "connection_type": "ztc",
+      "feature": "web-connect"
+     },
+     {
+      "feature": "update-available"
+     },
+     {
+      "feature": "config-update-via-upload",
+      "product_family": "SLC"
+     },
+     {
+      "feature": "firmware-update-group",
+      "product_family": "SLC"
+     },
+     {
+      "feature": "firmware-update-via-upload",
+      "product_family": "SLC"
+     },
+     {
+      "feature": "cli-command"
+     },
+     {
+      "feature": "syslog-retrieve"
+     },
+     {
+      "feature": "config-retrieve"
+     },
+     {
+      "feature": "config-restore-from-saved-config"
+     },
+     {
+      "feature": "script-execute"
+     },
+     {
+      "feature": "restart-agent"
+     },
+     {
+      "feature": "config-editor"
+     },
+     {
+      "feature": "telemetry"
+     }
+    ],
+    "device_description": "SLC9000 Advanced Console Manager",
+    "device_group": {},
+    "device_id": "00204AFIXTURE0000000000000000040",
+    "device_key": "",
+    "device_name": "fixture-name-18",
+    "last_contacted": "2026-10-26T15:53:26.85843974Z",
+    "last_registered_at": "2026-10-26T15:49:59.319785521Z",
+    "project_id": "fixture-id-0004",
+    "project_tag": "MYSTQ_PT_00000000-0000-4000-8000-000000000001",
+    "registered_at": "2026-04-18T10:02:36.191523118Z",
+    "serial_num": "FIXSER000005",
+    "status": "Disconnected",
+    "tenant": [
+     {
+      "id": "fixture-id-0002",
+      "name": "fixture-name-11"
+     }
+    ],
+    "updated_at": "2026-10-26T15:49:59.319785521Z",
+    "user_group": {
+     "fixture-id-0002": [
+      {
+       "id": "fixture-id-0005"
+      }
+     ]
+    }
+   },
+   {
+    "attributes": {
+     "audit_log": true,
+     "config_update": true,
+     "content_check_interval": "24 hours",
+     "current_bank": 2,
+     "device_state": "",
+     "eth1_ipv4address": "192.0.2.28",
+     "eth1_ipv6address": "2001:db8::1/64",
+     "eth1_link": "Up",
+     "eth2_link": "Down",
+     "firmware_update": true,
+     "firmware_updated": "2026-06-29T20:04:00-00:00",
+     "firmware_ver": "9.7.0.0R21",
+     "firmware_ver_a": "9.7.0.0R20",
+     "internal_modem": "N/A",
+     "internal_temp": 57,
+     "ipaddress": "192.0.2.28",
+     "job_status": {
+      "id": "fixture-id-0043",
+      "last_updated": "2026-10-29T05:34:26.393807064Z",
+      "op_code": "execute",
+      "state": "Completed",
+      "type": "command"
+     },
+     "model": "SLC9032",
+     "num_ports": 32,
+     "num_rj45_ports": "16",
+     "num_usb_ports": "16",
+     "power_supply_a": "Ok",
+     "power_supply_b": "No Power",
+     "primary_interface": "Eth1",
+     "product_family": "SLC",
+     "product_name": "fixture-name-12",
+     "reboot_after_update": false,
+     "remote_access": true,
+     "status_update_interval": "2 minutes",
+     "usb_u1_modem": "N/A",
+     "usb_u2_modem": "N/A"
+    },
+    "comm_state": "Up",
+    "created_at": "2026-09-02T04:31:25.717162265Z",
+    "dev_type": "ltrx_itm",
+    "device_cap": [
+     {
+      "feature": "reboot"
+     },
+     {
+      "feature": "shutdown"
+     },
+     {
+      "feature": "connect"
+     },
+     {
+      "connection_type": "ztc",
+      "feature": "web-connect"
+     },
+     {
+      "feature": "update-available"
+     },
+     {
+      "feature": "config-update-group"
+     },
+     {
+      "feature": "config-update-via-upload"
+     },
+     {
+      "feature": "firmware-update-group"
+     },
+     {
+      "feature": "firmware-update-via-upload"
+     },
+     {
+      "feature": "cli-command"
+     },
+     {
+      "feature": "syslog-retrieve"
+     },
+     {
+      "feature": "config-retrieve"
+     },
+     {
+      "feature": "config-restore-from-saved-config"
+     },
+     {
+      "feature": "script-execute"
+     },
+     {
+      "feature": "restart-agent"
+     },
+     {
+      "feature": "config-editor"
+     },
+     {
+      "feature": "telemetry"
+     }
+    ],
+    "device_description": "SLC9000 Advanced Console Manager",
+    "device_group": {},
+    "device_id": "00204AFIXTURE0000000000000000042",
+    "device_key": "",
+    "device_name": "fixture-name-19",
+    "last_contacted": "2026-10-29T09:19:51.104196824Z",
+    "last_registered_at": "2026-10-29T03:38:43.580629436Z",
+    "project_id": "fixture-id-0004",
+    "project_tag": "MYSTQ_PT_00000000-0000-4000-8000-000000000001",
+    "registered_at": "2026-09-02T04:35:10.3064664Z",
+    "serial_num": "FIXSER000006",
+    "status": "Connected",
+    "tenant": [
+     {
+      "id": "fixture-id-0002",
+      "name": "fixture-name-11"
+     }
+    ],
+    "updated_at": "2026-10-29T03:38:43.580629436Z",
+    "user_group": {
+     "fixture-id-0002": [
+      {
+       "id": "fixture-id-0005"
+      }
+     ]
+    }
+   }
+  ],
+  "sort_first": [
+   "fixture-name-10",
+   "FIXSER000001"
+  ],
+  "sort_last": [
+   "fixture-name-19",
+   "FIXSER000006"
+  ],
+  "total_results": 6
+ }
+}

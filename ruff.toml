@@ -1,0 +1,10 @@
+line-length = 100
+target-version = "py312"
+
+[lint]
+select = ["E", "F", "W", "I", "B", "UP", "S"]
+ignore = ["S101"]
+
+[lint.per-file-ignores]
+"netbox_lantronix/tests/*" = ["S105", "S106"]
+"netbox_lantronix/migrations/*" = ["E501"]

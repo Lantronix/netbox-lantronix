@@ -1,0 +1,30 @@
+[
+ {
+  "file": "login_1.json",
+  "path": "/v2/user/login"
+ },
+ {
+  "file": "device_search_1.json",
+  "path": "/v3/device/search"
+ },
+ {
+  "file": "port_search_1.json",
+  "path": "/v3/port/search"
+ },
+ {
+  "file": "port_search_2.json",
+  "path": "/v3/port/search"
+ },
+ {
+  "file": "port_search_3.json",
+  "path": "/v3/port/search"
+ },
+ {
+  "file": "jobgroup_search_1.json",
+  "path": "/v1/job/jobgroup/search"
+ },
+ {
+  "file": "clicmd_result_1.json",
+  "path": "/v1/telemetry/result/search"
+ }
+]

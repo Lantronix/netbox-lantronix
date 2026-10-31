@@ -1,0 +1,24 @@
+# Dev overlay for netbox-docker (github.com/netbox-community/netbox-docker).
+# Usage, from a netbox-docker checkout:
+#   VERSION=v4.6 docker compose -f docker-compose.yml \
+#     -f <repo>/dev/netbox-docker/docker-compose.override.yml up -d
+# The plugin source is mounted (writable, so makemigrations can write) and imported via
+# PYTHONPATH; no image rebuild. Run as its own project (-p netbox-lantronix-dev) so it shares
+# nothing with another NetBox on the same host.
+x-plugin: &plugin
+  environment:
+    PYTHONPATH: /opt/netbox-lantronix
+    PERCEPXION_URL: ${PERCEPXION_URL:-}
+    PERCEPXION_USERNAME: ${PERCEPXION_USERNAME:-}
+    PERCEPXION_PASSWORD: ${PERCEPXION_PASSWORD:-}
+  volumes:
+    - ${NETBOX_LANTRONIX_SRC:?set NETBOX_LANTRONIX_SRC to the repo path}:/opt/netbox-lantronix
+    - ${NETBOX_LANTRONIX_SRC}/dev/netbox-docker/configuration/plugins.py:/etc/netbox/config/plugins.py:ro
+
+services:
+  netbox:
+    <<: *plugin
+    ports:
+      - "${NETBOX_DEV_BIND:-127.0.0.1}:${NETBOX_DEV_PORT:-8001}:8080"
+  netbox-worker:
+    <<: *plugin

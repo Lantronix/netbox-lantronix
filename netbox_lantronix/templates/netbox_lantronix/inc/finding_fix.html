@@ -1,0 +1,8 @@
+{% if record.kind == 'ambiguous_model' %}
+  {% if record.rule_add_query and perms.netbox_lantronix.add_modelrule %}
+    <a class="btn btn-sm btn-primary" href="{% url 'plugins:netbox_lantronix:modelrule_add' %}?{{ record.rule_add_query }}">Create rule</a>
+  {% endif %}
+  {% if record.override_add_query and perms.netbox_lantronix.add_devicetypeoverride %}
+    <a class="btn btn-sm btn-outline-primary" href="{% url 'plugins:netbox_lantronix:devicetypeoverride_add' %}?{{ record.override_add_query }}">Set type for this device</a>
+  {% endif %}
+{% endif %}

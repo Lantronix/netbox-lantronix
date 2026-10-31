@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "netbox-lantronix"
+version = "0.1.0"
+description = "NetBox plugin that keeps NetBox current with Lantronix SLC and EMG devices managed by Percepxion"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+dependencies = ["requests>=2.31"]
+
+[project.urls]
+Repository = "https://github.com/Lantronix/netbox-lantronix"
+Changelog = "https://github.com/Lantronix/netbox-lantronix/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6", "requests>=2.31"]
+
+[tool.setuptools.packages.find]
+include = ["netbox_lantronix*"]
+
+[tool.setuptools.package-data]
+netbox_lantronix = ["templates/**/*.html"]
+
+[tool.pytest.ini_options]
+testpaths = ["netbox_lantronix/tests"]
+python_files = ["test_client.py", "test_resolver.py", "test_sanitize.py", "test_config.py", "test_planner.py", "test_recorded.py"]

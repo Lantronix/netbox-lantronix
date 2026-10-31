@@ -1,0 +1,25 @@
+# Copy to plugins.py (git-ignored). Credentials come from the container environment.
+import os
+
+# Dev only: lets manage.py makemigrations run. Never set this on a production NetBox.
+DEVELOPER = True
+
+PLUGINS = ["netbox_lantronix"]
+
+PLUGINS_CONFIG = {
+    "netbox_lantronix": {
+        "sync_user": "percepxion-sync",
+        "endpoints": {
+            "percepxion-sandbox": {
+                "url": os.environ.get("PERCEPXION_URL", ""),
+                "username": os.environ.get("PERCEPXION_USERNAME", ""),
+                "password": os.environ.get("PERCEPXION_PASSWORD", ""),
+                # Percepxion web UI device-ports tab (no per-port route exists).
+                "web_port_url": os.environ.get(
+                    "PERCEPXION_WEB_PORT_URL",
+                    "https://percepxion.example.com/#/app/explore/list/details/{device_id}/{device_name}/deviceport",
+                ),
+            },
+        },
+    },
+}

@@ -1,0 +1,13 @@
+{% extends 'generic/object.html' %}
+{% load helpers %}
+{% block content %}
+  <div class="row"><div class="col col-md-6"><div class="card">
+    <h2 class="card-header">{{ object|meta:"verbose_name"|bettertitle }}</h2>
+    <table class="table table-hover attr-table">
+      <tr><th scope="row">Source</th><td>{{ object.source|linkify }}</td></tr>
+      {% if object.model %}<tr><th scope="row">Percepxion model</th><td>{{ object.model }} ({{ object.rj45_ports }} RJ45, {{ object.usb_ports }} USB)</td></tr>{% endif %}
+      {% if object.percepxion_device_id %}<tr><th scope="row">Percepxion device ID</th><td><code>{{ object.percepxion_device_id }}</code></td></tr>{% endif %}
+      <tr><th scope="row">Device type</th><td>{{ object.device_type|linkify }}</td></tr>
+    </table>
+  </div></div></div>
+{% endblock %}

@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.egg-info/
+.env
+*.env
+dev/netbox-docker/env/
+dev/netbox-docker/configuration/plugins.py
+.pytest_cache/
+.ruff_cache/
+build/
+
+# Local planning and agent files, never published
+.specify/
+specs/
+.claude/

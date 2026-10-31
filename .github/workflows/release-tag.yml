@@ -1,0 +1,41 @@
+name: Release tag
+
+# When the release PR (release/next, from release-pr.yml) merges, tags the
+# merge commit vX.Y.Z and starts release.yml on that tag. A tag pushed with
+# GITHUB_TOKEN doesn't start release.yml's push trigger, so it's dispatched.
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  tag:
+    name: Tag and release
+    if: github.event.pull_request.merged && github.event.pull_request.head.ref == 'release/next' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - name: Tag the merge commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="v$(node scripts/release-pr.mjs --current)"
+          [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::version is not X.Y.Z"; exit 1; }
+          if git rev-parse -q --verify "refs/tags/$tag" > /dev/null; then
+            echo "::error::$tag already exists"; exit 1
+          fi
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+            tag -a "$tag" -m "$tag"
+          git push -q origin "$tag"
+          gh workflow run release.yml --ref "$tag"
+          echo "Tagged $tag and started release.yml"

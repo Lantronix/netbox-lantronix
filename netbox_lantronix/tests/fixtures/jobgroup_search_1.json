@@ -1,0 +1,922 @@
+{
+ "request": {
+  "limit": 50,
+  "offset": 0,
+  "search_string": "",
+  "subtype": "cli",
+  "type": "command"
+ },
+ "response": {
+  "jobgroup": [
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-10-29T05:33:41.391954Z",
+    "created_by": "fixture-id-0006",
+    "description": "",
+    "device_id": [
+     "00204AFIXTURE0000000000000000042"
+    ],
+    "device_name": [
+     "fixture-name-19"
+    ],
+    "enable": true,
+    "id": "fixture-id-0044",
+    "name": "fixture-name-35",
+    "op_code": "execute",
+    "operation": "show sysconfig",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-10-29T05:34:26.401829Z",
+    "updated_by": "fixture-id-0006"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-10-22T09:40:24.40431Z",
+    "created_by": "fixture-id-0006",
+    "description": "",
+    "device_id": [
+     "00204AFIXTURE0000000000000000038"
+    ],
+    "device_name": [
+     "fixture-name-17"
+    ],
+    "enable": true,
+    "id": "fixture-id-0045",
+    "name": "fixture-name-36",
+    "op_code": "execute",
+    "operation": "show datetime",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-10-22T09:40:35.300731Z",
+    "updated_by": "fixture-id-0006"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-10-19T03:43:27.523399Z",
+    "created_by": "fixture-id-0006",
+    "description": "fixture-name-38",
+    "device_id": [
+     "00204AFIXTURE0000000000000000038"
+    ],
+    "device_name": [
+     "fixture-name-17"
+    ],
+    "enable": true,
+    "id": "fixture-id-0046",
+    "name": "fixture-name-37",
+    "op_code": "execute",
+    "operation": "show deviceport names",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-10-19T03:44:01.042721Z",
+    "updated_by": "fixture-id-0006"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-10-06T05:58:12.99026Z",
+    "created_by": "fixture-id-0006",
+    "description": "fixture-name-40",
+    "device_id": [
+     "00204AFIXTURE0000000000000000038"
+    ],
+    "device_name": [
+     "fixture-name-17"
+    ],
+    "enable": true,
+    "id": "fixture-id-0047",
+    "name": "fixture-name-39",
+    "op_code": "execute",
+    "operation": "show log local 2 bytes 60000 startbyte 1",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-10-06T05:59:10.218872Z",
+    "updated_by": "fixture-id-0006"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-10-06T05:57:57.709492Z",
+    "created_by": "fixture-id-0006",
+    "description": "fixture-name-40",
+    "device_id": [
+     "00204AFIXTURE0000000000000000038"
+    ],
+    "device_name": [
+     "fixture-name-17"
+    ],
+    "enable": true,
+    "id": "fixture-id-0048",
+    "name": "fixture-name-41",
+    "op_code": "execute",
+    "operation": "show log local 2 display tail numlines 15",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-10-06T05:58:08.133096Z",
+    "updated_by": "fixture-id-0006"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-10-06T04:46:36.238371Z",
+    "created_by": "fixture-id-0006",
+    "description": "fixture-name-40",
+    "device_id": [
+     "00204AFIXTURE0000000000000000038"
+    ],
+    "device_name": [
+     "fixture-name-17"
+    ],
+    "enable": true,
+    "id": "fixture-id-0049",
+    "name": "fixture-name-42",
+    "op_code": "execute",
+    "operation": "show deviceport port 2",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-10-06T04:47:40.234239Z",
+    "updated_by": "fixture-id-0006"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-09-02T14:47:50.454095Z",
+    "created_by": "fixture-id-0051",
+    "description": "",
+    "device_id": [
+     "00204AFIXTURE0000000000000000040",
+     "00204AFIXTURE0000000000000000032"
+    ],
+    "device_name": [
+     "fixture-name-18",
+     "fixture-name-10"
+    ],
+    "enable": true,
+    "id": "fixture-id-0050",
+    "name": "fixture-name-43",
+    "op_code": "execute",
+    "operation": "set ipfilter state enable testtimer 5",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-09-02T14:49:03.358762Z",
+    "updated_by": "fixture-id-0051"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-09-01T15:44:11.592554Z",
+    "created_by": "fixture-id-0051",
+    "description": "",
+    "device_id": [
+     "00204AFIXTURE0000000000000000040",
+     "00204AFIXTURE0000000000000000032"
+    ],
+    "device_name": [
+     "fixture-name-18",
+     "fixture-name-10"
+    ],
+    "enable": true,
+    "id": "fixture-id-0052",
+    "name": "fixture-name-44",
+    "op_code": "execute",
+    "operation": "set ipfilter state enable testtimer 30",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-09-01T15:45:37.910365Z",
+    "updated_by": "fixture-id-0051"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-09-01T13:44:56.77139Z",
+    "created_by": "fixture-id-0051",
+    "description": "fixture-name-46",
+    "device_id": [
+     "00204AFIXTURE0000000000000000032",
+     "00204AFIXTURE0000000000000000040"
+    ],
+    "device_name": [
+     "fixture-name-10",
+     "fixture-name-18"
+    ],
+    "enable": true,
+    "id": "fixture-id-0053",
+    "name": "fixture-name-45",
+    "op_code": "execute",
+    "operation": "set ipfilter state enable testtimer 30",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-09-01T13:46:13.893023Z",
+    "updated_by": "fixture-id-0051"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-08-25T16:17:31.331191Z",
+    "created_by": "fixture-id-0051",
+    "description": "fixture-name-48",
+    "device_id": [
+     "00204AFIXTURE0000000000000000040"
+    ],
+    "device_name": [
+     "fixture-name-18"
+    ],
+    "enable": true,
+    "id": "fixture-id-0054",
+    "name": "fixture-name-47",
+    "op_code": "execute",
+    "operation": "px restart",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-08-25T16:18:20.935741Z",
+    "updated_by": "fixture-id-0051"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-08-25T16:17:28.386585Z",
+    "created_by": "fixture-id-0051",
+    "description": "fixture-name-50",
+    "device_id": [
+     "00204AFIXTURE0000000000000000032"
+    ],
+    "device_name": [
+     "fixture-name-10"
+    ],
+    "enable": true,
+    "id": "fixture-id-0055",
+    "name": "fixture-name-49",
+    "op_code": "execute",
+    "operation": "px restart",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-08-25T16:17:59.992199Z",
+    "updated_by": "fixture-id-0051"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-08-17T17:20:44.330101Z",
+    "created_by": "fixture-id-0057",
+    "description": "fixture-name-52",
+    "device_id": [
+     "00204AFIXTURE0000000000000000032"
+    ],
+    "device_name": [
+     "fixture-name-10"
+    ],
+    "enable": true,
+    "id": "fixture-id-0056",
+    "name": "fixture-name-51",
+    "op_code": "execute",
+    "operation": "show running_config",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-08-17T17:21:21.88598Z",
+    "updated_by": "fixture-id-0057"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-08-17T17:19:46.44125Z",
+    "created_by": "fixture-id-0057",
+    "description": "fixture-name-54",
+    "device_id": [
+     "00204AFIXTURE0000000000000000032"
+    ],
+    "device_name": [
+     "fixture-name-10"
+    ],
+    "enable": true,
+    "id": "fixture-id-0058",
+    "name": "fixture-name-53",
+    "op_code": "execute",
+    "operation": "show config",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-08-17T17:20:20.181325Z",
+    "updated_by": "fixture-id-0057"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-08-17T17:19:13.929915Z",
+    "created_by": "fixture-id-0057",
+    "description": "fixture-name-56",
+    "device_id": [
+     "00204AFIXTURE0000000000000000040"
+    ],
+    "device_name": [
+     "fixture-name-18"
+    ],
+    "enable": true,
+    "id": "fixture-id-0059",
+    "name": "fixture-name-55",
+    "op_code": "execute",
+    "operation": "show running-config",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-08-17T17:19:38.807918Z",
+    "updated_by": "fixture-id-0057"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-08-12T20:40:30.918808Z",
+    "created_by": "fixture-id-0051",
+    "description": "fixture-name-58",
+    "device_id": [
+     "00204AFIXTURE0000000000000000040"
+    ],
+    "device_name": [
+     "fixture-name-18"
+    ],
+    "enable": true,
+    "id": "fixture-id-0060",
+    "name": "fixture-name-57",
+    "op_code": "execute",
+    "operation": "show net port 1",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-08-12T20:40:37.736788Z",
+    "updated_by": "fixture-id-0051"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-08-12T19:54:12.219359Z",
+    "created_by": "fixture-id-0051",
+    "description": "fixture-name-58",
+    "device_id": [
+     "00204AFIXTURE0000000000000000040"
+    ],
+    "device_name": [
+     "fixture-name-18"
+    ],
+    "enable": true,
+    "id": "fixture-id-0061",
+    "name": "fixture-name-59",
+    "op_code": "execute",
+    "operation": "admin version\nshow net dns",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-08-12T20:00:18.072096Z",
+    "updated_by": "fixture-id-0051"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-08-12T19:57:11.817565Z",
+    "created_by": "fixture-id-0051",
+    "description": "fixture-name-58",
+    "device_id": [
+     "00204AFIXTURE0000000000000000040"
+    ],
+    "device_name": [
+     "fixture-name-18"
+    ],
+    "enable": true,
+    "id": "fixture-id-0062",
+    "name": "fixture-name-60",
+    "op_code": "execute",
+    "operation": "admin version",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-08-12T19:59:15.976149Z",
+    "updated_by": "fixture-id-0051"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-08-12T19:30:50.346892Z",
+    "created_by": "fixture-id-0051",
+    "description": "fixture-name-58",
+    "device_id": [
+     "00204AFIXTURE0000000000000000040"
+    ],
+    "device_name": [
+     "fixture-name-18"
+    ],
+    "enable": true,
+    "id": "fixture-id-0063",
+    "name": "fixture-name-61",
+    "op_code": "execute",
+    "operation": "admin version",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-08-12T19:58:13.921249Z",
+    "updated_by": "fixture-id-0051"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-07-28T09:45:10.070632Z",
+    "created_by": "fixture-id-0065",
+    "description": "",
+    "device_id": [
+     "00204AFIXTURE0000000000000000032",
+     "00204AFIXTURE0000000000000000040"
+    ],
+    "device_name": [
+     "fixture-name-10",
+     "fixture-name-18"
+    ],
+    "enable": true,
+    "id": "fixture-id-0064",
+    "name": "fixture-name-62",
+    "op_code": "execute",
+    "operation": "diag ping 192.0.2.5 count 3 ethport eth1",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-07-28T09:46:04.439517Z",
+    "updated_by": "fixture-id-0065"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-07-13T20:37:11.093552Z",
+    "created_by": "fixture-id-0051",
+    "description": "fixture-name-48",
+    "device_id": [
+     "00204AFIXTURE0000000000000000040"
+    ],
+    "device_name": [
+     "fixture-name-18"
+    ],
+    "enable": true,
+    "id": "fixture-id-0066",
+    "name": "fixture-name-63",
+    "op_code": "execute",
+    "operation": "px restart",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-07-13T20:38:11.816389Z",
+    "updated_by": "fixture-id-0051"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-07-13T20:37:07.929671Z",
+    "created_by": "fixture-id-0051",
+    "description": "fixture-name-50",
+    "device_id": [
+     "00204AFIXTURE0000000000000000032"
+    ],
+    "device_name": [
+     "fixture-name-10"
+    ],
+    "enable": true,
+    "id": "fixture-id-0067",
+    "name": "fixture-name-64",
+    "op_code": "execute",
+    "operation": "px restart",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-07-13T20:37:29.727832Z",
+    "updated_by": "fixture-id-0051"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-06-25T10:49:20.870202Z",
+    "created_by": "fixture-id-0065",
+    "description": "fixture-name-66",
+    "device_id": [
+     "00204AFIXTURE0000000000000000040"
+    ],
+    "device_name": [
+     "fixture-name-18"
+    ],
+    "enable": true,
+    "id": "fixture-id-0068",
+    "name": "fixture-name-65",
+    "op_code": "execute",
+    "operation": "show ztp",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-06-25T10:49:53.692537Z",
+    "updated_by": "fixture-id-0065"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-06-25T10:17:53.835158Z",
+    "created_by": "fixture-id-0065",
+    "description": "fixture-name-66",
+    "device_id": [
+     "00204AFIXTURE0000000000000000032"
+    ],
+    "device_name": [
+     "fixture-name-10"
+    ],
+    "enable": true,
+    "id": "fixture-id-0069",
+    "name": "fixture-name-67",
+    "op_code": "execute",
+    "operation": "show ntp",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-06-25T10:17:56.904727Z",
+    "updated_by": "fixture-id-0065"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-06-22T14:40:11.808439Z",
+    "created_by": "fixture-id-0051",
+    "description": "",
+    "device_id": [
+     "00204AFIXTURE0000000000000000036"
+    ],
+    "device_name": [
+     "fixture-name-15"
+    ],
+    "enable": true,
+    "id": "fixture-id-0070",
+    "name": "fixture-name-68",
+    "op_code": "execute",
+    "operation": "ifconfig",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-06-22T14:40:54.695349Z",
+    "updated_by": "fixture-id-0051"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-06-19T17:11:49.618083Z",
+    "created_by": "fixture-id-0051",
+    "description": "",
+    "device_id": [
+     "00204AFIXTURE0000000000000000032"
+    ],
+    "device_name": [
+     "fixture-name-10"
+    ],
+    "enable": true,
+    "id": "fixture-id-0071",
+    "name": "fixture-name-69",
+    "op_code": "execute",
+    "operation": "show routing",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-06-20T16:58:55.790171Z",
+    "updated_by": "fixture-id-0051"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-06-19T17:12:40.141802Z",
+    "created_by": "fixture-id-0051",
+    "description": "",
+    "device_id": [
+     "00204AFIXTURE0000000000000000036"
+    ],
+    "device_name": [
+     "fixture-name-15"
+    ],
+    "enable": true,
+    "id": "fixture-id-0072",
+    "name": "fixture-name-70",
+    "op_code": "execute",
+    "operation": "ifconfig",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-06-20T12:07:15.595415Z",
+    "updated_by": "fixture-id-0051"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-06-19T13:55:28.858115Z",
+    "created_by": "fixture-id-0051",
+    "description": "fixture-name-58",
+    "device_id": [
+     "00204AFIXTURE0000000000000000040"
+    ],
+    "device_name": [
+     "fixture-name-18"
+    ],
+    "enable": true,
+    "id": "fixture-id-0073",
+    "name": "fixture-name-71",
+    "op_code": "execute",
+    "operation": "admin version",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-06-19T13:55:39.914245Z",
+    "updated_by": "fixture-id-0051"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-06-19T13:54:27.750176Z",
+    "created_by": "fixture-id-0051",
+    "description": "fixture-name-58",
+    "device_id": [
+     "00204AFIXTURE0000000000000000040"
+    ],
+    "device_name": [
+     "fixture-name-18"
+    ],
+    "enable": true,
+    "id": "fixture-id-0074",
+    "name": "fixture-name-72",
+    "op_code": "execute",
+    "operation": "admin version",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-06-19T13:54:38.233262Z",
+    "updated_by": "fixture-id-0051"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-06-19T13:52:16.380255Z",
+    "created_by": "fixture-id-0051",
+    "description": "fixture-name-58",
+    "device_id": [
+     "00204AFIXTURE0000000000000000040"
+    ],
+    "device_name": [
+     "fixture-name-18"
+    ],
+    "enable": true,
+    "id": "fixture-id-0075",
+    "name": "fixture-name-73",
+    "op_code": "execute",
+    "operation": "admin version",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-06-19T13:52:34.387687Z",
+    "updated_by": "fixture-id-0051"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-06-19T13:25:08.794915Z",
+    "created_by": "fixture-id-0051",
+    "description": "fixture-name-75",
+    "device_id": [
+     "00204AFIXTURE0000000000000000040"
+    ],
+    "device_name": [
+     "fixture-name-18"
+    ],
+    "enable": true,
+    "id": "fixture-id-0076",
+    "name": "fixture-name-74",
+    "op_code": "execute",
+    "operation": "restart agent",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-06-19T13:25:40.23166Z",
+    "updated_by": "fixture-id-0051"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-06-11T15:51:26.573424Z",
+    "created_by": "fixture-id-0051",
+    "description": "",
+    "device_id": [
+     "00204AFIXTURE0000000000000000036"
+    ],
+    "device_name": [
+     "fixture-name-15"
+    ],
+    "enable": true,
+    "id": "fixture-id-0077",
+    "name": "fixture-name-76",
+    "op_code": "execute",
+    "operation": "ifconfig",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-06-11T15:51:39.639948Z",
+    "updated_by": "fixture-id-0051"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-05-25T04:19:46.605187Z",
+    "created_by": "fixture-id-0006",
+    "description": "fixture-name-78",
+    "device_id": [
+     "00204AFIXTURE0000000000000000038"
+    ],
+    "device_name": [
+     "fixture-name-17"
+    ],
+    "enable": true,
+    "id": "fixture-id-0078",
+    "name": "fixture-name-77",
+    "op_code": "execute",
+    "operation": "show version",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-05-25T04:32:57.992678Z",
+    "updated_by": "fixture-id-0006"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-04-24T19:14:18.076223Z",
+    "created_by": "fixture-id-0051",
+    "description": "fixture-name-80",
+    "device_id": [
+     "00204AFIXTURE0000000000000000040"
+    ],
+    "device_name": [
+     "fixture-name-18"
+    ],
+    "enable": true,
+    "id": "fixture-id-0079",
+    "name": "fixture-name-79",
+    "op_code": "execute",
+    "operation": "set system action shutdown",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-04-24T19:15:03.966287Z",
+    "updated_by": "fixture-id-0051"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-04-24T14:33:18.635851Z",
+    "created_by": "fixture-id-0006",
+    "description": "fixture-name-66",
+    "device_id": [
+     "00204AFIXTURE0000000000000000042"
+    ],
+    "device_name": [
+     "fixture-name-19"
+    ],
+    "enable": true,
+    "id": "fixture-id-0080",
+    "name": "fixture-name-81",
+    "op_code": "execute",
+    "operation": "show port 1",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-04-24T14:34:32.337239Z",
+    "updated_by": "fixture-id-0006"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-04-24T14:32:41.175357Z",
+    "created_by": "fixture-id-0006",
+    "description": "fixture-name-66",
+    "device_id": [
+     "00204AFIXTURE0000000000000000042"
+    ],
+    "device_name": [
+     "fixture-name-19"
+    ],
+    "enable": true,
+    "id": "fixture-id-0081",
+    "name": "fixture-name-82",
+    "op_code": "execute",
+    "operation": "show deviceport all",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-04-24T14:33:31.125704Z",
+    "updated_by": "fixture-id-0006"
+   },
+   {
+    "config_tml_id": "",
+    "config_tml_name": "",
+    "created_at": "2026-04-17T21:43:34.273139Z",
+    "created_by": "fixture-id-0001",
+    "description": "",
+    "device_id": [
+     "00204AFIXTURE0000000000000000042"
+    ],
+    "device_name": [
+     "fixture-name-19"
+    ],
+    "enable": true,
+    "id": "fixture-id-0082",
+    "name": "fixture-name-83",
+    "op_code": "execute",
+    "operation": "show version",
+    "project_id": "fixture-id-0004",
+    "status": "Completed",
+    "subtype": "cli",
+    "tenant_id": "fixture-id-0002",
+    "type": "command",
+    "updated_at": "2026-04-17T21:44:30.377634Z",
+    "updated_by": "fixture-id-0001"
+   }
+  ],
+  "total_result": 36
+ }
+}

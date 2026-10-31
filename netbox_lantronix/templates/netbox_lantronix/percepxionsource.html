@@ -1,0 +1,69 @@
+{% extends 'generic/object.html' %}
+{% load helpers %}
+{% load render_table from django_tables2 %}
+
+{% block extra_controls %}
+  {% if can_sync %}
+    <form action="{% url 'plugins:netbox_lantronix:percepxionsource_sync' pk=object.pk %}" method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary" {% if not object.enabled %}disabled{% endif %}>
+        <i class="mdi mdi-sync" aria-hidden="true"></i> Sync now
+      </button>
+    </form>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% if tls_off %}
+    <div class="alert alert-warning">TLS certificate verification is turned off for endpoint <strong>{{ object.endpoint }}</strong>.</div>
+  {% endif %}
+  <div class="row mb-3">
+    <div class="col col-md-6">
+      <div class="card">
+        <h2 class="card-header">Percepxion source</h2>
+        <table class="table table-hover attr-table">
+          <tr><th scope="row">Name</th><td>{{ object.name }}</td></tr>
+          <tr><th scope="row">Endpoint</th><td>{{ object.endpoint }}</td></tr>
+          <tr><th scope="row">Organization ID</th><td><code>{{ object.organization_id }}</code></td></tr>
+          <tr><th scope="row">Enabled</th><td>{% checkmark object.enabled %}</td></tr>
+          <tr><th scope="row">New devices</th><td>{{ object.site|linkify }} / {{ object.role|linkify }}</td></tr>
+          <tr><th scope="row">Schedule</th><td>{% if object.sync_interval %}Every {{ object.sync_interval }} min{% if next_job %}, next {{ next_job.scheduled|isodatetime }}{% endif %}{% else %}Off{% endif %}</td></tr>
+          <tr><th scope="row">SSH base port</th><td>{{ object.ssh_base_port }}</td></tr>
+          <tr><th scope="row">"Open in Percepxion"</th><td>{% checkmark object.percepxion_link %}</td></tr>
+          {% if object.backoff_until %}<tr><th scope="row">Login backoff until</th><td>{{ object.backoff_until|isodatetime }}</td></tr>{% endif %}
+        </table>
+      </div>
+      {% include 'inc/panels/tags.html' %}
+    </div>
+    <div class="col col-md-6">
+      <div class="card">
+        <h2 class="card-header">Last run</h2>
+        {% if last_job %}
+          <table class="table table-hover attr-table">
+            <tr><th scope="row">Job</th><td>{{ last_job|linkify }} {% badge last_job.get_status_display bg_color=last_job.get_status_color %}</td></tr>
+            <tr><th scope="row">Started</th><td>{{ last_job.started|isodatetime }}</td></tr>
+            <tr><th scope="row">Completed</th><td>{{ last_job.completed|isodatetime|placeholder }}</td></tr>
+            {% if last_job.error %}<tr><th scope="row">Error</th><td class="text-danger">{{ last_job.error }}</td></tr>{% endif %}
+            {% with d=last_job.data %}{% if d.devices %}
+              <tr><th scope="row">Devices</th><td>{{ d.devices.created }} created, {{ d.devices.updated }} updated, {{ d.devices.unchanged }} unchanged, {{ d.devices.pending }} pending</td></tr>
+              <tr><th scope="row">Ports</th><td>{{ d.ports.updated }} updated, {{ d.ports.unchanged }} unchanged</td></tr>
+              <tr><th scope="row">Facts</th><td>{{ d.facts.updated }} updated</td></tr>
+            {% endif %}{% endwith %}
+          </table>
+        {% else %}
+          <div class="card-body text-muted">No runs yet.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-md-12">
+      <div class="card">
+        <h2 class="card-header">Findings from the last run
+          <div class="card-actions"><a href="{% url 'plugins:netbox_lantronix:syncfinding_list' %}?source={{ object.pk }}" class="btn btn-ghost-primary btn-sm">All findings</a></div>
+        </h2>
+        {% render_table findings_table 'inc/table.html' %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

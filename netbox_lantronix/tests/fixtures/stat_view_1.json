@@ -1,0 +1,2217 @@
+{
+ "device_id": "dev-0001",
+ "version": "1",
+ "status_record": [
+  {
+   "name": "telemetry/cm/status_record/config",
+   "record_name": "Configuration",
+   "items": [
+    {
+     "name": "telemetry/cm/status_record/config/running",
+     "value": "FIXTURE-SECRET-MARKER"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:1/status_record/dp_info",
+   "record_name": "Device Port 1",
+   "items": [
+    {
+     "name": "telemetry/port:1/status_record/dp_info/name",
+     "record_type": "string",
+     "value": "console-a"
+    },
+    {
+     "name": "telemetry/port:1/status_record/dp_info/status",
+     "record_type": "string",
+     "value": "Disconnected"
+    },
+    {
+     "name": "telemetry/port:1/status_record/dp_info/num_users",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:1/status_record/dp_info/bytes_in",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:1/status_record/dp_info/bytes_out",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:1/status_record/dp_info/errors",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:1/status_record/dp_info/managed_device",
+     "record_type": "string",
+     "value": "No"
+    },
+    {
+     "name": "telemetry/port:1/status_record/dp_info/md_type",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:1/status_record/dp_info/md_version",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:1/status_record/dp_info/md_model",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:1/status_record/dp_info/md_sn",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:1/status_record/dp_info/md_hostname",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:1/status_record/dp_info/md_ipv4_mgmt",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:1/status_record/dp_info/md_uptime",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:1/status_record/dp_info/md_lastseen",
+     "record_type": "datetime"
+    },
+    {
+     "name": "telemetry/port:1/status_record/dp_info/md_onboarded",
+     "record_type": "datetime"
+    },
+    {
+     "name": "telemetry/port:1/status_record/dp_info/md_cpu_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:1/status_record/dp_info/md_memory_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:1/status_record/dp_info/md_flash_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:1/status_record/dp_info/md_temperature",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:1/status_record/dp_info/md_tech_report",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:1/status_record/dp_info/md_run_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:1/status_record/dp_info/md_start_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:1/status_record/scripts",
+   "record_name": "DP 1 Custom Scripts",
+   "items": [
+    {
+     "name": "telemetry/port:1/status_record/scripts/name",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:1/status_record/scripts/start_time",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:1/status_record/scripts/script_results",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:1/status_record/scripts/script_error",
+     "record_type": "string"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:2/status_record/dp_info",
+   "record_name": "Device Port 2",
+   "items": [
+    {
+     "name": "telemetry/port:2/status_record/dp_info/name",
+     "record_type": "string",
+     "value": "Switch"
+    },
+    {
+     "name": "telemetry/port:2/status_record/dp_info/status",
+     "record_type": "string",
+     "value": "Disconnected"
+    },
+    {
+     "name": "telemetry/port:2/status_record/dp_info/num_users",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:2/status_record/dp_info/bytes_in",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:2/status_record/dp_info/bytes_out",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:2/status_record/dp_info/errors",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:2/status_record/dp_info/managed_device",
+     "record_type": "string",
+     "value": "No"
+    },
+    {
+     "name": "telemetry/port:2/status_record/dp_info/md_type",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:2/status_record/dp_info/md_version",
+     "record_type": "string",
+     "value": "15.2(2)E10"
+    },
+    {
+     "name": "telemetry/port:2/status_record/dp_info/md_model",
+     "record_type": "string",
+     "value": "WS-C3560CG-8TC-S"
+    },
+    {
+     "name": "telemetry/port:2/status_record/dp_info/md_sn",
+     "record_type": "string",
+     "value": "SER00001"
+    },
+    {
+     "name": "telemetry/port:2/status_record/dp_info/md_hostname",
+     "record_type": "string",
+     "value": "Switch"
+    },
+    {
+     "name": "telemetry/port:2/status_record/dp_info/md_ipv4_mgmt",
+     "record_type": "string",
+     "value": "192.0.2.57"
+    },
+    {
+     "name": "telemetry/port:2/status_record/dp_info/md_uptime",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:2/status_record/dp_info/md_lastseen",
+     "record_type": "datetime"
+    },
+    {
+     "name": "telemetry/port:2/status_record/dp_info/md_onboarded",
+     "record_type": "datetime",
+     "value": "2026-09-29T20:08:02-00:00"
+    },
+    {
+     "name": "telemetry/port:2/status_record/dp_info/md_cpu_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:2/status_record/dp_info/md_memory_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:2/status_record/dp_info/md_flash_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:2/status_record/dp_info/md_temperature",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:2/status_record/dp_info/md_tech_report",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:2/status_record/dp_info/md_run_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:2/status_record/dp_info/md_start_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:2/status_record/scripts",
+   "record_name": "DP 2 Custom Scripts",
+   "items": [
+    {
+     "name": "telemetry/port:2/status_record/scripts/name",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:2/status_record/scripts/start_time",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:2/status_record/scripts/script_results",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:2/status_record/scripts/script_error",
+     "record_type": "string"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:3/status_record/dp_info",
+   "record_name": "Device Port 3",
+   "items": [
+    {
+     "name": "telemetry/port:3/status_record/dp_info/name",
+     "record_type": "string",
+     "value": "Port-03"
+    },
+    {
+     "name": "telemetry/port:3/status_record/dp_info/status",
+     "record_type": "string",
+     "value": "Identifying"
+    },
+    {
+     "name": "telemetry/port:3/status_record/dp_info/num_users",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:3/status_record/dp_info/bytes_in",
+     "record_type": "integer",
+     "value": "4301"
+    },
+    {
+     "name": "telemetry/port:3/status_record/dp_info/bytes_out",
+     "record_type": "integer",
+     "value": "254"
+    },
+    {
+     "name": "telemetry/port:3/status_record/dp_info/errors",
+     "record_type": "integer",
+     "value": "848"
+    },
+    {
+     "name": "telemetry/port:3/status_record/dp_info/managed_device",
+     "record_type": "string",
+     "value": "No"
+    },
+    {
+     "name": "telemetry/port:3/status_record/dp_info/md_type",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:3/status_record/dp_info/md_version",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:3/status_record/dp_info/md_model",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:3/status_record/dp_info/md_sn",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:3/status_record/dp_info/md_hostname",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:3/status_record/dp_info/md_ipv4_mgmt",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:3/status_record/dp_info/md_uptime",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:3/status_record/dp_info/md_lastseen",
+     "record_type": "datetime"
+    },
+    {
+     "name": "telemetry/port:3/status_record/dp_info/md_onboarded",
+     "record_type": "datetime"
+    },
+    {
+     "name": "telemetry/port:3/status_record/dp_info/md_cpu_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:3/status_record/dp_info/md_memory_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:3/status_record/dp_info/md_flash_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:3/status_record/dp_info/md_temperature",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:3/status_record/dp_info/md_tech_report",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:3/status_record/dp_info/md_run_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:3/status_record/dp_info/md_start_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:3/status_record/scripts",
+   "record_name": "DP 3 Custom Scripts",
+   "items": [
+    {
+     "name": "telemetry/port:3/status_record/scripts/name",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:3/status_record/scripts/start_time",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:3/status_record/scripts/script_results",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:3/status_record/scripts/script_error",
+     "record_type": "string"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:4/status_record/dp_info",
+   "record_name": "Device Port 4",
+   "items": [
+    {
+     "name": "telemetry/port:4/status_record/dp_info/name",
+     "record_type": "string",
+     "value": "Port-04"
+    },
+    {
+     "name": "telemetry/port:4/status_record/dp_info/status",
+     "record_type": "string",
+     "value": "Disconnected"
+    },
+    {
+     "name": "telemetry/port:4/status_record/dp_info/num_users",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:4/status_record/dp_info/bytes_in",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:4/status_record/dp_info/bytes_out",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:4/status_record/dp_info/errors",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:4/status_record/dp_info/managed_device",
+     "record_type": "string",
+     "value": "No"
+    },
+    {
+     "name": "telemetry/port:4/status_record/dp_info/md_type",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:4/status_record/dp_info/md_version",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:4/status_record/dp_info/md_model",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:4/status_record/dp_info/md_sn",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:4/status_record/dp_info/md_hostname",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:4/status_record/dp_info/md_ipv4_mgmt",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:4/status_record/dp_info/md_uptime",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:4/status_record/dp_info/md_lastseen",
+     "record_type": "datetime"
+    },
+    {
+     "name": "telemetry/port:4/status_record/dp_info/md_onboarded",
+     "record_type": "datetime"
+    },
+    {
+     "name": "telemetry/port:4/status_record/dp_info/md_cpu_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:4/status_record/dp_info/md_memory_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:4/status_record/dp_info/md_flash_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:4/status_record/dp_info/md_temperature",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:4/status_record/dp_info/md_tech_report",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:4/status_record/dp_info/md_run_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:4/status_record/dp_info/md_start_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:4/status_record/scripts",
+   "record_name": "DP 4 Custom Scripts",
+   "items": [
+    {
+     "name": "telemetry/port:4/status_record/scripts/name",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:4/status_record/scripts/start_time",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:4/status_record/scripts/script_results",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:4/status_record/scripts/script_error",
+     "record_type": "string"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:5/status_record/dp_info",
+   "record_name": "Device Port 5",
+   "items": [
+    {
+     "name": "telemetry/port:5/status_record/dp_info/name",
+     "record_type": "string",
+     "value": "Port-05"
+    },
+    {
+     "name": "telemetry/port:5/status_record/dp_info/status",
+     "record_type": "string",
+     "value": "Identifying"
+    },
+    {
+     "name": "telemetry/port:5/status_record/dp_info/num_users",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:5/status_record/dp_info/bytes_in",
+     "record_type": "integer",
+     "value": "2124"
+    },
+    {
+     "name": "telemetry/port:5/status_record/dp_info/bytes_out",
+     "record_type": "integer",
+     "value": "325"
+    },
+    {
+     "name": "telemetry/port:5/status_record/dp_info/errors",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:5/status_record/dp_info/managed_device",
+     "record_type": "string",
+     "value": "No"
+    },
+    {
+     "name": "telemetry/port:5/status_record/dp_info/md_type",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:5/status_record/dp_info/md_version",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:5/status_record/dp_info/md_model",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:5/status_record/dp_info/md_sn",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:5/status_record/dp_info/md_hostname",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:5/status_record/dp_info/md_ipv4_mgmt",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:5/status_record/dp_info/md_uptime",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:5/status_record/dp_info/md_lastseen",
+     "record_type": "datetime"
+    },
+    {
+     "name": "telemetry/port:5/status_record/dp_info/md_onboarded",
+     "record_type": "datetime"
+    },
+    {
+     "name": "telemetry/port:5/status_record/dp_info/md_cpu_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:5/status_record/dp_info/md_memory_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:5/status_record/dp_info/md_flash_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:5/status_record/dp_info/md_temperature",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:5/status_record/dp_info/md_tech_report",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:5/status_record/dp_info/md_run_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:5/status_record/dp_info/md_start_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:5/status_record/scripts",
+   "record_name": "DP 5 Custom Scripts",
+   "items": [
+    {
+     "name": "telemetry/port:5/status_record/scripts/name",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:5/status_record/scripts/start_time",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:5/status_record/scripts/script_results",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:5/status_record/scripts/script_error",
+     "record_type": "string"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:6/status_record/dp_info",
+   "record_name": "Device Port 6",
+   "items": [
+    {
+     "name": "telemetry/port:6/status_record/dp_info/name",
+     "record_type": "string",
+     "value": "Port-06"
+    },
+    {
+     "name": "telemetry/port:6/status_record/dp_info/status",
+     "record_type": "string",
+     "value": "Disconnected"
+    },
+    {
+     "name": "telemetry/port:6/status_record/dp_info/num_users",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:6/status_record/dp_info/bytes_in",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:6/status_record/dp_info/bytes_out",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:6/status_record/dp_info/errors",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:6/status_record/dp_info/managed_device",
+     "record_type": "string",
+     "value": "No"
+    },
+    {
+     "name": "telemetry/port:6/status_record/dp_info/md_type",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:6/status_record/dp_info/md_version",
+     "record_type": "string",
+     "value": "15.2(2)E10"
+    },
+    {
+     "name": "telemetry/port:6/status_record/dp_info/md_model",
+     "record_type": "string",
+     "value": "WS-C3560CG-8TC-S"
+    },
+    {
+     "name": "telemetry/port:6/status_record/dp_info/md_sn",
+     "record_type": "string",
+     "value": "SER00001"
+    },
+    {
+     "name": "telemetry/port:6/status_record/dp_info/md_hostname",
+     "record_type": "string",
+     "value": "switch-01"
+    },
+    {
+     "name": "telemetry/port:6/status_record/dp_info/md_ipv4_mgmt",
+     "record_type": "string",
+     "value": "192.0.2.57"
+    },
+    {
+     "name": "telemetry/port:6/status_record/dp_info/md_uptime",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:6/status_record/dp_info/md_lastseen",
+     "record_type": "datetime"
+    },
+    {
+     "name": "telemetry/port:6/status_record/dp_info/md_onboarded",
+     "record_type": "datetime",
+     "value": "2026-10-15T20:57:07-00:00"
+    },
+    {
+     "name": "telemetry/port:6/status_record/dp_info/md_cpu_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:6/status_record/dp_info/md_memory_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:6/status_record/dp_info/md_flash_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:6/status_record/dp_info/md_temperature",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:6/status_record/dp_info/md_tech_report",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:6/status_record/dp_info/md_run_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:6/status_record/dp_info/md_start_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:6/status_record/scripts",
+   "record_name": "DP 6 Custom Scripts",
+   "items": [
+    {
+     "name": "telemetry/port:6/status_record/scripts/name",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:6/status_record/scripts/start_time",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:6/status_record/scripts/script_results",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:6/status_record/scripts/script_error",
+     "record_type": "string"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:7/status_record/dp_info",
+   "record_name": "Device Port 7",
+   "items": [
+    {
+     "name": "telemetry/port:7/status_record/dp_info/name",
+     "record_type": "string",
+     "value": "Port-07"
+    },
+    {
+     "name": "telemetry/port:7/status_record/dp_info/status",
+     "record_type": "string",
+     "value": "Disconnected"
+    },
+    {
+     "name": "telemetry/port:7/status_record/dp_info/num_users",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:7/status_record/dp_info/bytes_in",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:7/status_record/dp_info/bytes_out",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:7/status_record/dp_info/errors",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:7/status_record/dp_info/managed_device",
+     "record_type": "string",
+     "value": "No"
+    },
+    {
+     "name": "telemetry/port:7/status_record/dp_info/md_type",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:7/status_record/dp_info/md_version",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:7/status_record/dp_info/md_model",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:7/status_record/dp_info/md_sn",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:7/status_record/dp_info/md_hostname",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:7/status_record/dp_info/md_ipv4_mgmt",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:7/status_record/dp_info/md_uptime",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:7/status_record/dp_info/md_lastseen",
+     "record_type": "datetime"
+    },
+    {
+     "name": "telemetry/port:7/status_record/dp_info/md_onboarded",
+     "record_type": "datetime"
+    },
+    {
+     "name": "telemetry/port:7/status_record/dp_info/md_cpu_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:7/status_record/dp_info/md_memory_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:7/status_record/dp_info/md_flash_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:7/status_record/dp_info/md_temperature",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:7/status_record/dp_info/md_tech_report",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:7/status_record/dp_info/md_run_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:7/status_record/dp_info/md_start_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:7/status_record/scripts",
+   "record_name": "DP 7 Custom Scripts",
+   "items": [
+    {
+     "name": "telemetry/port:7/status_record/scripts/name",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:7/status_record/scripts/start_time",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:7/status_record/scripts/script_results",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:7/status_record/scripts/script_error",
+     "record_type": "string"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:8/status_record/dp_info",
+   "record_name": "Device Port 8",
+   "items": [
+    {
+     "name": "telemetry/port:8/status_record/dp_info/name",
+     "record_type": "string",
+     "value": "Port-08"
+    },
+    {
+     "name": "telemetry/port:8/status_record/dp_info/status",
+     "record_type": "string",
+     "value": "Disconnected"
+    },
+    {
+     "name": "telemetry/port:8/status_record/dp_info/num_users",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:8/status_record/dp_info/bytes_in",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:8/status_record/dp_info/bytes_out",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:8/status_record/dp_info/errors",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:8/status_record/dp_info/managed_device",
+     "record_type": "string",
+     "value": "No"
+    },
+    {
+     "name": "telemetry/port:8/status_record/dp_info/md_type",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:8/status_record/dp_info/md_version",
+     "record_type": "string",
+     "value": "15.2(2)E10"
+    },
+    {
+     "name": "telemetry/port:8/status_record/dp_info/md_model",
+     "record_type": "string",
+     "value": "WS-C3560CG-8TC-S"
+    },
+    {
+     "name": "telemetry/port:8/status_record/dp_info/md_sn",
+     "record_type": "string",
+     "value": "SER00001"
+    },
+    {
+     "name": "telemetry/port:8/status_record/dp_info/md_hostname",
+     "record_type": "string",
+     "value": "Switch"
+    },
+    {
+     "name": "telemetry/port:8/status_record/dp_info/md_ipv4_mgmt",
+     "record_type": "string",
+     "value": "192.0.2.57"
+    },
+    {
+     "name": "telemetry/port:8/status_record/dp_info/md_uptime",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:8/status_record/dp_info/md_lastseen",
+     "record_type": "datetime"
+    },
+    {
+     "name": "telemetry/port:8/status_record/dp_info/md_onboarded",
+     "record_type": "datetime",
+     "value": "2026-10-15T19:55:10-00:00"
+    },
+    {
+     "name": "telemetry/port:8/status_record/dp_info/md_cpu_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:8/status_record/dp_info/md_memory_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:8/status_record/dp_info/md_flash_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:8/status_record/dp_info/md_temperature",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:8/status_record/dp_info/md_tech_report",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:8/status_record/dp_info/md_run_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:8/status_record/dp_info/md_start_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:8/status_record/scripts",
+   "record_name": "DP 8 Custom Scripts",
+   "items": [
+    {
+     "name": "telemetry/port:8/status_record/scripts/name",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:8/status_record/scripts/start_time",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:8/status_record/scripts/script_results",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:8/status_record/scripts/script_error",
+     "record_type": "string"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:9/status_record/dp_info",
+   "record_name": "Device Port 9",
+   "items": [
+    {
+     "name": "telemetry/port:9/status_record/dp_info/name",
+     "record_type": "string",
+     "value": "Port-09"
+    },
+    {
+     "name": "telemetry/port:9/status_record/dp_info/status",
+     "record_type": "string",
+     "value": "Disconnected"
+    },
+    {
+     "name": "telemetry/port:9/status_record/dp_info/num_users",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:9/status_record/dp_info/bytes_in",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:9/status_record/dp_info/bytes_out",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:9/status_record/dp_info/errors",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:9/status_record/dp_info/managed_device",
+     "record_type": "string",
+     "value": "No"
+    },
+    {
+     "name": "telemetry/port:9/status_record/dp_info/md_type",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:9/status_record/dp_info/md_version",
+     "record_type": "string",
+     "value": "15.2(2)E10"
+    },
+    {
+     "name": "telemetry/port:9/status_record/dp_info/md_model",
+     "record_type": "string",
+     "value": "WS-C3560CG-8TC-S"
+    },
+    {
+     "name": "telemetry/port:9/status_record/dp_info/md_sn",
+     "record_type": "string",
+     "value": "SER00001"
+    },
+    {
+     "name": "telemetry/port:9/status_record/dp_info/md_hostname",
+     "record_type": "string",
+     "value": "switch-01"
+    },
+    {
+     "name": "telemetry/port:9/status_record/dp_info/md_ipv4_mgmt",
+     "record_type": "string",
+     "value": "192.0.2.57"
+    },
+    {
+     "name": "telemetry/port:9/status_record/dp_info/md_uptime",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:9/status_record/dp_info/md_lastseen",
+     "record_type": "datetime"
+    },
+    {
+     "name": "telemetry/port:9/status_record/dp_info/md_onboarded",
+     "record_type": "datetime",
+     "value": "2026-10-15T21:20:08-00:00"
+    },
+    {
+     "name": "telemetry/port:9/status_record/dp_info/md_cpu_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:9/status_record/dp_info/md_memory_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:9/status_record/dp_info/md_flash_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:9/status_record/dp_info/md_temperature",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:9/status_record/dp_info/md_tech_report",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:9/status_record/dp_info/md_run_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:9/status_record/dp_info/md_start_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:9/status_record/scripts",
+   "record_name": "DP 9 Custom Scripts",
+   "items": [
+    {
+     "name": "telemetry/port:9/status_record/scripts/name",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:9/status_record/scripts/start_time",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:9/status_record/scripts/script_results",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:9/status_record/scripts/script_error",
+     "record_type": "string"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:10/status_record/dp_info",
+   "record_name": "Device Port 10",
+   "items": [
+    {
+     "name": "telemetry/port:10/status_record/dp_info/name",
+     "record_type": "string",
+     "value": "Port-10"
+    },
+    {
+     "name": "telemetry/port:10/status_record/dp_info/status",
+     "record_type": "string",
+     "value": "Disconnected"
+    },
+    {
+     "name": "telemetry/port:10/status_record/dp_info/num_users",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:10/status_record/dp_info/bytes_in",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:10/status_record/dp_info/bytes_out",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:10/status_record/dp_info/errors",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:10/status_record/dp_info/managed_device",
+     "record_type": "string",
+     "value": "No"
+    },
+    {
+     "name": "telemetry/port:10/status_record/dp_info/md_type",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:10/status_record/dp_info/md_version",
+     "record_type": "string",
+     "value": "15.2(2)E10"
+    },
+    {
+     "name": "telemetry/port:10/status_record/dp_info/md_model",
+     "record_type": "string",
+     "value": "WS-C3560CG-8TC-S"
+    },
+    {
+     "name": "telemetry/port:10/status_record/dp_info/md_sn",
+     "record_type": "string",
+     "value": "SER00001"
+    },
+    {
+     "name": "telemetry/port:10/status_record/dp_info/md_hostname",
+     "record_type": "string",
+     "value": "Switch"
+    },
+    {
+     "name": "telemetry/port:10/status_record/dp_info/md_ipv4_mgmt",
+     "record_type": "string",
+     "value": "192.0.2.57"
+    },
+    {
+     "name": "telemetry/port:10/status_record/dp_info/md_uptime",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:10/status_record/dp_info/md_lastseen",
+     "record_type": "datetime"
+    },
+    {
+     "name": "telemetry/port:10/status_record/dp_info/md_onboarded",
+     "record_type": "datetime",
+     "value": "2026-10-15T16:34:08-00:00"
+    },
+    {
+     "name": "telemetry/port:10/status_record/dp_info/md_cpu_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:10/status_record/dp_info/md_memory_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:10/status_record/dp_info/md_flash_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:10/status_record/dp_info/md_temperature",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:10/status_record/dp_info/md_tech_report",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:10/status_record/dp_info/md_run_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:10/status_record/dp_info/md_start_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:10/status_record/scripts",
+   "record_name": "DP 10 Custom Scripts",
+   "items": [
+    {
+     "name": "telemetry/port:10/status_record/scripts/name",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:10/status_record/scripts/start_time",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:10/status_record/scripts/script_results",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:10/status_record/scripts/script_error",
+     "record_type": "string"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:11/status_record/dp_info",
+   "record_name": "Device Port 11",
+   "items": [
+    {
+     "name": "telemetry/port:11/status_record/dp_info/name",
+     "record_type": "string",
+     "value": "Port-11"
+    },
+    {
+     "name": "telemetry/port:11/status_record/dp_info/status",
+     "record_type": "string",
+     "value": "Disconnected"
+    },
+    {
+     "name": "telemetry/port:11/status_record/dp_info/num_users",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:11/status_record/dp_info/bytes_in",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:11/status_record/dp_info/bytes_out",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:11/status_record/dp_info/errors",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:11/status_record/dp_info/managed_device",
+     "record_type": "string",
+     "value": "No"
+    },
+    {
+     "name": "telemetry/port:11/status_record/dp_info/md_type",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:11/status_record/dp_info/md_version",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:11/status_record/dp_info/md_model",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:11/status_record/dp_info/md_sn",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:11/status_record/dp_info/md_hostname",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:11/status_record/dp_info/md_ipv4_mgmt",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:11/status_record/dp_info/md_uptime",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:11/status_record/dp_info/md_lastseen",
+     "record_type": "datetime"
+    },
+    {
+     "name": "telemetry/port:11/status_record/dp_info/md_onboarded",
+     "record_type": "datetime"
+    },
+    {
+     "name": "telemetry/port:11/status_record/dp_info/md_cpu_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:11/status_record/dp_info/md_memory_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:11/status_record/dp_info/md_flash_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:11/status_record/dp_info/md_temperature",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:11/status_record/dp_info/md_tech_report",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:11/status_record/dp_info/md_run_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:11/status_record/dp_info/md_start_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:11/status_record/scripts",
+   "record_name": "DP 11 Custom Scripts",
+   "items": [
+    {
+     "name": "telemetry/port:11/status_record/scripts/name",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:11/status_record/scripts/start_time",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:11/status_record/scripts/script_results",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:11/status_record/scripts/script_error",
+     "record_type": "string"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:12/status_record/dp_info",
+   "record_name": "Device Port 12",
+   "items": [
+    {
+     "name": "telemetry/port:12/status_record/dp_info/name",
+     "record_type": "string",
+     "value": "Port-12"
+    },
+    {
+     "name": "telemetry/port:12/status_record/dp_info/status",
+     "record_type": "string",
+     "value": "Disconnected"
+    },
+    {
+     "name": "telemetry/port:12/status_record/dp_info/num_users",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:12/status_record/dp_info/bytes_in",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:12/status_record/dp_info/bytes_out",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:12/status_record/dp_info/errors",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:12/status_record/dp_info/managed_device",
+     "record_type": "string",
+     "value": "No"
+    },
+    {
+     "name": "telemetry/port:12/status_record/dp_info/md_type",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:12/status_record/dp_info/md_version",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:12/status_record/dp_info/md_model",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:12/status_record/dp_info/md_sn",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:12/status_record/dp_info/md_hostname",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:12/status_record/dp_info/md_ipv4_mgmt",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:12/status_record/dp_info/md_uptime",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:12/status_record/dp_info/md_lastseen",
+     "record_type": "datetime"
+    },
+    {
+     "name": "telemetry/port:12/status_record/dp_info/md_onboarded",
+     "record_type": "datetime"
+    },
+    {
+     "name": "telemetry/port:12/status_record/dp_info/md_cpu_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:12/status_record/dp_info/md_memory_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:12/status_record/dp_info/md_flash_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:12/status_record/dp_info/md_temperature",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:12/status_record/dp_info/md_tech_report",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:12/status_record/dp_info/md_run_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:12/status_record/dp_info/md_start_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:12/status_record/scripts",
+   "record_name": "DP 12 Custom Scripts",
+   "items": [
+    {
+     "name": "telemetry/port:12/status_record/scripts/name",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:12/status_record/scripts/start_time",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:12/status_record/scripts/script_results",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:12/status_record/scripts/script_error",
+     "record_type": "string"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:13/status_record/dp_info",
+   "record_name": "Device Port 13",
+   "items": [
+    {
+     "name": "telemetry/port:13/status_record/dp_info/name",
+     "record_type": "string",
+     "value": "Port-13"
+    },
+    {
+     "name": "telemetry/port:13/status_record/dp_info/status",
+     "record_type": "string",
+     "value": "Disconnected"
+    },
+    {
+     "name": "telemetry/port:13/status_record/dp_info/num_users",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:13/status_record/dp_info/bytes_in",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:13/status_record/dp_info/bytes_out",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:13/status_record/dp_info/errors",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:13/status_record/dp_info/managed_device",
+     "record_type": "string",
+     "value": "No"
+    },
+    {
+     "name": "telemetry/port:13/status_record/dp_info/md_type",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:13/status_record/dp_info/md_version",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:13/status_record/dp_info/md_model",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:13/status_record/dp_info/md_sn",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:13/status_record/dp_info/md_hostname",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:13/status_record/dp_info/md_ipv4_mgmt",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:13/status_record/dp_info/md_uptime",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:13/status_record/dp_info/md_lastseen",
+     "record_type": "datetime"
+    },
+    {
+     "name": "telemetry/port:13/status_record/dp_info/md_onboarded",
+     "record_type": "datetime"
+    },
+    {
+     "name": "telemetry/port:13/status_record/dp_info/md_cpu_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:13/status_record/dp_info/md_memory_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:13/status_record/dp_info/md_flash_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:13/status_record/dp_info/md_temperature",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:13/status_record/dp_info/md_tech_report",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:13/status_record/dp_info/md_run_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:13/status_record/dp_info/md_start_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:13/status_record/scripts",
+   "record_name": "DP 13 Custom Scripts",
+   "items": [
+    {
+     "name": "telemetry/port:13/status_record/scripts/name",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:13/status_record/scripts/start_time",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:13/status_record/scripts/script_results",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:13/status_record/scripts/script_error",
+     "record_type": "string"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:14/status_record/dp_info",
+   "record_name": "Device Port 14",
+   "items": [
+    {
+     "name": "telemetry/port:14/status_record/dp_info/name",
+     "record_type": "string",
+     "value": "switch-01"
+    },
+    {
+     "name": "telemetry/port:14/status_record/dp_info/status",
+     "record_type": "string",
+     "value": "Managed"
+    },
+    {
+     "name": "telemetry/port:14/status_record/dp_info/num_users",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:14/status_record/dp_info/bytes_in",
+     "record_type": "integer",
+     "value": "1043673"
+    },
+    {
+     "name": "telemetry/port:14/status_record/dp_info/bytes_out",
+     "record_type": "integer",
+     "value": "11552"
+    },
+    {
+     "name": "telemetry/port:14/status_record/dp_info/errors",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:14/status_record/dp_info/managed_device",
+     "record_type": "string",
+     "value": "Yes"
+    },
+    {
+     "name": "telemetry/port:14/status_record/dp_info/md_type",
+     "record_type": "string",
+     "value": "Cisco IOS"
+    },
+    {
+     "name": "telemetry/port:14/status_record/dp_info/md_version",
+     "record_type": "string",
+     "value": "15.2(2)E10"
+    },
+    {
+     "name": "telemetry/port:14/status_record/dp_info/md_model",
+     "record_type": "string",
+     "value": "WS-C3560CG-8TC-S"
+    },
+    {
+     "name": "telemetry/port:14/status_record/dp_info/md_sn",
+     "record_type": "string",
+     "value": "SER00001"
+    },
+    {
+     "name": "telemetry/port:14/status_record/dp_info/md_hostname",
+     "record_type": "string",
+     "value": "switch-01"
+    },
+    {
+     "name": "telemetry/port:14/status_record/dp_info/md_ipv4_mgmt",
+     "record_type": "string",
+     "value": "192.0.2.57"
+    },
+    {
+     "name": "telemetry/port:14/status_record/dp_info/md_uptime",
+     "record_type": "integer",
+     "value": "80100"
+    },
+    {
+     "name": "telemetry/port:14/status_record/dp_info/md_lastseen",
+     "record_type": "datetime",
+     "value": "2026-10-30T06:15:42-00:00"
+    },
+    {
+     "name": "telemetry/port:14/status_record/dp_info/md_onboarded",
+     "record_type": "datetime",
+     "value": "2026-10-16T16:14:50-00:00"
+    },
+    {
+     "name": "telemetry/port:14/status_record/dp_info/md_cpu_usage",
+     "record_type": "float",
+     "value": "5.0"
+    },
+    {
+     "name": "telemetry/port:14/status_record/dp_info/md_memory_usage",
+     "record_type": "float",
+     "value": "78.4"
+    },
+    {
+     "name": "telemetry/port:14/status_record/dp_info/md_flash_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:14/status_record/dp_info/md_temperature",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:14/status_record/dp_info/md_tech_report",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:14/status_record/dp_info/md_run_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:14/status_record/dp_info/md_start_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:14/status_record/scripts",
+   "record_name": "DP 14 Custom Scripts",
+   "items": [
+    {
+     "name": "telemetry/port:14/status_record/scripts/name",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:14/status_record/scripts/start_time",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:14/status_record/scripts/script_results",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:14/status_record/scripts/script_error",
+     "record_type": "string"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:15/status_record/dp_info",
+   "record_name": "Device Port 15",
+   "items": [
+    {
+     "name": "telemetry/port:15/status_record/dp_info/name",
+     "record_type": "string",
+     "value": "Port-15"
+    },
+    {
+     "name": "telemetry/port:15/status_record/dp_info/status",
+     "record_type": "string",
+     "value": "Disconnected"
+    },
+    {
+     "name": "telemetry/port:15/status_record/dp_info/num_users",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:15/status_record/dp_info/bytes_in",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:15/status_record/dp_info/bytes_out",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:15/status_record/dp_info/errors",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:15/status_record/dp_info/managed_device",
+     "record_type": "string",
+     "value": "No"
+    },
+    {
+     "name": "telemetry/port:15/status_record/dp_info/md_type",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:15/status_record/dp_info/md_version",
+     "record_type": "string",
+     "value": "15.2(2)E10"
+    },
+    {
+     "name": "telemetry/port:15/status_record/dp_info/md_model",
+     "record_type": "string",
+     "value": "WS-C3560CG-8TC-S"
+    },
+    {
+     "name": "telemetry/port:15/status_record/dp_info/md_sn",
+     "record_type": "string",
+     "value": "SER00001"
+    },
+    {
+     "name": "telemetry/port:15/status_record/dp_info/md_hostname",
+     "record_type": "string",
+     "value": "switch-01"
+    },
+    {
+     "name": "telemetry/port:15/status_record/dp_info/md_ipv4_mgmt",
+     "record_type": "string",
+     "value": "192.0.2.57"
+    },
+    {
+     "name": "telemetry/port:15/status_record/dp_info/md_uptime",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:15/status_record/dp_info/md_lastseen",
+     "record_type": "datetime"
+    },
+    {
+     "name": "telemetry/port:15/status_record/dp_info/md_onboarded",
+     "record_type": "datetime",
+     "value": "2026-10-16T16:16:33-00:00"
+    },
+    {
+     "name": "telemetry/port:15/status_record/dp_info/md_cpu_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:15/status_record/dp_info/md_memory_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:15/status_record/dp_info/md_flash_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:15/status_record/dp_info/md_temperature",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:15/status_record/dp_info/md_tech_report",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:15/status_record/dp_info/md_run_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    },
+    {
+     "name": "telemetry/port:15/status_record/dp_info/md_start_config",
+     "record_type": "string",
+     "value": "hostname x\nenable secret 5 FIXTURE-SECRET-MARKER\n"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:15/status_record/scripts",
+   "record_name": "DP 15 Custom Scripts",
+   "items": [
+    {
+     "name": "telemetry/port:15/status_record/scripts/name",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:15/status_record/scripts/start_time",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:15/status_record/scripts/script_results",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:15/status_record/scripts/script_error",
+     "record_type": "string"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:16/status_record/dp_info",
+   "record_name": "Device Port 16",
+   "items": [
+    {
+     "name": "telemetry/port:16/status_record/dp_info/name",
+     "record_type": "string",
+     "value": "Port-16"
+    },
+    {
+     "name": "telemetry/port:16/status_record/dp_info/status",
+     "record_type": "string",
+     "value": "Disconnected"
+    },
+    {
+     "name": "telemetry/port:16/status_record/dp_info/num_users",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:16/status_record/dp_info/bytes_in",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:16/status_record/dp_info/bytes_out",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:16/status_record/dp_info/errors",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:16/status_record/dp_info/managed_device",
+     "record_type": "string",
+     "value": "No"
+    },
+    {
+     "name": "telemetry/port:16/status_record/dp_info/md_type",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:16/status_record/dp_info/md_version",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:16/status_record/dp_info/md_model",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:16/status_record/dp_info/md_sn",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:16/status_record/dp_info/md_hostname",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:16/status_record/dp_info/md_ipv4_mgmt",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:16/status_record/dp_info/md_uptime",
+     "record_type": "integer",
+     "value": "0"
+    },
+    {
+     "name": "telemetry/port:16/status_record/dp_info/md_lastseen",
+     "record_type": "datetime"
+    },
+    {
+     "name": "telemetry/port:16/status_record/dp_info/md_onboarded",
+     "record_type": "datetime"
+    },
+    {
+     "name": "telemetry/port:16/status_record/dp_info/md_cpu_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:16/status_record/dp_info/md_memory_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:16/status_record/dp_info/md_flash_usage",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:16/status_record/dp_info/md_temperature",
+     "record_type": "float",
+     "value": "0.0"
+    },
+    {
+     "name": "telemetry/port:16/status_record/dp_info/md_tech_report",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:16/status_record/dp_info/md_run_config",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:16/status_record/dp_info/md_start_config",
+     "record_type": "string"
+    }
+   ]
+  },
+  {
+   "name": "telemetry/port:16/status_record/scripts",
+   "record_name": "DP 16 Custom Scripts",
+   "items": [
+    {
+     "name": "telemetry/port:16/status_record/scripts/name",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:16/status_record/scripts/start_time",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:16/status_record/scripts/script_results",
+     "record_type": "string"
+    },
+    {
+     "name": "telemetry/port:16/status_record/scripts/script_error",
+     "record_type": "string"
+    }
+   ]
+  }
+ ]
+}

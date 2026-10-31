@@ -1,0 +1,73 @@
+name: Release PR
+
+# On every push to main, works out the next version from CHANGELOG.md
+# (scripts/release-pr.mjs) and keeps one "chore(release): X.Y.Z" pull request
+# from release/next up to date. Merging it is the decision to release;
+# release-tag.yml does the rest. Nothing under Unreleased and no new Dependabot
+# merges: the PR is closed.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+concurrency:
+  group: release-pr
+  cancel-in-progress: true
+
+jobs:
+  release-pr:
+    name: Update the release PR
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - name: Build release/next
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASE: main
+        run: |
+          current=$(node scripts/release-pr.mjs --current)
+          # Dependabot PRs merged since the current version's changelog section landed.
+          since=$(git log -1 --format=%cI -S"## [$current]" -- CHANGELOG.md)
+          if [ -n "$since" ]; then
+            gh pr list --state merged --base "$BASE" --author app/dependabot --search "merged:>$since" \
+              --json number,title --limit 100 > "$RUNNER_TEMP/dependabot.json"
+          else
+            echo '[]' > "$RUNNER_TEMP/dependabot.json"
+          fi
+          next=$(node scripts/release-pr.mjs --date "$(date -u +%F)" \
+            --dependabot "$RUNNER_TEMP/dependabot.json" --body "$RUNNER_TEMP/body.md")
+          open=$(gh pr list --head release/next --base "$BASE" --state open --json number -q '.[0].number')
+
+          if [ "$next" = none ]; then
+            echo "Nothing to release since $current."
+            [ -z "$open" ] || gh pr close "$open" --delete-branch --comment "Nothing left under Unreleased."
+            exit 0
+          fi
+          [[ "$next" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::unexpected version: $next"; exit 1; }
+
+          git switch -C release/next
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+            commit -qam "chore(release): $next"
+          git push -qf origin release/next
+
+          if [ -z "$open" ]; then
+            gh pr create --base "$BASE" --head release/next --title "chore(release): $next" --body-file "$RUNNER_TEMP/body.md"
+          else
+            gh pr edit "$open" --title "chore(release): $next" --body-file "$RUNNER_TEMP/body.md"
+          fi
+          # A push made with GITHUB_TOKEN starts no workflow runs, so start CI on the branch.
+          if [ -f .github/workflows/ci.yml ]; then
+            # shellcheck disable=SC2046
+            gh workflow run ci.yml --ref release/next $(node scripts/release-pr.mjs --ci-inputs)
+          fi
+          echo "Release PR: $next"

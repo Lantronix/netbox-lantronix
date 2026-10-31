@@ -1,0 +1,115 @@
+{
+ "request": {
+  "password": "<redacted>",
+  "username": "<redacted>"
+ },
+ "response": {
+  "csrf_token": "<redacted>",
+  "expires_in": 604800,
+  "refresh_token": "<redacted>",
+  "token": "<redacted>",
+  "user": {
+   "active": false,
+   "authtype": "plain",
+   "created_at": "2026-03-04T06:27:13.576Z",
+   "email": "fixture-name-02",
+   "enabled": true,
+   "firstname": "fixture-name-03",
+   "group": [
+    {
+     "created_at": "2024-03-04T13:48:31.525Z",
+     "id": "fixture-id-0005",
+     "name": "fixture-name-05",
+     "permission": [
+      {
+       "id": "fixture-id-0007",
+       "permission_id": "fixture-id-0009",
+       "policy_id": "fixture-id-0008",
+       "service_name": "fixture-name-06"
+      },
+      {
+       "id": "fixture-id-0010",
+       "permission_id": "fixture-id-0011",
+       "policy_id": "fixture-id-0008",
+       "service_name": "fixture-name-06"
+      },
+      {
+       "id": "fixture-id-0012",
+       "permission_id": "fixture-id-0013",
+       "policy_id": "fixture-id-0008",
+       "service_name": "fixture-name-07"
+      },
+      {
+       "id": "fixture-id-0014",
+       "permission_id": "fixture-id-0015",
+       "policy_id": "fixture-id-0008",
+       "service_name": "fixture-name-07"
+      },
+      {
+       "id": "fixture-id-0016",
+       "permission_id": "fixture-id-0017",
+       "policy_id": "fixture-id-0008",
+       "service_name": "fixture-name-07"
+      },
+      {
+       "id": "fixture-id-0018",
+       "permission_id": "fixture-id-0019",
+       "policy_id": "fixture-id-0008",
+       "service_name": "fixture-name-07"
+      },
+      {
+       "id": "fixture-id-0020",
+       "permission_id": "fixture-id-0021",
+       "policy_id": "fixture-id-0008",
+       "service_name": "fixture-name-08"
+      },
+      {
+       "id": "fixture-id-0022",
+       "permission_id": "fixture-id-0023",
+       "policy_id": "fixture-id-0008",
+       "service_name": "fixture-name-08"
+      },
+      {
+       "id": "fixture-id-0024",
+       "permission_id": "fixture-id-0025",
+       "policy_id": "fixture-id-0008",
+       "service_name": "fixture-name-08"
+      },
+      {
+       "id": "fixture-id-0026",
+       "permission_id": "fixture-id-0027",
+       "policy_id": "fixture-id-0008",
+       "service_name": "fixture-name-09"
+      },
+      {
+       "id": "fixture-id-0028",
+       "permission_id": "fixture-id-0029",
+       "policy_id": "fixture-id-0008",
+       "service_name": "fixture-name-09"
+      },
+      {
+       "id": "fixture-id-0030",
+       "permission_id": "fixture-id-0031",
+       "policy_id": "fixture-id-0008",
+       "service_name": "fixture-name-09"
+      }
+     ],
+     "status": true,
+     "tenant_id": "fixture-id-0002",
+     "type": "system",
+     "updated_at": "2026-10-02T05:59:28.368Z",
+     "updated_by": "fixture-id-0006"
+    }
+   ],
+   "id": "fixture-id-0001",
+   "last_login_at": "2026-10-29T09:18:35.720263Z",
+   "lastname": "fixture-name-04",
+   "portal_id": "fixture-id-0003",
+   "project_id": "fixture-id-0004",
+   "role": "tenant_user",
+   "tenant_id": "fixture-id-0002",
+   "updated_at": "2026-05-22T06:16:45.739Z",
+   "username": "fixture-name-01"
+  }
+ }
+}

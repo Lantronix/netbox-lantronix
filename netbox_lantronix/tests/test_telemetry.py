@@ -44,6 +44,23 @@ def test_leftover_ports_show_nothing_attached():
         assert (s[n].model, s[n].hostname, s[n].serial) == ("", "", "")
 
 
+def test_disconnected_port_is_not_attached_despite_managed_record():
+    raw = {
+        "status_record": [
+            {
+                "name": "telemetry/port:14/status_record/dp_info",
+                "items": [
+                    {"name": "x/status", "value": "Disconnected"},
+                    {"name": "x/managed_device", "value": "Yes"},
+                    {"name": "x/md_hostname", "value": "sw1"},
+                ],
+            }
+        ]
+    }
+    s = parse_port_states(raw)[14]
+    assert (s.state, s.attached, s.hostname) == ("Disconnected", False, "")
+
+
 def test_identifying_port_has_state_only():
     s = states()[3]
     assert (s.state, s.attached, s.model) == ("Identifying", False, "")

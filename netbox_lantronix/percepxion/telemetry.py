@@ -70,7 +70,12 @@ def parse_port_states(raw: Any) -> dict[int, PxPortState]:
             key = str(item.get("name") or "").rsplit("/", 1)[-1]
             if key in KEEP:
                 values[key] = str(item.get("value") or "").strip()
-        attached = values.get("managed_device", "").lower() == "yes"
+        # The SLC keeps a managed device record after its cable is pulled, so a Disconnected
+        # port has nothing attached whatever managed_device says.
+        attached = (
+            values.get("managed_device", "").lower() == "yes"
+            and values.get("status", "").lower() != "disconnected"
+        )
         number = int(match.group(1))
         if not attached:
             states[number] = PxPortState(number, values.get("status", ""), False)

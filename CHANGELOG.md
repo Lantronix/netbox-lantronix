@@ -4,6 +4,8 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-11-05
+
 ### Fixed
 - A port whose status is Disconnected now reports nothing attached, even while the SLC still keeps the managed device record, so pulling a console cable shows up as a detach.
 
@@ -12,5 +14,6 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 ### Added
 - First release. NetBox plugin that keeps NetBox current with the Lantronix SLC 9000, SLC 8000 and EMG console servers managed by Percepxion: devices, console server ports, port labels and attached-device facts.
 
-[Unreleased]: https://github.com/Lantronix/netbox-lantronix/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/Lantronix/netbox-lantronix/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/Lantronix/netbox-lantronix/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/Lantronix/netbox-lantronix/releases/tag/v0.1.0

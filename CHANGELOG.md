@@ -4,6 +4,8 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-06
+
 ### Added
 - A Docker quick start in `docker/` that builds a NetBox 4.6 image with the plugin from this repository.
 - SLC and EMG device type definitions in `docker/device-types`, with a setup script that imports them and creates the sync user.
@@ -21,6 +23,7 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 ### Added
 - First release. NetBox plugin that keeps NetBox current with the Lantronix SLC 9000, SLC 8000 and EMG console servers managed by Percepxion: devices, console server ports, port labels and attached-device facts.
 
-[Unreleased]: https://github.com/Lantronix/netbox-lantronix/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/Lantronix/netbox-lantronix/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/Lantronix/netbox-lantronix/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/Lantronix/netbox-lantronix/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/Lantronix/netbox-lantronix/releases/tag/v0.1.0

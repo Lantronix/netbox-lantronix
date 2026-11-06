@@ -1,0 +1,27 @@
+# Copy into a netbox-docker checkout. Assumes netbox-lantronix is cloned next to it.
+# The project name keeps this stack's containers and volumes apart from any other netbox-docker
+# on the host, including its database.
+name: netbox-lantronix
+
+x-netbox-lantronix: &netbox-lantronix
+  image: netbox-lantronix:local
+  pull_policy: never
+  env_file:
+    - env/netbox.env
+    - env/percepxion.env
+
+services:
+  netbox:
+    <<: *netbox-lantronix
+    build:
+      context: ../netbox-lantronix
+      dockerfile: docker/Dockerfile
+    ports:
+      - "127.0.0.1:${NETBOX_PORT:-8000}:8080"
+    volumes:
+      - ../netbox-lantronix/docker:/opt/netbox-lantronix-docker:ro
+    # The first start runs every migration, which can take several minutes.
+    healthcheck:
+      start_period: 600s
+  netbox-worker:
+    <<: *netbox-lantronix

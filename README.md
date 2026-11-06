@@ -20,7 +20,7 @@ The plugin never writes to Percepxion or to a console server. It reads from Perc
 | Python | 3.12 or later |
 | RQ worker | A running NetBox worker (`manage.py rqworker`). Scheduled and on-demand syncs run as NetBox background jobs. |
 | Percepxion | Percepxion cloud or on-premises, and a Percepxion user with the **tenant_user** role in the organization you sync. No administrator role is needed. |
-| Device types | Lantronix device types from the [NetBox devicetype-library](https://github.com/netbox-community/devicetype-library/tree/master/device-types/Lantronix), imported before the first sync |
+| Device types | Lantronix SLC and EMG device types, imported before the first sync. The definitions are in [`docker/device-types`](docker/device-types). |
 
 ## Install
 
@@ -28,10 +28,10 @@ The plugin never writes to Percepxion or to a console server. It reads from Perc
 
    ```
    source /opt/netbox/venv/bin/activate
-   pip install netbox-lantronix
+   pip install https://github.com/Lantronix/netbox-lantronix/archive/refs/tags/v0.1.1.tar.gz
    ```
 
-   With netbox-docker, add `netbox-lantronix` to `plugin_requirements.txt` and build a custom image, as described in the netbox-docker wiki under "Using NetBox Plugins".
+   Replace `v0.1.1` with the latest [release](https://github.com/Lantronix/netbox-lantronix/releases). For netbox-docker, follow [Docker](#docker) instead of these steps.
 
 2. Enable and configure the plugin in `configuration.py` (see [Configuration](#configuration)).
 
@@ -47,9 +47,49 @@ The plugin never writes to Percepxion or to a console server. It reads from Perc
 
 5. Create the NetBox user that sync changes are attributed to, for example `percepxion-sync`, and give it permissions (see [Permissions](#permissions)). It doesn't need to log in.
 
-6. Import the Lantronix device types for your hardware from the devicetype-library, with its import script or through **Devices > Device Types > Import**.
+6. Import the device types for your hardware from [`docker/device-types`](docker/device-types) through **Devices > Device Types > Import**.
 
 On the first run the plugin creates the manufacturer `Lantronix`, the platform `lantronix_itmgos` and the device custom field `percepxion_device_id` if they don't exist, and reuses them if they do. These are the same objects the `lantronix.oob` Ansible collection's NetBox playbook uses, so the two can share a NetBox.
+
+## Docker
+
+This builds a NetBox 4.6 image with the plugin, using [netbox-docker](https://github.com/netbox-community/netbox-docker). You need Docker with Compose and a Percepxion user with the **tenant_user** role.
+
+1. Clone both repositories side by side and copy in the plugin's files:
+
+   ```
+   git clone -b 5.0.2 --depth 1 https://github.com/netbox-community/netbox-docker.git
+   git clone https://github.com/Lantronix/netbox-lantronix.git
+   cd netbox-docker
+   cp ../netbox-lantronix/docker/docker-compose.override.yml .
+   cp ../netbox-lantronix/docker/plugins.py configuration/plugins.py
+   cp ../netbox-lantronix/docker/percepxion.env.example env/percepxion.env
+   ```
+
+2. Add your Percepxion username and password to `env/percepxion.env`. For on-premises Percepxion, change `PERCEPXION_URL` too.
+
+3. Build and start NetBox. The first start runs the database migrations and can take several minutes.
+
+   ```
+   docker compose build
+   docker compose up -d
+   ```
+
+4. Create your NetBox login:
+
+   ```
+   docker compose exec netbox /opt/netbox/netbox/manage.py createsuperuser
+   ```
+
+5. Import the device types and create the `percepxion-sync` user, a site and a role. Its permissions are limited to that site, and running it again changes nothing that already exists.
+
+   ```
+   docker compose exec netbox /opt/netbox/netbox/manage.py nbshell -c "exec(open('/opt/netbox-lantronix-docker/setup.py').read())"
+   ```
+
+6. Open http://localhost:8000 and follow [First sync](#first-sync), with endpoint `percepxion`, site **Console Servers** and role **Console Server**.
+
+To use another port, set `NETBOX_PORT` when you start NetBox. The stack runs as Compose project `netbox-lantronix`, so its containers and database stay separate from any other netbox-docker on the host.
 
 ## Configuration
 

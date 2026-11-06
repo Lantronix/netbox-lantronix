@@ -4,6 +4,13 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+### Added
+- A Docker quick start in `docker/` that builds a NetBox 4.6 image with the plugin from this repository.
+- SLC and EMG device type definitions in `docker/device-types`, with a setup script that imports them and creates the sync user.
+
+### Fixed
+- The install steps now use a release archive, and the README's device type steps point to definitions in this repository.
+
 ## [0.1.1] - 2026-11-05
 
 ### Fixed

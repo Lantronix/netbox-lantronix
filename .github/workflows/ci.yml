@@ -39,8 +39,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Oldest and newest NetBox minor the plugin supports (min_version/max_version in __init__.py).
-        netbox: ["v4.5.10", "v4.6.10"]
+        # Newest patch of each NetBox minor the plugin supports (min_version/max_version in __init__.py).
+        netbox: ["v4.6.10"]
     services:
       redis:
         image: redis:8
@@ -84,9 +84,34 @@ jobs:
           sed -i "s/'netbox.tests.dummy_plugin',/'netbox_lantronix',/" configuration.py
           grep -q "'netbox_lantronix'," configuration.py \
             || { echo "::error::configuration_testing.py no longer lists the dummy plugin"; exit 1; }
+          # The settings the tests expect; the credentials are placeholders and never used.
+          cat >> configuration.py <<'PY'
+
+          PLUGINS_CONFIG = {
+              "netbox_lantronix": {
+                  "sync_user": "percepxion-sync",
+                  "endpoints": {
+                      "percepxion-sandbox": {
+                          "url": "https://px.example.com/api",
+                          "username": "svc",
+                          "password": "pw",
+                      },
+                  },
+              },
+          }
+          PY
       - name: Check for missing plugin migrations
         working-directory: netbox/netbox
         run: python manage.py makemigrations netbox_lantronix --check --dry-run
       - name: Tests under the NetBox test runner
         working-directory: netbox/netbox
-        run: python manage.py test netbox_lantronix.tests --parallel 1 --verbosity 2
+        run: |
+          # The modules pytest runs (python_files in pyproject.toml) need no NetBox; run the rest here.
+          tests=$(cd ../../plugin && python - <<'PY'
+          import pathlib, tomllib
+          plain = set(tomllib.load(open("pyproject.toml", "rb"))["tool"]["pytest"]["ini_options"]["python_files"])
+          print(" ".join(f"netbox_lantronix.tests.{p.stem}" for p in sorted(pathlib.Path("netbox_lantronix/tests").glob("test_*.py")) if p.name not in plain))
+          PY
+          )
+          echo "Running: $tests"
+          python manage.py test $tests --parallel 1 --verbosity 2

@@ -236,9 +236,11 @@ def apply_plan(plan: Plan, source, user) -> dict:
         )
         for link in DeviceLink.objects.filter(source=source, percepxion_device_id__in=plan.seen):
             ip = plan.mgmt_ips.get(link.percepxion_device_id, "")
-            if ip != link.mgmt_ip:
+            firmware = plan.firmware.get(link.percepxion_device_id) or link.firmware_version
+            if ip != link.mgmt_ip or firmware != link.firmware_version:
                 link.snapshot()
                 link.mgmt_ip = ip
+                link.firmware_version = firmware
                 link.save()
     return counts
 

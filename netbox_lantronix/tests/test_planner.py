@@ -390,6 +390,16 @@ def test_mgmt_ip_recorded_and_validated():
     assert r.mgmt_ips == {"dev-0001": "192.0.2.10"}
 
 
+def test_firmware_recorded_and_cleaned():
+    good = px()
+    good = type(good)(**{**good.__dict__, "firmware": "9.7.0.2R1\x1b[0m"})
+    silent = px("dev-0002", "SLC-C", "000000000003")
+    r = plan(ctx(), [good, silent], [], [nb()], [])
+    assert "9.7.0.2R1" in r.firmware["dev-0001"]
+    assert "\x1b" not in r.firmware["dev-0001"]
+    assert "dev-0002" not in r.firmware
+
+
 def test_facts_sanitized():
     ports = [port(2, make="cis\x1bco", model="C9300‮-48P", os="ios-xe\n", serial="X" * 500)]
     r = plan(ctx(), [px()], ports, [nb()], [nbp("Port-02")])

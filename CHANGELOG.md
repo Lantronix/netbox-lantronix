@@ -4,6 +4,9 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+### Added
+- Device links record the running firmware Percepxion reports, shown on the link and device pages and in the API.
+
 ## [0.3.0] - 2026-11-09
 
 ### Added

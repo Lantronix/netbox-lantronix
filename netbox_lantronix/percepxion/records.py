@@ -42,6 +42,7 @@ class PxDevice:
     org_ids: frozenset[str]
     ip: str | None
     product_family: str
+    firmware: str = ""
 
     @classmethod
     def from_api(cls, raw: dict[str, Any]) -> PxDevice:
@@ -56,6 +57,7 @@ class PxDevice:
             org_ids=_org_ids(raw.get("tenant")),
             ip=_str_or_none(attrs.get("ipaddress")),
             product_family=str(attrs.get("product_family") or ""),
+            firmware=str(attrs.get("firmware_ver") or ""),
         )
 
 

@@ -1,0 +1,92 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit:
+    name: Unit tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.14"]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install
+        run: pip install -e ".[dev]"
+      - name: Lint
+        run: ruff check .
+      - name: Tests that need no NetBox
+        run: pytest -q
+
+  netbox:
+    name: NetBox ${{ matrix.netbox }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        # Oldest and newest NetBox minor the plugin supports (min_version/max_version in __init__.py).
+        netbox: ["v4.5.10", "v4.6.10"]
+    services:
+      redis:
+        image: redis:8
+        ports:
+          - 6379:6379
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: netbox
+          POSTGRES_PASSWORD: netbox
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: plugin
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: netbox-community/netbox
+          ref: ${{ matrix.netbox }}
+          path: netbox
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - name: Install NetBox and the plugin
+        working-directory: netbox
+        run: |
+          # Prebuilt psycopg wheels skip compiling against libpq.
+          sed -i 's/^psycopg\[c,pool\]==/psycopg[binary,pool]==/' requirements.txt
+          pip install -r requirements.txt
+          pip install -e ../plugin
+      - name: Configure NetBox with only this plugin
+        working-directory: netbox/netbox/netbox
+        run: |
+          cp configuration_testing.py configuration.py
+          sed -i "s/'netbox.tests.dummy_plugin',/'netbox_lantronix',/" configuration.py
+          grep -q "'netbox_lantronix'," configuration.py \
+            || { echo "::error::configuration_testing.py no longer lists the dummy plugin"; exit 1; }
+      - name: Check for missing plugin migrations
+        working-directory: netbox/netbox
+        run: python manage.py makemigrations netbox_lantronix --check --dry-run
+      - name: Tests under the NetBox test runner
+        working-directory: netbox/netbox
+        run: python manage.py test netbox_lantronix.tests --parallel 1 --verbosity 2

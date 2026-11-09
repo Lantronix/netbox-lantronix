@@ -98,6 +98,9 @@ class Plan:
     # Management IP Percepxion reports per device (validated), used by the SSH button when the
     # device has no NetBox primary IP. Never written to IPAM.
     mgmt_ips: dict[str, str] = field(default_factory=dict)
+    # Running firmware Percepxion reports per device (cleaned). A device reporting none keeps
+    # the last known value.
+    firmware: dict[str, str] = field(default_factory=dict)
     unchanged: int = 0
     # Ports for existing devices: (device pk, port name) -> change. Only differing ports.
     port_changes: dict[tuple[int, str], PortChange] = field(default_factory=dict)
@@ -298,6 +301,9 @@ def _record_ip(result: Plan, dev: PxDevice) -> None:
     ip = safe_ip(dev.ip)
     if ip:
         result.mgmt_ips[dev.device_id] = ip
+    firmware = clean_text(dev.firmware, 32)
+    if firmware:
+        result.firmware[dev.device_id] = firmware
 
 
 def _match(dev, name, ctx, by_link, by_serial, by_name, result):

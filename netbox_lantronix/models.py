@@ -138,6 +138,12 @@ class DeviceLink(NetBoxModel):
         verbose_name="Management IP (Percepxion)",
         help_text="Reported by Percepxion; used for Open console when the device has no primary IP",
     )
+    firmware_version = models.CharField(
+        max_length=32,
+        blank=True,
+        verbose_name="Firmware version (Percepxion)",
+        help_text="Running firmware reported by Percepxion",
+    )
     last_seen = models.DateTimeField(null=True, blank=True)
 
     class Meta:

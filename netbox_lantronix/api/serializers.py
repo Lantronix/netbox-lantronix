@@ -62,6 +62,7 @@ class DeviceLinkSerializer(NetBoxModelSerializer):
             "status",
             "type_source",
             "mgmt_ip",
+            "firmware_version",
             "last_seen",
             "tags",
             "custom_fields",

@@ -4,6 +4,9 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+### Fixed
+- NetBox's Plugins page (`/core/plugins/`) and other views that list installed plugins no longer fail with `module 'netbox_lantronix.config' has no attribute 'version'`. The endpoint checks module was named `config`, and loading it replaced the plugin's `config` attribute.
+
 ## [0.2.0] - 2026-11-06
 
 ### Added

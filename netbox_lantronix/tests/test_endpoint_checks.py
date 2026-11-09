@@ -1,6 +1,6 @@
 import pytest
 
-from netbox_lantronix.config import ConfigError, validate_endpoints
+from netbox_lantronix.endpoint_checks import ConfigError, validate_endpoints
 
 GOOD = {"px": {"url": "https://px.example.com", "username": "svc", "password": "s3cret-value"}}
 

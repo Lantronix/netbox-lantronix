@@ -20,7 +20,7 @@ class NetBoxLantronixConfig(PluginConfig):
         super().ready()
         from netbox.plugins import get_plugin_config
 
-        from .config import validate_endpoints
+        from .endpoint_checks import validate_endpoints
 
         validate_endpoints(get_plugin_config(self.name, "endpoints"))
 

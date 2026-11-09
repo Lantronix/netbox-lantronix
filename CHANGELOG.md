@@ -4,6 +4,12 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+### Added
+- NetBox 4.7 support.
+
+### Changed
+- Requires NetBox 4.6 or later. The plugin's migrations depend on NetBox 4.6, so it never installed on 4.5 even though it allowed 4.5.
+
 ## [0.2.1] - 2026-11-09
 
 ### Fixed

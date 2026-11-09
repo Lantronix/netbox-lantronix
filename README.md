@@ -16,7 +16,7 @@ The plugin never writes to Percepxion or to a console server. It reads from Perc
 
 | | |
 |---|---|
-| NetBox | 4.5.0 to 4.6.x (the plugin refuses to load on other versions) |
+| NetBox | 4.6.0 to 4.7.x (the plugin refuses to load on other versions) |
 | Python | 3.12 or later |
 | RQ worker | A running NetBox worker (`manage.py rqworker`). Scheduled and on-demand syncs run as NetBox background jobs. |
 | Percepxion | Percepxion cloud or on-premises, and a Percepxion user with the **tenant_user** role in the organization you sync. No administrator role is needed. |
@@ -180,7 +180,7 @@ On the console server, direct SSH access is off by default on every port. Turn i
 
 | Symptom | Check |
 |---|---|
-| Plugin doesn't load | NetBox log names the endpoint and missing key, or a NetBox version outside 4.5 to 4.6 |
+| Plugin doesn't load | NetBox log names the endpoint and missing key, or a NetBox version outside 4.6 to 4.7 |
 | Job stays queued | RQ worker not running |
 | Job fails with a login error | Credentials in the environment. After a rejected login, scheduled runs pause for at least 30 minutes. Fix the credentials, restart NetBox, then click **Sync now**; it retries at once only when the credentials changed. |
 | Job fails with a permission error | The sync user's object permissions don't cover the device or site named in the error |

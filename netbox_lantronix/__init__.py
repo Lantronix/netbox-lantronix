@@ -9,8 +9,8 @@ class NetBoxLantronixConfig(PluginConfig):
     description = "Sync Lantronix SLC and EMG devices from Percepxion into NetBox"
     version = __version__
     base_url = "lantronix"
-    min_version = "4.5.0"
-    max_version = "4.6.99"
+    min_version = "4.6.0"
+    max_version = "4.7.99"
     default_settings = {
         "sync_user": None,
         "endpoints": {},

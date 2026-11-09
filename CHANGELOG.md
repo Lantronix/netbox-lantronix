@@ -4,6 +4,8 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-11-09
+
 ### Fixed
 - NetBox's Plugins page (`/core/plugins/`) and other views that list installed plugins no longer fail with `module 'netbox_lantronix.config' has no attribute 'version'`. The endpoint checks module was named `config`, and loading it replaced the plugin's `config` attribute.
 
@@ -26,7 +28,8 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 ### Added
 - First release. NetBox plugin that keeps NetBox current with the Lantronix SLC 9000, SLC 8000 and EMG console servers managed by Percepxion: devices, console server ports, port labels and attached-device facts.
 
-[Unreleased]: https://github.com/Lantronix/netbox-lantronix/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/Lantronix/netbox-lantronix/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/Lantronix/netbox-lantronix/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/Lantronix/netbox-lantronix/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/Lantronix/netbox-lantronix/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/Lantronix/netbox-lantronix/releases/tag/v0.1.0

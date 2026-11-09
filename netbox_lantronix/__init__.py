@@ -10,7 +10,7 @@ class NetBoxLantronixConfig(PluginConfig):
     version = __version__
     base_url = "lantronix"
     min_version = "4.5.0"
-    max_version = "4.6.99"
+    max_version = "4.7.99"
     default_settings = {
         "sync_user": None,
         "endpoints": {},

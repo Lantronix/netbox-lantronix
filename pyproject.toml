@@ -26,4 +26,4 @@ netbox_lantronix = ["templates/**/*.html"]
 
 [tool.pytest.ini_options]
 testpaths = ["netbox_lantronix/tests"]
-python_files = ["test_client.py", "test_resolver.py", "test_sanitize.py", "test_config.py", "test_planner.py", "test_recorded.py"]
+python_files = ["test_client.py", "test_resolver.py", "test_sanitize.py", "test_endpoint_checks.py", "test_planner.py", "test_recorded.py"]

@@ -4,6 +4,10 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+### Fixed
+- The plugin's Author field in NetBox's plugin list now shows Lantronix instead of a dash.
+- The README's first sync steps now give the real menu path, the Lantronix menu in the sidebar, instead of a Plugins menu that doesn't exist.
+
 ## [0.5.2] - 2026-11-10
 
 ### Fixed

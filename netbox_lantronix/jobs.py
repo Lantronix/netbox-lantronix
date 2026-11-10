@@ -156,15 +156,18 @@ class SyncJob(JobRunner):
             px_ports = list(client.iter_ports())
             px_ports = self._with_port_states(client, source, px_devices, px_ports)
             sysconfig_jobs = None
+            org = source.organization_id
 
             def sysconfig(pxid):
                 nonlocal sysconfig_jobs
                 if sysconfig_jobs is None:
-                    sysconfig_jobs = client.latest_sysconfig_jobs()
+                    # A project_admin session gets HTTP 400 on job and telemetry searches
+                    # without tenant_id; tenant_user sessions accept it too.
+                    sysconfig_jobs = client.latest_sysconfig_jobs(org)
                 job = sysconfig_jobs.get(pxid)
                 if not job:
                     return None
-                return sku_from_sysconfig(parse_sysconfig(client.cli_output(job[0], pxid)))
+                return sku_from_sysconfig(parse_sysconfig(client.cli_output(job[0], pxid, org)))
 
             nb_devices, nb_ports = build_snapshot(source, px_devices)
             plan = make_plan(

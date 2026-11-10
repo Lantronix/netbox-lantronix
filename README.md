@@ -199,6 +199,7 @@ On the console server, direct SSH access is off by default on every port. Turn i
 |---|---|
 | Plugin doesn't load | NetBox log names the endpoint and missing key, or a NetBox version outside 4.6 to 4.7 |
 | Job stays queued | RQ worker not running |
+| Job shows **Failed** and you need the reason | The **Error** row under the source's last sync, the job's **Log** tab, or the `netbox_lantronix.sync` line in the worker log (`docker compose logs netbox-worker`) |
 | Job fails with a login error | Credentials in the environment. After a rejected login, scheduled runs pause for at least 30 minutes. Fix the credentials, restart NetBox, then click **Sync now**; it retries at once only when the credentials changed. |
 | Job fails with a permission error | The sync user's object permissions don't cover the device or site named in the error |
 | Device missing after a sync | **Findings**: ambiguous model, missing device type, name conflict or pending adoption |

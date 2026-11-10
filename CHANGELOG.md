@@ -4,6 +4,9 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+### Changed
+- Published on PyPI. Install with `pip install netbox-lantronix`.
+
 ## [0.5.0] - 2026-11-10
 
 ### Added

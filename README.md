@@ -28,10 +28,10 @@ The plugin never writes to Percepxion or to a console server. It reads from Perc
 
    ```
    source /opt/netbox/venv/bin/activate
-   pip install https://github.com/Lantronix/netbox-lantronix/archive/refs/tags/v0.1.1.tar.gz
+   pip install netbox-lantronix
    ```
 
-   Replace `v0.1.1` with the latest [release](https://github.com/Lantronix/netbox-lantronix/releases). For netbox-docker, follow [Docker](#docker) instead of these steps.
+   To pin a version, install `netbox-lantronix==X.Y.Z` with a version from the [releases](https://github.com/Lantronix/netbox-lantronix/releases). For netbox-docker, follow [Docker](#docker) instead of these steps.
 
 2. Enable and configure the plugin in `configuration.py` (see [Configuration](#configuration)).
 

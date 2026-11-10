@@ -12,6 +12,12 @@ On each sync the plugin reads Percepxion and:
 
 The plugin never writes to Percepxion or to a console server. It reads from Percepxion and writes to NetBox only.
 
+![Console server ports labeled with the name set on the console server and described with the attached device's hostname](https://raw.githubusercontent.com/Lantronix/netbox-lantronix/main/docs/images/console-server-ports.png)
+
+![A console server port showing the attached device reported by Percepxion, with an Open console button](https://raw.githubusercontent.com/Lantronix/netbox-lantronix/main/docs/images/port-attached-device.png)
+
+![Sync findings for console servers whose model could match more than one device type, each with a one-click fix](https://raw.githubusercontent.com/Lantronix/netbox-lantronix/main/docs/images/sync-findings.png)
+
 ## Requirements
 
 | | |
@@ -21,6 +27,15 @@ The plugin never writes to Percepxion or to a console server. It reads from Perc
 | RQ worker | A running NetBox worker (`manage.py rqworker`). Scheduled and on-demand syncs run as NetBox background jobs. |
 | Percepxion | Percepxion cloud or on-premises, and a Percepxion user with the **tenant_user** role in the organization you sync. No administrator role is needed. |
 | Device types | Lantronix SLC and EMG device types, imported before the first sync. The definitions are in [`docker/device-types`](docker/device-types). |
+
+### Compatibility
+
+| netbox-lantronix | NetBox |
+|---|---|
+| 0.3.0 and later | 4.6 and 4.7 |
+| 0.1.0 to 0.2.1 | 4.5 and 4.6 |
+
+CI runs the tests against every NetBox minor version the current release supports. It needs no other NetBox plugins, and its one Python dependency, `requests`, already ships with NetBox.
 
 ## Install
 
@@ -188,6 +203,11 @@ On the console server, direct SSH access is off by default on every port. Turn i
 | Job fails with a permission error | The sync user's object permissions don't cover the device or site named in the error |
 | Device missing after a sync | **Findings**: ambiguous model, missing device type, name conflict or pending adoption |
 | PuTTY or ssh reports "connection refused" | Direct SSH access is off on that port of the console server (see [Open console](#open-console)) |
+
+## Support
+
+- Bugs and feature requests: [GitHub Issues](https://github.com/Lantronix/netbox-lantronix/issues). Include the plugin and NetBox versions, and the findings or job log from the sync.
+- Questions about Percepxion or Lantronix console servers: [Lantronix Technical Support](https://www.lantronix.com/technical-support/).
 
 ## License
 

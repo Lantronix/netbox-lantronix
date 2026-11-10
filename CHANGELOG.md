@@ -4,6 +4,10 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+### Fixed
+
+- A failed or errored sync now writes the source, job number and reason to the NetBox worker log (`docker logs`), not only to the job's own log, so the cause shows up without opening the job.
+
 ## [0.5.3] - 2026-11-10
 
 ### Fixed

@@ -140,6 +140,31 @@ class SyncJobTest(TestCase):
         with self.assertRaises(JobFailed):
             SyncJob(make_job(self.source)).run()
 
+    def test_failure_reason_reaches_the_worker_log(self):
+        FakeClient.fail_login = True
+        job = make_job(self.source)
+        with (
+            self.assertLogs("netbox_lantronix.sync", "WARNING") as logs,
+            self.assertRaises(JobFailed),
+        ):
+            SyncJob(job).run()
+        line = logs.output[0]
+        self.assertIn(f"'{self.source}'", line)
+        self.assertIn(f"job {job.pk}", line)
+        self.assertIn("rejected the login", line)
+        self.assertNotIn(SECRET, line)
+
+    def test_unexpected_error_reaches_the_worker_log(self):
+        job = make_job(self.source)
+        with (
+            mock.patch("netbox_lantronix.jobs._sync_user", side_effect=RuntimeError("boom")),
+            self.assertLogs("netbox_lantronix.sync", "ERROR") as logs,
+            self.assertRaises(RuntimeError),
+        ):
+            SyncJob(job).run()
+        self.assertIn("errored", logs.output[0])
+        self.assertIn("RuntimeError: boom", logs.output[0])
+
     def test_schedule_and_suspend(self):
         PercepxionSource.objects.filter(pk=self.source.pk).update(sync_interval=15)
         self.source.refresh_from_db()

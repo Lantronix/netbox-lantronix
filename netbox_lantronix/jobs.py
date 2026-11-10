@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import hmac
+import logging
 from datetime import timedelta
 
 from core.choices import JobStatusChoices
@@ -20,6 +21,12 @@ from .percepxion.resolver import parse_sysconfig, sku_from_sysconfig
 from .percepxion.telemetry import merge_state
 
 BACKOFF_MIN = 30
+
+# The JobRunner logger writes only to the job's own log. This one has no handler of its own, so
+# with NetBox's default logging its warnings reach the worker's stderr (`docker logs`); a
+# LOGGING setting can route it like any other logger.
+worker_log = logging.getLogger("netbox_lantronix.sync")
+
 ACTIVE_STATES = (
     *JobStatusChoices.ENQUEUED_STATE_CHOICES,
     JobStatusChoices.STATUS_RUNNING,
@@ -85,7 +92,17 @@ class SyncJob(JobRunner):
             # NetBox doesn't store a JobFailed message; log it so the status page can show why.
             self.logger.error(str(exc))
             self.job.error = str(exc)[:500]
+            worker_log.warning("%s failed: %s", self._label(), exc)
             raise
+        except Exception:
+            # NetBox stores the traceback on the job but prints nothing to the worker log.
+            worker_log.exception("%s errored", self._label())
+            raise
+
+    def _label(self) -> str:
+        source = self.job.object
+        name = f"'{source}'" if source is not None else f"#{self.job.object_id}"
+        return f"Percepxion sync for source {name} (job {self.job.pk})"
 
     def _schedule_superseded(self) -> bool:
         source = self.job.object

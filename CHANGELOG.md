@@ -4,6 +4,8 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+## [0.5.3] - 2026-11-10
+
 ### Fixed
 - The plugin's Author field in NetBox's plugin list now shows Lantronix instead of a dash.
 - The README's first sync steps now give the real menu path, the Lantronix menu in the sidebar, instead of a Plugins menu that doesn't exist.
@@ -60,7 +62,8 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 ### Added
 - First release. NetBox plugin that keeps NetBox current with the Lantronix SLC 9000, SLC 8000 and EMG console servers managed by Percepxion: devices, console server ports, port labels and attached-device facts.
 
-[Unreleased]: https://github.com/Lantronix/netbox-lantronix/compare/v0.5.2...HEAD
+[Unreleased]: https://github.com/Lantronix/netbox-lantronix/compare/v0.5.3...HEAD
+[0.5.3]: https://github.com/Lantronix/netbox-lantronix/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/Lantronix/netbox-lantronix/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/Lantronix/netbox-lantronix/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/Lantronix/netbox-lantronix/compare/v0.4.0...v0.5.0

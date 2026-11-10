@@ -20,7 +20,7 @@ from .records import PxDevice, PxPort
 from .telemetry import PxPortState, parse_port_states
 
 # netbox_lantronix/__init__.py imports NetBox, so the version is pinned here rather than imported.
-CLIENT_VERSION = "0.5.2"
+CLIENT_VERSION = "0.5.3"
 USER_AGENT = f"netbox-lantronix/{CLIENT_VERSION}"
 
 ALLOWED: frozenset[tuple[str, str]] = frozenset(

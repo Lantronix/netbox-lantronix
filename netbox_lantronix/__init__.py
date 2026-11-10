@@ -6,6 +6,7 @@ __version__ = "0.5.2"
 class NetBoxLantronixConfig(PluginConfig):
     name = "netbox_lantronix"
     verbose_name = "Lantronix"
+    author = "Lantronix"
     description = "Sync Lantronix SLC and EMG devices from Percepxion into NetBox"
     version = __version__
     base_url = "lantronix"

@@ -143,7 +143,7 @@ PLUGINS_CONFIG = {
 
 ## First sync
 
-1. Go to **Plugins > Lantronix > Percepxion Sources > Add**.
+1. In the left sidebar, open **Lantronix > Percepxion > Sources** and click **+** next to Sources.
 2. Pick the endpoint and enter the Percepxion organization ID. Then choose the NetBox site and device role for new console servers, the sync interval in minutes (0 turns scheduling off, otherwise at least 5), and the SSH base port (3000 unless you changed it on your console servers).
 3. Save, then click **Sync now**. The job appears under the source with its counts and log.
 4. Open **Findings**. Each one names the device and the fix.

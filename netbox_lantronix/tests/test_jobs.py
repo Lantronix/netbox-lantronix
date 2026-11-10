@@ -12,7 +12,7 @@ from django.test import TestCase
 from ..jobs import SyncJob, apply_schedule_for, schedule, suspend, sync_is_active
 from ..models import ModelRule, PercepxionSource
 from ..percepxion.client import AuthError, PercepxionUnavailable
-from .netbox_fixtures import make_world, px_device, px_port
+from .netbox_fixtures import ORG, make_world, px_device, px_port
 
 SECRET = "sup3r-secret-pw"
 
@@ -35,10 +35,15 @@ class FakeClient:
     def iter_ports(self):
         return iter(self.ports)
 
-    def latest_sysconfig_jobs(self):
-        return {}
+    sysconfig_jobs = {}
+    tenant_ids = []
 
-    def cli_output(self, *a):
+    def latest_sysconfig_jobs(self, tenant_id=None):
+        FakeClient.tenant_ids.append(("jobs", tenant_id))
+        return FakeClient.sysconfig_jobs
+
+    def cli_output(self, job_group_id, device_id, tenant_id=None):
+        FakeClient.tenant_ids.append(("cli", tenant_id))
         return None
 
     port_state_error = None
@@ -86,12 +91,20 @@ class SyncJobTest(TestCase):
             device_type=self.w["dtype"],
         )
         FakeClient.fail_login = False
+        FakeClient.sysconfig_jobs = {}
+        FakeClient.tenant_ids = []
 
     def test_run_creates_and_records_counts(self):
         job = make_job(self.source)
         SyncJob(job).run()
         self.assertTrue(Device.objects.filter(name="SLC-A").exists())
         self.assertEqual(job.data["devices"]["created"], 1)
+
+    def test_sysconfig_reads_pass_the_organization(self):
+        # project_admin sessions get HTTP 400 on these searches without tenant_id.
+        FakeClient.sysconfig_jobs = {"dev-0001": ("jg-0001", "2026-11-10T00:00:00Z")}
+        SyncJob(make_job(self.source)).run()
+        self.assertEqual(FakeClient.tenant_ids, [("jobs", ORG), ("cli", ORG)])
 
     def test_port_state_failure_keeps_the_run_going(self):
         with mock.patch.object(FakeClient, "port_state_error", PercepxionUnavailable("HTTP 500")):

@@ -527,6 +527,14 @@ def test_cli_output_none_when_absent(server, payload):
     assert make_client().cli_output("jg-0001", "dev-0001") is None
 
 
+def test_cli_output_passes_tenant(server):
+    server.add(*LOGIN, ok_login())
+    server.add(*RESULTS, FakeResponse(200, {"measurements": []}))
+    make_client().cli_output("jg-0001", "dev-0001", tenant_id="org-0001")
+    (body,) = server.bodies("/v1/telemetry/result/search")
+    assert body["tenant_id"] == "org-0001"
+
+
 def test_cli_output_bad_request_is_unavailable(server):
     server.add(*LOGIN, ok_login())
     server.add(*RESULTS, FakeResponse(400, {"error": "job_group_id required"}))

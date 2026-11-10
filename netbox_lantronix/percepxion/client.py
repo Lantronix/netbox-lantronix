@@ -243,20 +243,21 @@ class PercepxionClient:
                 break
         return latest
 
-    def cli_output(self, job_group_id: str, device_id: str) -> str | None:
+    def cli_output(
+        self, job_group_id: str, device_id: str, tenant_id: str | None = None
+    ) -> str | None:
         """Raw `Results` text of one CLI job on one device (literal \\n kept), or None."""
         self._ensure_login()
-        data = self._request(
-            "POST",
-            "/v1/telemetry/result/search",
-            {
-                "type": "clicmd",
-                "job_group_id": [job_group_id],
-                "device_id": [device_id],
-                "offset": 0,
-                "limit": 1,
-            },
-        )
+        body: dict[str, Any] = {
+            "type": "clicmd",
+            "job_group_id": [job_group_id],
+            "device_id": [device_id],
+            "offset": 0,
+            "limit": 1,
+        }
+        if tenant_id:
+            body["tenant_id"] = tenant_id
+        data = self._request("POST", "/v1/telemetry/result/search", body)
         measurements = data.get("measurements") or []
         if not measurements or not isinstance(measurements[0], dict):
             return None

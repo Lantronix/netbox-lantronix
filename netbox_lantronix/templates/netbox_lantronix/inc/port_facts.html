@@ -4,9 +4,9 @@
   <table class="table table-hover attr-table">
     {% if facts.state %}<tr><th scope="row">Port state</th><td>{{ facts.state }}</td></tr>{% endif %}
     <tr><th scope="row">Attached</th><td>{% if facts.attached %}Yes{% else %}No{% endif %}</td></tr>
-    <tr><th scope="row">Make / model</th><td>{{ facts.make|placeholder }} {{ facts.model }}</td></tr>
+    <tr><th scope="row">Make / model</th><td>{% if facts.make or facts.model %}{{ facts.make }} {{ facts.model }}{% else %}{{ None|placeholder }}{% endif %}</td></tr>
     <tr><th scope="row">Serial</th><td>{{ facts.serial|placeholder }}</td></tr>
-    <tr><th scope="row">OS</th><td>{{ facts.os|placeholder }} {{ facts.os_version }}</td></tr>
+    <tr><th scope="row">OS</th><td>{% if facts.os or facts.os_version %}{{ facts.os }} {{ facts.os_version }}{% else %}{{ None|placeholder }}{% endif %}</td></tr>
     <tr><th scope="row">Last reported</th><td>{{ facts.last_reported|isodatetime }}</td></tr>
   </table>
 </div>

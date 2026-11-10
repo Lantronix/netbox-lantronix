@@ -1,5 +1,6 @@
 """Views, panels and permissions."""
 
+import re
 from unittest import mock
 
 from dcim.models import ConsoleServerPort, Device, DeviceRole, Interface, Site
@@ -86,6 +87,19 @@ class ViewTest(TestCase):
         DeviceLink.objects.filter(pk=self.link.pk).update(mgmt_ip="")
         body = self.get(self.admin, self.port.get_absolute_url()).content.decode()
         self.assertNotIn("ssh://", body)
+
+    def test_port_facts_without_make_or_os_name(self):
+        PortFacts.objects.create(
+            port=self.port,
+            model="C9300-48P",
+            os_version="17.9.4a",
+            last_reported="2026-10-29T00:00:00Z",
+        )
+        body = self.get(self.admin, self.port.get_absolute_url()).content.decode()
+        rows = dict(re.findall(r'<th scope="row">([^<]+)</th><td>(.*?)</td>', body, re.S))
+        self.assertEqual(rows["Make / model"].strip(), "C9300-48P")
+        self.assertEqual(rows["OS"].strip(), "17.9.4a")
+        self.assertIn("mdash", rows["Serial"])
 
     def test_buttons_and_panels_need_view_permission(self):
         PortFacts.objects.create(

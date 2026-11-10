@@ -4,6 +4,9 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+### Fixed
+- The attached device panel on a console server port no longer shows a dash in front of the model or OS version when Percepxion reports no make or OS name.
+
 ## [0.5.1] - 2026-11-10
 
 ### Changed

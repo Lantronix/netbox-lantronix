@@ -119,6 +119,51 @@ class ViewTest(TestCase):
             enqueue.assert_called_once()
         self.assertEqual(self.client.get(url).status_code, 405)
 
+    def test_api_sync_action(self):
+        url = reverse(
+            "plugins-api:netbox_lantronix-api:percepxionsource-sync", kwargs={"pk": self.source.pk}
+        )
+        grant(self.viewer, [PercepxionSource], ["view"])
+        with (
+            mock.patch("netbox_lantronix.api.views.SyncJob.enqueue") as enqueue,
+            mock.patch("netbox_lantronix.api.views.sync_is_active", return_value=False),
+        ):
+            enqueue.return_value = mock.Mock(pk=7, get_absolute_url=lambda: "/core/jobs/7/")
+            self.client.force_login(self.viewer)
+            self.assertEqual(self.client.post(url).status_code, 403)
+            enqueue.assert_not_called()
+            self.client.force_login(self.admin)
+            r = self.client.post(url)
+            self.assertEqual(r.status_code, 202)
+            self.assertEqual(r.json()["job"]["id"], 7)
+            enqueue.assert_called_once()
+        with (
+            mock.patch("netbox_lantronix.api.views.sync_is_active", return_value=True),
+            mock.patch("netbox_lantronix.api.views.SyncJob.enqueue") as enqueue,
+        ):
+            self.assertEqual(self.client.post(url).status_code, 409)
+            enqueue.assert_not_called()
+        PercepxionSource.objects.filter(pk=self.source.pk).update(enabled=False)
+        self.assertEqual(self.client.post(url).status_code, 409)
+        self.assertEqual(self.client.get(url).status_code, 405)
+
+    def test_api_sync_action_with_only_sync_permission(self):
+        url = reverse(
+            "plugins-api:netbox_lantronix-api:percepxionsource-sync", kwargs={"pk": self.source.pk}
+        )
+        syncer = User.objects.create(username="syncer")
+        grant(syncer, [PercepxionSource], ["view", "sync"])
+        with (
+            mock.patch("netbox_lantronix.api.views.SyncJob.enqueue") as enqueue,
+            mock.patch("netbox_lantronix.api.views.sync_is_active", return_value=False),
+        ):
+            enqueue.return_value = mock.Mock(pk=8, get_absolute_url=lambda: "/core/jobs/8/")
+            self.client.force_login(syncer)
+            self.assertEqual(self.client.post(url).status_code, 202)
+            enqueue.assert_called_once()
+        self.client.logout()
+        self.assertIn(self.client.post(url).status_code, (401, 403))
+
     def test_approve_pending_link(self):
         DeviceLink.objects.filter(pk=self.link.pk).update(status=LinkStatusChoices.PENDING)
         url = self.link.get_absolute_url() + "approve/"

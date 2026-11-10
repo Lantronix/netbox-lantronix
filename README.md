@@ -133,6 +133,8 @@ PLUGINS_CONFIG = {
 3. Save, then click **Sync now**. The job appears under the source with its counts and log.
 4. Open **Findings**. Each one names the device and the fix.
 
+To sync on events instead of waiting for the schedule, call `POST /api/plugins/lantronix/sources/<id>/sync/` with an API token whose user has the sync permission. It answers 202 with the queued job, or 409 when a run is already queued or running, which will pick up the change.
+
 ### Device models
 
 Percepxion reports an SLC 9000's model as its total number of serial ports and doesn't report the Ethernet switch module or the power supply type. Several SLC 9000 SKUs therefore look the same in Percepxion. The plugin picks the device type in this order:
@@ -161,7 +163,7 @@ The plugin matches Percepxion devices to NetBox devices by its own link, then by
 | Permission | Allows |
 |---|---|
 | `netbox_lantronix.add/change/delete_percepxionsource` | manage sources |
-| `netbox_lantronix.sync_percepxionsource` | run **Sync now**, and schedule syncs when saving a source |
+| `netbox_lantronix.sync_percepxionsource` | run **Sync now** or the sync API call, and schedule syncs when saving a source |
 | `netbox_lantronix.view_*` | see sources, links, rules, overrides, findings and run history |
 | `netbox_lantronix.approve_devicelink` | approve pending device adoptions |
 | `netbox_lantronix.add/change_modelrule`, `..._devicetypeoverride` | resolve ambiguous models |

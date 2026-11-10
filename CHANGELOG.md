@@ -4,6 +4,9 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+### Added
+- REST endpoint to start a sync: `POST /api/plugins/lantronix/sources/<id>/sync/` queues a run, as the Sync now button does. It answers 202 with the job, 403 without the sync permission, and 409 when the source is disabled or a run is already queued or running. Webhook receivers can call it when Percepxion reports a port or device change, so NetBox updates without waiting for the schedule.
+
 ## [0.4.0] - 2026-11-09
 
 ### Added

@@ -4,6 +4,8 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-11-10
+
 ### Added
 - REST endpoint to start a sync: `POST /api/plugins/lantronix/sources/<id>/sync/` queues a run, as the Sync now button does. It answers 202 with the job, 403 without the sync permission, and 409 when the source is disabled or a run is already queued or running. Webhook receivers can call it when Percepxion reports a port or device change, so NetBox updates without waiting for the schedule.
 
@@ -44,7 +46,8 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 ### Added
 - First release. NetBox plugin that keeps NetBox current with the Lantronix SLC 9000, SLC 8000 and EMG console servers managed by Percepxion: devices, console server ports, port labels and attached-device facts.
 
-[Unreleased]: https://github.com/Lantronix/netbox-lantronix/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/Lantronix/netbox-lantronix/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/Lantronix/netbox-lantronix/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/Lantronix/netbox-lantronix/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/Lantronix/netbox-lantronix/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/Lantronix/netbox-lantronix/compare/v0.2.0...v0.2.1

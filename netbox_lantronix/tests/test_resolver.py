@@ -161,7 +161,7 @@ def test_parse_sysconfig_dc_and_no_switch():
 
 
 def test_parse_sysconfig_dc_model_string():
-    # 9.8 firmware reports the -DC suffix in Model: (read from the manufacturing VPD flag).
+    # Newer firmware reports the -DC suffix in Model: (read from the manufacturing VPD flag).
     text = SYSCONFIG_LITERAL.replace("SLC9016-16U-16E   ", "SLC9016-16U-16E-DC").replace(
         "AC, 2 power supplies", "DC, 2 power supplies"
     )

@@ -1,6 +1,6 @@
 from netbox.plugins import PluginConfig
 
-__version__ = "0.5.3"
+__version__ = "0.5.4"
 
 
 class NetBoxLantronixConfig(PluginConfig):

@@ -4,6 +4,8 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+## [0.5.4] - 2026-11-10
+
 ### Fixed
 
 - A sync with a Percepxion **project_admin** account no longer fails with `POST /v1/job/jobgroup/search returned HTTP 400`. The `show sysconfig` lookups now send the source's organization ID, which Percepxion requires from project_admin sessions.
@@ -70,7 +72,8 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 ### Added
 - First release. NetBox plugin that keeps NetBox current with the Lantronix SLC 9000, SLC 8000 and EMG console servers managed by Percepxion: devices, console server ports, port labels and attached-device facts.
 
-[Unreleased]: https://github.com/Lantronix/netbox-lantronix/compare/v0.5.3...HEAD
+[Unreleased]: https://github.com/Lantronix/netbox-lantronix/compare/v0.5.4...HEAD
+[0.5.4]: https://github.com/Lantronix/netbox-lantronix/compare/v0.5.3...v0.5.4
 [0.5.3]: https://github.com/Lantronix/netbox-lantronix/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/Lantronix/netbox-lantronix/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/Lantronix/netbox-lantronix/compare/v0.5.0...v0.5.1

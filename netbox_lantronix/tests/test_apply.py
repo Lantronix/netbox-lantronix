@@ -188,6 +188,39 @@ class ApplyTest(TestCase):
         self.assertEqual((counts["facts"]["updated"], link.mgmt_ip), (0, ""))
         self.assertFalse(PortFacts.objects.filter(port__device=device).exists())
 
+    def test_findings_are_kept_for_the_last_runs_only(self):
+        import uuid
+        from datetime import timedelta
+
+        from core.models import Job, ObjectType
+        from django.utils import timezone
+
+        from ..sync.apply import FINDINGS_KEEP_RUNS
+        from ..sync.planner import Finding
+
+        def job():
+            return Job.objects.create(
+                object_type=ObjectType.objects.get_for_model(self.source),
+                object_id=self.source.pk,
+                name="Percepxion sync",
+                job_id=uuid.uuid4(),
+            )
+
+        one = Plan(findings=[Finding("missing", "SLC-X", "dev-0009", "Not returned")])
+        jobs = [job() for _ in range(FINDINGS_KEEP_RUNS + 2)]
+        for j in jobs:
+            record_findings(one, self.source, j)
+        kept = set(SyncFinding.objects.filter(source=self.source).values_list("job_id", flat=True))
+        self.assertEqual(kept, {j.pk for j in jobs[2:]})
+        # Findings whose job row is gone are kept for 30 days, then removed.
+        old = SyncFinding.objects.create(source=self.source, job=None, kind="missing")
+        recent = SyncFinding.objects.create(source=self.source, job=None, kind="missing")
+        SyncFinding.objects.filter(pk=old.pk).update(created=timezone.now() - timedelta(days=31))
+        counts = record_findings(one, self.source, jobs[-1])
+        self.assertEqual(counts, {"missing": 1})
+        self.assertFalse(SyncFinding.objects.filter(pk=old.pk).exists())
+        self.assertTrue(SyncFinding.objects.filter(pk=recent.pk).exists())
+
     def test_never_moves_or_retypes_existing_device(self):
         self.run_sync()
         device = Device.objects.get(name="SLC-A")

@@ -32,6 +32,8 @@ jobs:
         run: ruff check .
       - name: Tests that need no NetBox
         run: pytest -q
+      - name: Release script tests
+        run: node --test scripts/release-pr.test.mjs
 
   netbox:
     name: NetBox ${{ matrix.netbox }}

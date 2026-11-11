@@ -26,6 +26,8 @@ from ..models import (
 from .planner import Finding, NbDevice, NbPort, Plan, SourceContext
 
 FINDINGS_KEEP_RUNS = 20
+# Port states that mean nothing is plugged in.
+IDLE_STATES = frozenset({"", "Disconnected", "Unknown"})
 
 
 def build_context(source) -> SourceContext:
@@ -171,8 +173,6 @@ def apply_plan(plan: Plan, source, user) -> dict:
     A permission failure raises and rolls the whole run back. A device that fails NetBox
     validation is skipped with a finding (added to ``plan.findings``) and the run goes on.
     """
-    from dcim.models import ConsoleServerPort, Device, DeviceType
-
     now = timezone.now()
     counts = {
         "devices": {"created": 0, "updated": 0, "unchanged": plan.unchanged, "pending": 0},
@@ -182,105 +182,10 @@ def apply_plan(plan: Plan, source, user) -> dict:
     with _tracking(user), transaction.atomic():
         # Inside the transaction and the change log: a failed run leaves nothing behind.
         _, platform, _ = ensure_objects()
-        # A device the sync user can't change gets no pending link: approving it would
-        # make every later run fail, and the link would keep other sources off the device.
-        in_scope = _changeable(user, [pk for pk, _ in plan.pending])
-        for pk, pxid in plan.pending:
-            if pk not in in_scope:
-                plan.findings.append(
-                    Finding(
-                        "conflict",
-                        "",
-                        pxid,
-                        "A matching NetBox device is outside the sync user's permissions",
-                    )
-                )
-                continue
-            _, made = DeviceLink.objects.get_or_create(
-                device_id=pk,
-                defaults={
-                    "source": source,
-                    "percepxion_device_id": pxid,
-                    "status": LinkStatusChoices.PENDING,
-                },
-            )
-            counts["devices"]["pending"] += int(made)
-
-        pk_by_pxid: dict[str, int] = {}
-        rejected_pks: set[int] = set()
-        for upd in plan.updates:
-            device = Device.objects.get(pk=upd.pk)
-            try:
-                with transaction.atomic():
-                    _update_device(device, upd, platform, user, counts)
-            except ValidationError as exc:
-                _rejected(plan, upd.changes.get("name") or device.name or "", upd.pxid, exc)
-                rejected_pks.add(device.pk)
-                continue
-            if upd.link == "adopt":
-                DeviceLink.objects.create(
-                    source=source, device=device, percepxion_device_id=upd.pxid, last_seen=now
-                )
-            pk_by_pxid[upd.pxid] = device.pk
-
-        types = {
-            t.slug: t
-            for t in DeviceType.objects.filter(slug__in={c.type_slug for c in plan.creates})
-        }
-        for c in plan.creates:
-            device = Device(
-                name=c.name,
-                device_type=types[c.type_slug],
-                role=source.role,
-                site=source.site,
-                platform=platform,
-                serial=c.serial,
-                status="active",
-                custom_field_data={CUSTOM_FIELD: c.pxid},
-            )
-            try:
-                with transaction.atomic():
-                    device.full_clean()
-                    device.save()
-            except ValidationError as exc:
-                _rejected(plan, c.name, c.pxid, exc)
-                continue
-            _check(Device, user, "add", device.pk)
-            DeviceLink.objects.create(
-                source=source,
-                device=device,
-                percepxion_device_id=c.pxid,
-                type_source=c.type_source,
-                last_seen=now,
-            )
-            pk_by_pxid[c.pxid] = device.pk
-            counts["devices"]["created"] += 1
-
-        # Ports: existing devices (diffed by the planner) and devices created above.
-        targets = {k: v for k, v in plan.port_changes.items() if k[0] not in rejected_pks}
-        for pxid, ports in plan.new_device_ports.items():
-            if pxid not in pk_by_pxid:
-                continue  # the device was rejected above
-            for pname, change in ports.items():
-                targets[(pk_by_pxid[pxid], pname)] = change
-        if targets:
-            port_qs = ConsoleServerPort.objects.filter(
-                device_id__in={pk for pk, _ in targets}, name__in={n for _, n in targets}
-            )
-            for port in port_qs:
-                change = targets.get((port.device_id, port.name))
-                if change is None or (port.label, port.description) == (
-                    change.label,
-                    change.description,
-                ):
-                    continue
-                _check(ConsoleServerPort, user, "change", port.pk)
-                port.snapshot()
-                port.label, port.description = change.label, change.description
-                port.full_clean()
-                port.save()
-                _check(ConsoleServerPort, user, "change", port.pk)
-                counts["ports"]["updated"] += 1
+        _apply_pending(plan, source, user, counts)
+        pk_by_pxid, rejected_pks = _apply_updates(plan, source, user, platform, now, counts)
+        pk_by_pxid.update(_apply_creates(plan, source, user, platform, now, counts))
+        _apply_ports(plan, user, pk_by_pxid, rejected_pks, counts)
 
         # Facts also come from devices with no device or port change this run.
         for pxid, device_pk in DeviceLink.objects.filter(
@@ -291,25 +196,149 @@ def apply_plan(plan: Plan, source, user) -> dict:
         in_scope = _changeable(user, pk_by_pxid.values())
         pk_by_pxid = {pxid: pk for pxid, pk in pk_by_pxid.items() if pk in in_scope}
         counts["facts"]["updated"] = _apply_facts(plan, pk_by_pxid, now)
-
-        # last_seen is bookkeeping: a queryset update writes no change record.
-        DeviceLink.objects.filter(source=source, percepxion_device_id__in=plan.seen).update(
-            last_seen=now
-        )
-        for link in DeviceLink.objects.filter(
-            source=source, percepxion_device_id__in=plan.seen, device_id__in=in_scope
-        ):
-            ip = plan.mgmt_ips.get(link.percepxion_device_id, "")
-            firmware = plan.firmware.get(link.percepxion_device_id) or link.firmware_version
-            if ip != link.mgmt_ip or firmware != link.firmware_version:
-                link.snapshot()
-                link.mgmt_ip = ip
-                link.firmware_version = firmware
-                link.save()
+        _apply_link_details(plan, source, in_scope, now)
     return counts
 
 
-IDLE_STATES = frozenset({"", "Disconnected", "Unknown"})
+def _apply_pending(plan: Plan, source, user, counts) -> None:
+    """Record adoptions that wait for approval."""
+    # A device the sync user can't change gets no pending link: approving it would make
+    # every later run fail, and the link would keep other sources off the device.
+    in_scope = _changeable(user, [pk for pk, _ in plan.pending])
+    for pk, pxid in plan.pending:
+        if pk not in in_scope:
+            plan.findings.append(
+                Finding(
+                    "conflict",
+                    "",
+                    pxid,
+                    "A matching NetBox device is outside the sync user's permissions",
+                )
+            )
+            continue
+        _, made = DeviceLink.objects.get_or_create(
+            device_id=pk,
+            defaults={
+                "source": source,
+                "percepxion_device_id": pxid,
+                "status": LinkStatusChoices.PENDING,
+            },
+        )
+        counts["devices"]["pending"] += int(made)
+
+
+def _apply_updates(plan: Plan, source, user, platform, now, counts):
+    """Update matched devices and link adopted ones.
+
+    Returns (pxid -> device pk for the devices written or linked, pks NetBox rejected)."""
+    from dcim.models import Device
+
+    pk_by_pxid: dict[str, int] = {}
+    rejected_pks: set[int] = set()
+    for upd in plan.updates:
+        device = Device.objects.get(pk=upd.pk)
+        try:
+            with transaction.atomic():
+                _update_device(device, upd, platform, user, counts)
+        except ValidationError as exc:
+            _rejected(plan, upd.changes.get("name") or device.name or "", upd.pxid, exc)
+            rejected_pks.add(device.pk)
+            continue
+        if upd.link == "adopt":
+            DeviceLink.objects.create(
+                source=source, device=device, percepxion_device_id=upd.pxid, last_seen=now
+            )
+        pk_by_pxid[upd.pxid] = device.pk
+    return pk_by_pxid, rejected_pks
+
+
+def _apply_creates(plan: Plan, source, user, platform, now, counts) -> dict[str, int]:
+    """Create new devices with their links. Returns pxid -> device pk for those created."""
+    from dcim.models import Device, DeviceType
+
+    created: dict[str, int] = {}
+    types = {
+        t.slug: t for t in DeviceType.objects.filter(slug__in={c.type_slug for c in plan.creates})
+    }
+    for c in plan.creates:
+        device = Device(
+            name=c.name,
+            device_type=types[c.type_slug],
+            role=source.role,
+            site=source.site,
+            platform=platform,
+            serial=c.serial,
+            status="active",
+            custom_field_data={CUSTOM_FIELD: c.pxid},
+        )
+        try:
+            with transaction.atomic():
+                device.full_clean()
+                device.save()
+        except ValidationError as exc:
+            _rejected(plan, c.name, c.pxid, exc)
+            continue
+        _check(Device, user, "add", device.pk)
+        DeviceLink.objects.create(
+            source=source,
+            device=device,
+            percepxion_device_id=c.pxid,
+            type_source=c.type_source,
+            last_seen=now,
+        )
+        created[c.pxid] = device.pk
+        counts["devices"]["created"] += 1
+    return created
+
+
+def _apply_ports(plan: Plan, user, pk_by_pxid, rejected_pks, counts) -> None:
+    """Write port labels and descriptions: existing devices (diffed by the planner) and
+    devices created this run."""
+    from dcim.models import ConsoleServerPort
+
+    targets = {k: v for k, v in plan.port_changes.items() if k[0] not in rejected_pks}
+    for pxid, ports in plan.new_device_ports.items():
+        if pxid not in pk_by_pxid:
+            continue  # the device was rejected
+        for pname, change in ports.items():
+            targets[(pk_by_pxid[pxid], pname)] = change
+    if not targets:
+        return
+    port_qs = ConsoleServerPort.objects.filter(
+        device_id__in={pk for pk, _ in targets}, name__in={n for _, n in targets}
+    )
+    for port in port_qs:
+        change = targets.get((port.device_id, port.name))
+        if change is None or (port.label, port.description) == (
+            change.label,
+            change.description,
+        ):
+            continue
+        _check(ConsoleServerPort, user, "change", port.pk)
+        port.snapshot()
+        port.label, port.description = change.label, change.description
+        port.full_clean()
+        port.save()
+        _check(ConsoleServerPort, user, "change", port.pk)
+        counts["ports"]["updated"] += 1
+
+
+def _apply_link_details(plan: Plan, source, in_scope, now) -> None:
+    """Refresh each seen link's last-seen time, management address and firmware."""
+    # last_seen is bookkeeping: a queryset update writes no change record.
+    DeviceLink.objects.filter(source=source, percepxion_device_id__in=plan.seen).update(
+        last_seen=now
+    )
+    for link in DeviceLink.objects.filter(
+        source=source, percepxion_device_id__in=plan.seen, device_id__in=in_scope
+    ):
+        ip = plan.mgmt_ips.get(link.percepxion_device_id, "")
+        firmware = plan.firmware.get(link.percepxion_device_id) or link.firmware_version
+        if ip != link.mgmt_ip or firmware != link.firmware_version:
+            link.snapshot()
+            link.mgmt_ip = ip
+            link.firmware_version = firmware
+            link.save()
 
 
 def _apply_facts(plan: Plan, pk_by_pxid, now) -> int:

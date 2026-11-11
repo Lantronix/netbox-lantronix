@@ -119,12 +119,6 @@ class PercepxionSource(JobsMixin, NetBoxModel):
         if user is not None and user.is_authenticated:
             apply_schedule_for(self, user)
 
-    def schedule_sync(self, user):
-        """(Re)schedule this source's periodic sync. Callers check the sync permission first."""
-        from .jobs import schedule
-
-        return schedule(self, user)
-
     @property
     def endpoint_config(self):
         return (get_plugin_config("netbox_lantronix", "endpoints") or {}).get(self.endpoint)

@@ -19,6 +19,18 @@ from .models import (
 SYNC_PERM = "netbox_lantronix.sync_percepxionsource"
 
 
+def links_for(user, queryset=None):
+    """Device links whose device the user may view.
+
+    A link shows its device's name, management address and firmware, so a user limited to
+    some devices sees only their links.
+    """
+    from dcim.models import Device
+
+    queryset = DeviceLink.objects.all() if queryset is None else queryset
+    return queryset.filter(device__in=Device.objects.restrict(user, "view"))
+
+
 #
 # Sources
 #
@@ -150,20 +162,35 @@ class DeviceLinkListView(generic.ObjectListView):
     table = tables.DeviceLinkTable
     filterset = filtersets.DeviceLinkFilterSet
 
+    def get_queryset(self, request):
+        return links_for(request.user, super().get_queryset(request))
+
 
 @register_model_view(DeviceLink)
 class DeviceLinkView(generic.ObjectView):
     queryset = DeviceLink.objects.all()
 
+    def get_queryset(self, request):
+        return links_for(request.user, super().get_queryset(request))
+
     def get_extra_context(self, request, instance):
-        return {
-            "can_approve": request.user.has_perm("netbox_lantronix.approve_devicelink", instance)
-        }
+        return {"can_approve": may_approve(request.user, instance)}
 
 
 @register_model_view(DeviceLink, "delete")
 class DeviceLinkDeleteView(generic.ObjectDeleteView):
     queryset = DeviceLink.objects.all()
+
+    def get_queryset(self, request):
+        return links_for(request.user, super().get_queryset(request))
+
+
+def may_approve(user, link) -> bool:
+    """Approving lets the sync rename the device and relabel its ports, so it takes the
+    approve action on the link and change permission on the device itself."""
+    return user.has_perm("netbox_lantronix.approve_devicelink", link) and user.has_perm(
+        "dcim.change_device", link.device
+    )
 
 
 @register_model_view(DeviceLink, "approve", path="approve")
@@ -171,9 +198,15 @@ class DeviceLinkApproveView(View):
     """POST only: approve a pending adoption."""
 
     def post(self, request, pk):
-        link = get_object_or_404(DeviceLink.objects.restrict(request.user, "view"), pk=pk)
-        if not request.user.has_perm("netbox_lantronix.approve_devicelink", link):
-            messages.error(request, "You don't have permission to approve device links.")
+        link = get_object_or_404(
+            links_for(request.user, DeviceLink.objects.restrict(request.user, "view")), pk=pk
+        )
+        if not may_approve(request.user, link):
+            messages.error(
+                request,
+                "Approving needs the approve permission on the link and change permission on "
+                "the device.",
+            )
         elif link.status != LinkStatusChoices.PENDING:
             messages.info(request, "This link is already active.")
         else:

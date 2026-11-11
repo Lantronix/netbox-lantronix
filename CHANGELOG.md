@@ -4,6 +4,23 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+### Security
+
+- Device links are listed, shown and deleted only for devices the user can view. Before, view permission on device links showed the name, management address and firmware of every linked console server.
+- Approving a pending adoption now also needs change permission on the device being adopted.
+- A pending adoption is no longer recorded for a device the sync user can't change, and port facts and link details are no longer written for one. Before, these records ignored the sync user's object permissions.
+- The **Open console** button isn't shown for a loopback, link-local, multicast or unspecified address, and its tooltip shows the address and port it opens.
+- Each sync now revokes its Percepxion refresh token and closes the connection when it has finished reading.
+- Conflict findings no longer name the manufacturer or platform of another NetBox device.
+- Zero-width and other invisible characters are removed from labels, descriptions and attached-device details read from Percepxion.
+
+### Fixed
+
+- Stored `show sysconfig` output that can't be read no longer stops the sync. The device type falls back to the model rules.
+- A mistyped `web_port_url` no longer breaks console port pages; the **Open in Percepxion** button is left out.
+- The SSH base port must be between 1 and 65000, so the port a console link opens is always valid.
+- The manufacturer, platform and custom field the plugin creates on its first run are now part of the sync's transaction and change log.
+
 ## [0.6.0] - 2026-11-11
 
 ### Security

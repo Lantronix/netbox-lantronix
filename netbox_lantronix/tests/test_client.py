@@ -155,7 +155,8 @@ def assert_no_secrets(text: str):
 # -- allowlist ---------------------------------------------------------------------------------
 
 
-def test_allowed_is_exactly_the_six_contract_pairs():
+def test_allowed_is_exactly_the_contract_pairs():
+    # Six reads (login is a POST) and the call that ends the client's own session.
     assert set(ALLOWED) == {
         ("POST", "/v2/user/login"),
         ("POST", "/v3/device/search"),
@@ -163,8 +164,9 @@ def test_allowed_is_exactly_the_six_contract_pairs():
         ("POST", "/v1/job/jobgroup/search"),
         ("POST", "/v1/telemetry/result/search"),
         ("POST", "/v1/telemetry/stat/view"),
+        ("DELETE", "/v1/user/token"),
     }
-    assert len(ALLOWED) == 6
+    assert len(ALLOWED) == 7
 
 
 @pytest.mark.parametrize(
@@ -624,3 +626,42 @@ def test_relogin_rejected_is_auth_error(server):
     server.add(*JOBS, FakeResponse(401, {}))
     with pytest.raises(AuthError):
         make_client().latest_sysconfig_jobs()
+
+
+# -- logout ------------------------------------------------------------------------------------
+
+LOGOUT = ("DELETE", "/v1/user/token")
+REFRESH = "refresh-0000-1111"
+
+
+def login_with_refresh():
+    return FakeResponse(200, {"token": TOKEN, "csrf_token": CSRF, "refresh_token": REFRESH})
+
+
+def test_logout_revokes_the_refresh_token_and_forgets_the_session(server):
+    server.add(*LOGIN, login_with_refresh())
+    server.add(*LOGOUT, FakeResponse(200, {"status": "success"}))
+    c = make_client()
+    c.login()
+    with mock.patch.object(c._session, "close") as close:
+        c.logout()
+    assert server.bodies("/v1/user/token") == [{"refresh_tokens": [REFRESH]}]
+    assert "x-mystq-token" not in c._session.headers and "x-csrf-token" not in c._session.headers
+    close.assert_called_once()
+    assert REFRESH not in repr(c)
+
+
+@pytest.mark.parametrize("answer", [FakeResponse(404, {}), FakeResponse(401, {}), "network"])
+def test_logout_never_raises_and_never_logs_in_again(server, answer):
+    server.add(*LOGIN, login_with_refresh())
+    server.add(*LOGOUT, requests.ConnectionError("boom") if answer == "network" else answer)
+    c = make_client()
+    c.login()
+    c.logout()
+    assert [call["path"] for call in server.calls].count("/v2/user/login") == 1
+    assert "x-mystq-token" not in c._session.headers
+
+
+def test_logout_without_a_login_makes_no_call(server):
+    make_client().logout()
+    assert server.calls == []

@@ -147,6 +147,18 @@ def _update_device(device, upd, platform, user, counts) -> None:
     counts["devices"]["updated"] += 1
 
 
+def _changeable(user, device_pks) -> set[int]:
+    """The given devices the user's object permissions let them change. One query."""
+    from dcim.models import Device
+
+    pks = set(device_pks)
+    if not pks:
+        return set()
+    return set(
+        Device.objects.restrict(user, "change").filter(pk__in=pks).values_list("pk", flat=True)
+    )
+
+
 def _rejected(plan: Plan, name: str, pxid: str, exc: ValidationError) -> None:
     """Record a device NetBox's own validation refused; the rest of the run goes on."""
     reason = "; ".join(exc.messages)[:300]
@@ -161,7 +173,6 @@ def apply_plan(plan: Plan, source, user) -> dict:
     """
     from dcim.models import ConsoleServerPort, Device, DeviceType
 
-    _, platform, _ = ensure_objects()
     now = timezone.now()
     counts = {
         "devices": {"created": 0, "updated": 0, "unchanged": plan.unchanged, "pending": 0},
@@ -169,7 +180,22 @@ def apply_plan(plan: Plan, source, user) -> dict:
         "facts": {"updated": 0},
     }
     with _tracking(user), transaction.atomic():
+        # Inside the transaction and the change log: a failed run leaves nothing behind.
+        _, platform, _ = ensure_objects()
+        # A device the sync user can't change gets no pending link: approving it would
+        # make every later run fail, and the link would keep other sources off the device.
+        in_scope = _changeable(user, [pk for pk, _ in plan.pending])
         for pk, pxid in plan.pending:
+            if pk not in in_scope:
+                plan.findings.append(
+                    Finding(
+                        "conflict",
+                        "",
+                        pxid,
+                        "A matching NetBox device is outside the sync user's permissions",
+                    )
+                )
+                continue
             _, made = DeviceLink.objects.get_or_create(
                 device_id=pk,
                 defaults={
@@ -261,13 +287,18 @@ def apply_plan(plan: Plan, source, user) -> dict:
             source=source, percepxion_device_id__in=plan.seen, status=LinkStatusChoices.ACTIVE
         ).values_list("percepxion_device_id", "device_id"):
             pk_by_pxid.setdefault(pxid, device_pk)
+        # Port facts and link details are written only for devices the sync user may change.
+        in_scope = _changeable(user, pk_by_pxid.values())
+        pk_by_pxid = {pxid: pk for pxid, pk in pk_by_pxid.items() if pk in in_scope}
         counts["facts"]["updated"] = _apply_facts(plan, pk_by_pxid, now)
 
         # last_seen is bookkeeping: a queryset update writes no change record.
         DeviceLink.objects.filter(source=source, percepxion_device_id__in=plan.seen).update(
             last_seen=now
         )
-        for link in DeviceLink.objects.filter(source=source, percepxion_device_id__in=plan.seen):
+        for link in DeviceLink.objects.filter(
+            source=source, percepxion_device_id__in=plan.seen, device_id__in=in_scope
+        ):
             ip = plan.mgmt_ips.get(link.percepxion_device_id, "")
             firmware = plan.firmware.get(link.percepxion_device_id) or link.firmware_version
             if ip != link.mgmt_ip or firmware != link.firmware_version:

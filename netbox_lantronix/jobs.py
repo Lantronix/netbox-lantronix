@@ -170,14 +170,23 @@ class SyncJob(JobRunner):
 
             def sysconfig(pxid):
                 nonlocal sysconfig_jobs
-                if sysconfig_jobs is None:
-                    # A project_admin session gets HTTP 400 on job and telemetry searches
-                    # without tenant_id; tenant_user sessions accept it too.
-                    sysconfig_jobs = client.latest_sysconfig_jobs(org)
-                job = sysconfig_jobs.get(pxid)
-                if not job:
+                try:
+                    if sysconfig_jobs is None:
+                        # A project_admin session gets HTTP 400 on job and telemetry searches
+                        # without tenant_id; tenant_user sessions accept it too.
+                        sysconfig_jobs = client.latest_sysconfig_jobs(org)
+                    job = sysconfig_jobs.get(pxid)
+                    if not job:
+                        return None
+                    text = client.cli_output(job[0], pxid, org)
+                except (PercepxionUnavailable, PartialData) as exc:
+                    # One unreadable result must not stop the sync: the planner falls back to
+                    # the model rules. A failed job search isn't retried for every device.
+                    if sysconfig_jobs is None:
+                        sysconfig_jobs = {}
+                    self.logger.warning(f"Stored show sysconfig output unavailable: {exc}")
                     return None
-                return sku_from_sysconfig(parse_sysconfig(client.cli_output(job[0], pxid, org)))
+                return sku_from_sysconfig(parse_sysconfig(text))
 
             nb_devices, nb_ports = build_snapshot(source, px_devices)
             plan = make_plan(
@@ -191,6 +200,8 @@ class SyncJob(JobRunner):
             raise JobFailed("Percepxion rejected the login for this endpoint") from None
         except (PercepxionUnavailable, PartialData) as exc:
             raise JobFailed(f"Percepxion read failed: {exc}") from None
+        finally:
+            client.logout()  # everything Percepxion is asked for has been read by now
 
         try:
             counts = apply_plan(plan, source, user)

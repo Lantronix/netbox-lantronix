@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from .. import filtersets
 from ..jobs import SyncJob, sync_is_active
 from ..models import DeviceLink, DeviceTypeOverride, ModelRule, PercepxionSource
-from ..views import SYNC_PERM
+from ..views import SYNC_PERM, links_for
 from . import serializers
 
 
@@ -65,6 +65,9 @@ class DeviceLinkViewSet(NetBoxModelViewSet):
     queryset = DeviceLink.objects.all()
     serializer_class = serializers.DeviceLinkSerializer
     filterset_class = filtersets.DeviceLinkFilterSet
+
+    def get_queryset(self):
+        return links_for(self.request.user, super().get_queryset())
 
 
 class ModelRuleViewSet(NetBoxModelViewSet):

@@ -439,3 +439,20 @@ def test_facts_sanitized():
     facts = r.facts["dev-0001"]["Port-02"]
     assert facts["make"] == "cis co" and facts["model"] == "C9300-48P"  # control char -> space
     assert facts["os"] == "ios-xe" and len(facts["serial"]) <= 100
+
+
+def test_loopback_management_address_is_not_recorded():
+    from dataclasses import replace
+
+    r = plan(ctx(), [replace(px(), ip="127.0.0.1")], [], [], [])
+    assert r.creates and r.mgmt_ips == {}
+    r = plan(ctx(), [px()], [], [], [])
+    assert r.mgmt_ips == {"dev-0001": "192.0.2.10"}
+
+
+def test_conflict_findings_do_not_describe_the_other_device():
+    other = nb(manufacturer="cisco", platform="ios", link_source=None, link_pxid=None, cf_pxid=None)
+    r = plan(ctx(), [px()], [], [other], [])
+    (finding,) = r.findings
+    assert finding.kind == "conflict"
+    assert "cisco" not in finding.detail and "ios" not in finding.detail

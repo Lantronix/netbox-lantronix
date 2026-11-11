@@ -248,8 +248,9 @@ class ApplyTest(TestCase):
         no_facts = [px_port(1, name="SLC-B"), px_port(2, hostname="Switch"), px_port(3)]
         self.run_sync(ports=no_facts)  # device stops reporting: facts stay as last reported
         kept = PortFacts.objects.get(port=port2)
-        self.assertEqual((kept.model, kept.last_reported >= first.last_reported),
-                         ("WS-C3560CG-8TC-S", True))
+        self.assertEqual(
+            (kept.model, kept.last_reported >= first.last_reported), ("WS-C3560CG-8TC-S", True)
+        )
 
     def test_unplugged_port_keeps_facts_as_history_and_shows_not_attached(self):
         self.run_sync()
@@ -259,8 +260,9 @@ class ApplyTest(TestCase):
         self.run_sync(ports=unplugged)
         kept = PortFacts.objects.get(port=port2)
         port2.refresh_from_db()
-        self.assertEqual((kept.attached, kept.state, kept.model), (False, "Disconnected",
-                                                                  "WS-C3560CG-8TC-S"))
+        self.assertEqual(
+            (kept.attached, kept.state, kept.model), (False, "Disconnected", "WS-C3560CG-8TC-S")
+        )
         self.assertEqual(kept.last_reported, first.last_reported)
         self.assertEqual(port2.description, "")
 
@@ -272,8 +274,19 @@ class ApplyTest(TestCase):
 
     def test_facts_follow_attached_device_on_unchanged_console_server(self):
         self.run_sync()
-        swapped = [PORTS[0], px_port(2, hostname="Switch", make="cisco", model="C9300-24T",
-                                     os="ios-xe", os_version="17.9.4", serial=""), PORTS[2]]
+        swapped = [
+            PORTS[0],
+            px_port(
+                2,
+                hostname="Switch",
+                make="cisco",
+                model="C9300-24T",
+                os="ios-xe",
+                os_version="17.9.4",
+                serial="",
+            ),
+            PORTS[2],
+        ]
         _, counts = self.run_sync(ports=swapped)
         self.assertEqual(counts["devices"]["unchanged"], 1)
         port2 = ConsoleServerPort.objects.get(device__name="SLC-A", name="Port-02")

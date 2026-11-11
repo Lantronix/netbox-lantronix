@@ -202,6 +202,18 @@ The button builds `ssh://<address>:<SSH base port + port number>`. It uses the d
 
 On the console server, direct SSH access is off by default on every port. Turn it on for the ports you want to reach, for example `set deviceport port 1-48 sshin enable` (answer `yes` to the confirmation), or from the WebUI's device port settings with **Apply Settings** to the ports you choose.
 
+## Console coverage gate
+
+The plugin includes a NetBox script that reports, for the devices you choose, which ones have a ready console path: a console cable in NetBox to a port on a synced SLC, with that port in a ready state (Managed or Identified by default). Run it before a change, and stop the change when any device has no way back.
+
+The `oob_coverage_gate` role in the [lantronix.oob](https://github.com/Lantronix/ansible-collection-oob) Ansible collection runs this script by name (`ConsoleCoverageGate`) and fails the play when a device isn't covered.
+
+To install it, upload [`netbox_lantronix/coverage/console_coverage_gate.py`](netbox_lantronix/coverage/console_coverage_gate.py) under **Customization > Scripts > Add**. You can also sync it from a data source or copy it into `SCRIPTS_ROOT`. The file is a thin wrapper: the gate logic is in the installed plugin, so it updates when you upgrade the plugin.
+
+The gate needs the console cables in NetBox: each device's console port cabled to the SLC console server port that reaches it. The plugin doesn't create those cables. The script is read only and reports only what the requesting user may view; a cable whose SLC end the user can't see is reported as `peer_not_visible`, with no SLC details.
+
+Each device in the report gets a reason when it isn't covered: `no_console_port`, `no_console_cable`, `peer_not_visible`, `peer_not_console_server`, `slc_not_synced`, `port_name_unparsed`, `no_slc_host`, `port_state_unknown` or `port_state_not_ready`. The script returns the full report as JSON (schema `aoob.console-coverage/v1`).
+
 ## Troubleshooting
 
 | Symptom | Check |

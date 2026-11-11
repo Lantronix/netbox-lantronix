@@ -37,7 +37,7 @@ def recorded():
     sent: list[tuple[str, dict]] = []
 
     def replay(session, method, url, json=None, **kwargs):
-        path = url[len(URL):]
+        path = url[len(URL) :]
         sent.append((path, json))
         return Response(queues[path].pop(0)["response"])
 

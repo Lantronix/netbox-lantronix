@@ -4,6 +4,10 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+### Added
+
+- **Console coverage gate**, a NetBox script that reports which devices have a ready console path through a synced SLC port, with a reason for each device that doesn't. Upload `netbox_lantronix/coverage/console_coverage_gate.py` under **Customization > Scripts**; the lantronix.oob `oob_coverage_gate` role runs it before a change.
+
 ## [0.6.2] - 2026-11-11
 
 ### Changed

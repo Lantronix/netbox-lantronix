@@ -1,0 +1,153 @@
+[
+ {
+  "id": "8",
+  "name": "edge-switch-01",
+  "site": "site-a",
+  "role": "network-switch",
+  "platform": "cisco_ios",
+  "links": [
+   {
+    "console_port": "Console",
+    "cabled": true,
+    "peer_is_console_server_port": true,
+    "slc_port": "Port-14",
+    "port_state": "Managed",
+    "slc": {
+     "id": "1",
+     "name": "slc-01",
+     "synced": true,
+     "host": "192.0.2.10",
+     "host_source": "primary_ip",
+     "ssh_base_port": 3000,
+     "manufacturer": "lantronix",
+     "percepxion_id": "px-demo-0001"
+    }
+   }
+  ]
+ },
+ {
+  "id": "10",
+  "name": "emg-01",
+  "site": "site-a",
+  "role": "edge-gateway",
+  "platform": "lantronix_itmgos",
+  "links": [
+   {
+    "console_port": "Console",
+    "cabled": true,
+    "peer_is_console_server_port": true,
+    "slc_port": "Port-05",
+    "port_state": "Unidentified",
+    "slc": {
+     "id": "1",
+     "name": "slc-01",
+     "synced": true,
+     "host": "192.0.2.10",
+     "host_source": "primary_ip",
+     "ssh_base_port": 3000,
+     "manufacturer": "lantronix",
+     "percepxion_id": "px-demo-0001"
+    }
+   }
+  ]
+ },
+ {
+  "id": "7",
+  "name": "firewall-01",
+  "site": "site-a",
+  "role": "firewall",
+  "platform": "linux",
+  "links": [
+   {
+    "console_port": "Console",
+    "cabled": true,
+    "peer_is_console_server_port": true,
+    "slc_port": "Port-03",
+    "port_state": "Unidentified",
+    "slc": {
+     "id": "1",
+     "name": "slc-01",
+     "synced": true,
+     "host": "192.0.2.10",
+     "host_source": "primary_ip",
+     "ssh_base_port": 3000,
+     "manufacturer": "lantronix",
+     "percepxion_id": "px-demo-0001"
+    }
+   }
+  ]
+ },
+ {
+  "id": "9",
+  "name": "access-sw-01",
+  "site": "site-a",
+  "role": "network-switch",
+  "platform": "lantronix-switch",
+  "links": [
+   {
+    "console_port": "Console",
+    "cabled": true,
+    "peer_is_console_server_port": true,
+    "slc_port": "Port-04",
+    "port_state": null,
+    "slc": {
+     "id": "1",
+     "name": "slc-01",
+     "synced": true,
+     "host": "192.0.2.10",
+     "host_source": "primary_ip",
+     "ssh_base_port": 3000,
+     "manufacturer": "lantronix",
+     "percepxion_id": "px-demo-0001"
+    }
+   }
+  ]
+ },
+ {
+  "id": "2",
+  "name": "slc-02",
+  "site": "site-a",
+  "role": "oob-console-server",
+  "platform": "lantronix_itmgos",
+  "links": [
+   {
+    "console_port": "Console",
+    "cabled": true,
+    "peer_is_console_server_port": true,
+    "slc_port": "Port-01",
+    "port_state": null,
+    "slc": {
+     "id": "1",
+     "name": "slc-01",
+     "synced": true,
+     "host": "192.0.2.10",
+     "host_source": "primary_ip",
+     "ssh_base_port": 3000,
+     "manufacturer": "lantronix",
+     "percepxion_id": "px-demo-0001"
+    }
+   }
+  ]
+ },
+ {
+  "id": "1",
+  "name": "slc-01",
+  "site": "site-a",
+  "role": "oob-console-server",
+  "platform": "lantronix_itmgos",
+  "links": [
+   {
+    "console_port": "Console",
+    "cabled": false
+   }
+  ]
+ },
+ {
+  "id": "11",
+  "name": "nas-01",
+  "site": "site-a",
+  "role": "storage",
+  "platform": null,
+  "links": []
+ }
+]

@@ -4,6 +4,8 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-11-11
+
 ### Security
 
 - Device links are listed, shown and deleted only for devices the user can view. Before, view permission on device links showed the name, management address and firmware of every linked console server.
@@ -108,7 +110,8 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 ### Added
 - First release. NetBox plugin that keeps NetBox current with the Lantronix SLC 9000, SLC 8000 and EMG console servers managed by Percepxion: devices, console server ports, port labels and attached-device facts.
 
-[Unreleased]: https://github.com/Lantronix/netbox-lantronix/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/Lantronix/netbox-lantronix/compare/v0.6.1...HEAD
+[0.6.1]: https://github.com/Lantronix/netbox-lantronix/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/Lantronix/netbox-lantronix/compare/v0.5.4...v0.6.0
 [0.5.4]: https://github.com/Lantronix/netbox-lantronix/compare/v0.5.3...v0.5.4
 [0.5.3]: https://github.com/Lantronix/netbox-lantronix/compare/v0.5.2...v0.5.3

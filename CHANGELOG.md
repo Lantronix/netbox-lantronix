@@ -4,6 +4,8 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-11-11
+
 ### Security
 
 - The Percepxion client no longer follows HTTP redirects. A redirect from the endpoint could carry the session token, and on a 307 or 308 the login request, to another host. A redirect now fails the sync with "was redirected".
@@ -89,7 +91,8 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 ### Added
 - First release. NetBox plugin that keeps NetBox current with the Lantronix SLC 9000, SLC 8000 and EMG console servers managed by Percepxion: devices, console server ports, port labels and attached-device facts.
 
-[Unreleased]: https://github.com/Lantronix/netbox-lantronix/compare/v0.5.4...HEAD
+[Unreleased]: https://github.com/Lantronix/netbox-lantronix/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/Lantronix/netbox-lantronix/compare/v0.5.4...v0.6.0
 [0.5.4]: https://github.com/Lantronix/netbox-lantronix/compare/v0.5.3...v0.5.4
 [0.5.3]: https://github.com/Lantronix/netbox-lantronix/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/Lantronix/netbox-lantronix/compare/v0.5.1...v0.5.2

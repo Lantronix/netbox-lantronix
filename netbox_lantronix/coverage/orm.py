@@ -19,6 +19,11 @@ def _visible_ids(model, ids, user) -> set:
     return set(_restrict(model.objects.filter(pk__in=ids), user).values_list("pk", flat=True))
 
 
+def _primary_ip_pk(device):
+    ip = device.primary_ip
+    return ip.pk if ip is not None else None
+
+
 def netbox_slc(device, cache: dict, link, ip_visible: bool = True) -> Slc:
     """`link` is the device's DeviceLink if the user may view it, else None. `ip_visible` says
     whether the user may view the device's primary IP."""
@@ -68,7 +73,7 @@ def netbox_targets(user=None):
     csps = [p for p in peers.values() if isinstance(p, ConsoleServerPort)]
     ok_ports = _visible_ids(ConsoleServerPort, [p.pk for p in csps], user)
     ok_devices = _visible_ids(Device, list({p.device_id for p in csps}), user)
-    slc_ips = [p.device.primary_ip_id for p in csps if p.device_id in ok_devices]
+    slc_ips = [_primary_ip_pk(p.device) for p in csps if p.device_id in ok_devices]
     ok_ips = _visible_ids(IPAddress, [i for i in slc_ips if i], user)
     links = {
         ln.device_id: ln
@@ -91,7 +96,7 @@ def netbox_targets(user=None):
                 if peer.pk in ok_ports and peer.device_id in ok_devices:
                     f = facts.get(peer.pk)
                     link.peer_is_console_server_port = True
-                    ip_ok = peer.device.primary_ip_id in ok_ips
+                    ip_ok = _primary_ip_pk(peer.device) in ok_ips
                     link.slc = netbox_slc(peer.device, cache, links.get(peer.device_id), ip_ok)
                     link.slc_port = peer.name
                     link.port_state = (f.state or None) if f is not None else None

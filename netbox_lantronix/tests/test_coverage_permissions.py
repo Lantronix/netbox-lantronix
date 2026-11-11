@@ -122,7 +122,6 @@ def netbox(monkeypatch):
         platform=ns(slug="cisco_ios"),
         tags=QS([]),
         primary_ip=None,
-        primary_ip_id=None,
         site_id=1,
         device_type=ns(manufacturer=ns(slug="lantronix")),
     )
@@ -133,8 +132,7 @@ def netbox(monkeypatch):
     t_a_cross = Device(pk=5, name="target-a-on-slc-b", site=a, **common)
     t_a_hidden = Device(pk=6, name="target-a-hidden-cable", site=a, **common)
     # slc-a's primary IP record sits where the user can't view it.
-    slc_a.primary_ip_id = 50
-    slc_a.primary_ip = ns(address=ns(ip="198.51.100.50"))
+    slc_a.primary_ip = ns(pk=50, address=ns(ip="198.51.100.50"))
     IPAddress(pk=50, device=slc_b)
     src = ns(ssh_base_port=3000)
     for slc in (slc_a, slc_b):

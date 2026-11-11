@@ -4,6 +4,8 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-11-11
+
 ### Added
 
 - **Console coverage gate**, a NetBox script that reports which devices have a ready console path through a synced SLC port, with a reason for each device that doesn't. Upload `netbox_lantronix/coverage/console_coverage_gate.py` under **Customization > Scripts**; the lantronix.oob `oob_coverage_gate` role runs it before a change.
@@ -117,7 +119,8 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 ### Added
 - First release. NetBox plugin that keeps NetBox current with the Lantronix SLC 9000, SLC 8000 and EMG console servers managed by Percepxion: devices, console server ports, port labels and attached-device facts.
 
-[Unreleased]: https://github.com/Lantronix/netbox-lantronix/compare/v0.6.2...HEAD
+[Unreleased]: https://github.com/Lantronix/netbox-lantronix/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/Lantronix/netbox-lantronix/compare/v0.6.2...v0.7.0
 [0.6.2]: https://github.com/Lantronix/netbox-lantronix/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/Lantronix/netbox-lantronix/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/Lantronix/netbox-lantronix/compare/v0.5.4...v0.6.0

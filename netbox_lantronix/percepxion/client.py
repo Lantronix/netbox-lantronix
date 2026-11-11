@@ -23,9 +23,11 @@ from .telemetry import PxPortState, parse_port_states
 CLIENT_VERSION = "0.5.4"
 USER_AGENT = f"netbox-lantronix/{CLIENT_VERSION}"
 
+LOGIN_PATH = "/v2/user/login"
+
 ALLOWED: frozenset[tuple[str, str]] = frozenset(
     {
-        ("POST", "/v2/user/login"),
+        ("POST", LOGIN_PATH),
         ("POST", "/v3/device/search"),
         ("POST", "/v3/port/search"),
         ("POST", "/v1/job/jobgroup/search"),
@@ -53,11 +55,14 @@ class ForbiddenRequest(PercepxionError):
 
 
 class AuthError(PercepxionError):
-    """Login rejected (HTTP 400/401/403) or the response held no token."""
+    """The login itself was rejected (HTTP 400/401/403) or its response held no token."""
 
 
 class PercepxionUnavailable(PercepxionError):
-    """Network failure, timeout, unexpected status or malformed response."""
+    """Network failure, timeout, redirect, unexpected status or malformed response.
+
+    Includes 401/403 on a read after a good login: the account lacks access to that
+    call, which says nothing about the credentials."""
 
 
 class PartialData(PercepxionError):
@@ -105,19 +110,33 @@ class PercepxionClient:
 
     # -- transport -----------------------------------------------------------------------------
 
-    def _request(self, method: str, path: str, body: dict[str, Any]) -> dict[str, Any]:
+    def _request(
+        self, method: str, path: str, body: dict[str, Any], retry_login: bool = True
+    ) -> dict[str, Any]:
         method = method.upper()
         if (method, path) not in ALLOWED:
             raise ForbiddenRequest(f"{method} {path} is not on the Percepxion allowlist")
         try:
-            resp = self._session.request(method, self.url + path, json=body, timeout=TIMEOUT)
+            # Redirects are never followed: requests would send the session token, and on a
+            # 307/308 the login body, to whatever host the response names.
+            resp = self._session.request(
+                method, self.url + path, json=body, timeout=TIMEOUT, allow_redirects=False
+            )
         except requests.RequestException as exc:
             raise PercepxionUnavailable(f"{method} {path} failed: {type(exc).__name__}") from None
         status = resp.status_code
-        if path == "/v2/user/login" and status in (400, 401, 403):
-            raise AuthError(f"Percepxion login rejected (HTTP {status})")
-        if status in (401, 403):
-            raise AuthError(f"{method} {path} not authorized (HTTP {status})")
+        if 300 <= status < 400:
+            raise PercepxionUnavailable(f"{method} {path} was redirected (HTTP {status})")
+        if path == LOGIN_PATH:
+            if status in (400, 401, 403):
+                raise AuthError(f"Percepxion login rejected (HTTP {status})")
+        elif status == 401 and retry_login and self._logged_in:
+            # The session ended mid-run. Log in again once; a rejected login raises AuthError.
+            self._logged_in = False
+            self.login()
+            return self._request(method, path, body, retry_login=False)
+        elif status in (401, 403):
+            raise PercepxionUnavailable(f"{method} {path} not authorized (HTTP {status})")
         if not 200 <= status < 300:
             raise PercepxionUnavailable(f"{method} {path} returned HTTP {status}")
         try:
@@ -130,7 +149,7 @@ class PercepxionClient:
 
     def login(self) -> None:
         data = self._request(
-            "POST", "/v2/user/login", {"username": self._username, "password": self._password}
+            "POST", LOGIN_PATH, {"username": self._username, "password": self._password}
         )
         token, csrf = data.get("token"), data.get("csrf_token")
         if not token or not csrf:

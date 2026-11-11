@@ -126,6 +126,7 @@ PLUGINS_CONFIG = {
                 "username": os.environ["PERCEPXION_USERNAME"],
                 "password": os.environ["PERCEPXION_PASSWORD"],
                 # Optional:
+                # "organizations": ["<organization ID>"],  # the only organizations sources may sync
                 # "verify": True,                      # TLS verification, on by default
                 # "ca_bundle": "/etc/ssl/px-ca.pem",   # CA bundle for on-premises Percepxion
                 # "proxy": "http://proxy.example.com:3128",
@@ -138,7 +139,9 @@ PLUGINS_CONFIG = {
 - `url` must use `https://`. The plugin won't load an endpoint that doesn't.
 - `username` and `password` are required. They're read when a sync starts and never written to the database, job data, logs or findings.
 - A missing key stops the plugin at startup with an error that names the endpoint and the key, never the value.
-- Turning `verify` off shows a warning on every source that uses the endpoint.
+- `organizations` limits which Percepxion organizations a source on this endpoint may sync. Set it whenever the Percepxion account can see more than one organization. Without it, anyone who can add or edit a source can sync any organization the account can see. A source whose organization isn't listed can't be saved and won't sync.
+- `verify` must be `True` or `False`; any other value stops the plugin at startup. Turning it off shows a warning on every source that uses the endpoint.
+- The plugin never follows HTTP redirects from the endpoint. Set `url` to the address that answers directly.
 - Endpoint changes take effect after a NetBox restart.
 
 ## First sync
@@ -158,6 +161,8 @@ Percepxion reports an SLC 9000's model as its total number of serial ports and d
 2. **`show sysconfig` output** stored in Percepxion: if anyone has run `show sysconfig` on the unit through Percepxion (console editor or a CLI job), the plugin reads the exact model and power supply type from that output
 3. **Model rule** on the source, matching Percepxion model plus RJ45 and USB port counts to one device type, for fleets that buy one variant
 4. A **single device type** that matches the port counts
+
+SLC 8000 units aren't matched to a device type automatically, because Percepxion doesn't report their module layout. Add a device override for each one under **Lantronix > Percepxion > Device overrides**.
 
 When none of these settles it, the device isn't created and an "ambiguous model" finding lists the candidate types. **Create rule** and **Override** on the finding open forms with the Percepxion values filled in and the device type choices limited to those candidates. EMG units resolve from Percepxion data alone.
 
@@ -183,7 +188,7 @@ The plugin matches Percepxion devices to NetBox devices by its own link, then by
 | `netbox_lantronix.approve_devicelink` | approve pending device adoptions |
 | `netbox_lantronix.add/change_modelrule`, `..._devicetypeoverride` | resolve ambiguous models |
 
-The sync user needs `dcim.view/add/change_device` and `dcim.view/change_consoleserverport`, plus view on device types, sites, roles and platforms. Constrain these with NetBox object permissions, for example to one site, and the plugin stays inside them. A run that would write outside them fails as a whole, with the reason on the job, and changes nothing.
+The sync user needs `dcim.view/add/change_device` and `dcim.view/change_consoleserverport`, plus view on device types, sites, roles and platforms. Constrain these with NetBox object permissions, for example to one site, and the plugin stays inside them. A run that would write a device or port outside them fails as a whole, with the reason on the job, and changes no device or port. The plugin's own records (device links, port facts and findings) aren't covered by those permissions. A device that NetBox's own validation rejects is skipped with a "conflict" finding, and the rest of the run goes on.
 
 The **Open console** button and the facts panel are shown only to users who can view the device and its ports.
 
@@ -200,6 +205,9 @@ On the console server, direct SSH access is off by default on every port. Turn i
 | Plugin doesn't load | NetBox log names the endpoint and missing key, or a NetBox version outside 4.6 to 4.7 |
 | Job stays queued | RQ worker not running |
 | Job shows **Failed** and you need the reason | The **Error** row under the source's last sync, the job's **Log** tab, or the `netbox_lantronix.sync` line in the worker log (`docker compose logs netbox-worker`) |
+| Job fails with "isn't configured to sync this source's organization" | The source's organization ID isn't in the endpoint's `organizations` list |
+| Job fails with "not authorized (HTTP 403)" | The Percepxion account can log in but lacks access to that call. Check its role in the organization. This doesn't pause scheduled runs. |
+| Job fails with "was redirected" | The endpoint `url` answers with a redirect. Use the final address. |
 | Job fails with a login error | Credentials in the environment. After a rejected login, scheduled runs pause for at least 30 minutes. Fix the credentials, restart NetBox, then click **Sync now**; it retries at once only when the credentials changed. |
 | Job fails with a permission error | The sync user's object permissions don't cover the device or site named in the error |
 | Device missing after a sync | **Findings**: ambiguous model, missing device type, name conflict or pending adoption |

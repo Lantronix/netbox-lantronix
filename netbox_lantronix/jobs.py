@@ -16,9 +16,11 @@ from django.utils import timezone
 from netbox.jobs import JobRunner
 from netbox.plugins import get_plugin_config
 
+from .endpoint_checks import organization_allowed
 from .percepxion.client import AuthError, PartialData, PercepxionClient, PercepxionUnavailable
 from .percepxion.resolver import parse_sysconfig, sku_from_sysconfig
 from .percepxion.telemetry import merge_state
+from .sanitize import clean_text
 
 BACKOFF_MIN = 30
 
@@ -67,17 +69,20 @@ class SyncJob(JobRunner):
         """Attached-device state from the telemetry view, one call per device.
 
         A device whose view fails keeps its port-search data and the run goes on; the device
-        is named in the job log.
+        is named in the job log. Devices outside the source's organization are never asked
+        about: the planner drops them, and their names stay out of the log.
         """
+        org = source.organization_id
         wanted = {p.device_id for p in px_ports}
         states = {}
         for dev in px_devices:
-            if dev.device_id not in wanted:
+            if dev.device_id not in wanted or org not in dev.org_ids:
                 continue
             try:
-                states[dev.device_id] = client.port_states(dev.device_id, source.organization_id)
+                states[dev.device_id] = client.port_states(dev.device_id, org)
             except PercepxionUnavailable as exc:
-                self.logger.warning(f"Port state unavailable for {dev.name}: {exc}")
+                name = clean_text(dev.name, 64)
+                self.logger.warning(f"Port state unavailable for {name}: {exc}")
         return [merge_state(p, states.get(p.device_id, {}).get(p.number)) for p in px_ports]
 
     def run(self, *args, manual=False, **kwargs):
@@ -129,6 +134,11 @@ class SyncJob(JobRunner):
         cfg = source.endpoint_config
         if not cfg:
             raise JobFailed(f"Endpoint '{source.endpoint}' is not in plugin configuration")
+        # Checked again here: the allowlist can change after a source was saved.
+        if not organization_allowed(cfg, source.organization_id):
+            raise JobFailed(
+                f"Endpoint '{source.endpoint}' isn't configured to sync this source's organization"
+            )
         # During a login backoff only "Sync now" with changed credentials may try again, so
         # repeated clicks can't hammer the Percepxion login with the rejected password.
         if source.backoff_until and source.backoff_until > timezone.now():

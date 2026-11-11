@@ -66,6 +66,7 @@ class FakeServer:
                 "path": path,
                 "json": kwargs.get("json"),
                 "timeout": kwargs.get("timeout"),
+                "allow_redirects": kwargs.get("allow_redirects"),
                 "headers": dict(session.headers),
                 "verify": session.verify,
                 "proxies": dict(session.proxies),
@@ -558,7 +559,7 @@ def test_no_secrets_in_any_error(server):
     server.add(*LOGIN, ok_login())
     server.add(*DEVICES, FakeResponse(500, {"echo": PASSWORD}))
     server.add(*PORTS, requests.ConnectionError(f"{TOKEN} {CSRF}"))
-    server.add(*JOBS, FakeResponse(401, {"echo": TOKEN}))
+    server.add(*JOBS, FakeResponse(403, {"echo": TOKEN}))
     server.add(*RESULTS, FakeResponse(200, ValueError(f"bad json {CSRF}")))
     c = make_client()
     for call in (
@@ -576,3 +577,50 @@ def test_no_secrets_in_any_error(server):
         assert_no_secrets(str(err))
         assert_no_secrets(repr(err))
         assert_no_secrets(json.dumps(err.args))
+
+
+# -- redirects and authorization after login ----------------------------------------------------
+
+
+@pytest.mark.parametrize("status", [301, 302, 307, 308])
+def test_redirects_are_refused_not_followed(server, status):
+    server.add(*LOGIN, FakeResponse(status, {}))
+    with pytest.raises(PercepxionUnavailable, match="redirected"):
+        make_client().login()
+    assert [c["allow_redirects"] for c in server.calls] == [False]
+
+
+def test_every_request_disables_redirects(server):
+    server.add(*LOGIN, ok_login())
+    server.add(*JOBS, FakeResponse(200, {"jobgroup": []}))
+    make_client().latest_sysconfig_jobs()
+    assert {c["allow_redirects"] for c in server.calls} == {False}
+
+
+def test_expired_session_logs_in_again_once(server):
+    server.add(*LOGIN, ok_login(), ok_login())
+    server.add(*JOBS, FakeResponse(401, {}), FakeResponse(200, {"jobgroup": []}))
+    assert make_client().latest_sysconfig_jobs() == {}
+    assert [c["path"] for c in server.calls].count("/v2/user/login") == 2
+
+
+def test_second_401_after_relogin_is_unavailable_not_a_login_failure(server):
+    server.add(*LOGIN, ok_login(), ok_login())
+    server.add(*JOBS, FakeResponse(401, {}), FakeResponse(401, {}))
+    with pytest.raises(PercepxionUnavailable, match="not authorized"):
+        make_client().latest_sysconfig_jobs()
+
+
+def test_403_on_a_read_is_unavailable_not_a_login_failure(server):
+    server.add(*LOGIN, ok_login())
+    server.add(*JOBS, FakeResponse(403, {}))
+    with pytest.raises(PercepxionUnavailable, match="not authorized"):
+        make_client().latest_sysconfig_jobs()
+    assert [c["path"] for c in server.calls].count("/v2/user/login") == 1
+
+
+def test_relogin_rejected_is_auth_error(server):
+    server.add(*LOGIN, ok_login(), FakeResponse(401, {}))
+    server.add(*JOBS, FakeResponse(401, {}))
+    with pytest.raises(AuthError):
+        make_client().latest_sysconfig_jobs()

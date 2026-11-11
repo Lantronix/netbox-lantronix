@@ -51,7 +51,7 @@ class PercepxionSourceView(generic.ObjectView):
             .order_by("scheduled")
             .first(),
             "findings_table": findings_table,
-            "tls_off": cfg.get("verify", True) is False,
+            "tls_off": not cfg.get("verify", True),
             "can_sync": request.user.has_perm(SYNC_PERM, instance),
         }
 

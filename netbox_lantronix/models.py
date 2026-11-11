@@ -8,6 +8,8 @@ from netbox.plugins import get_plugin_config
 from utilities.choices import ChoiceSet
 from utilities.querysets import RestrictedQuerySet
 
+from .endpoint_checks import organization_allowed
+
 
 class LinkStatusChoices(ChoiceSet):
     ACTIVE = "active"
@@ -88,9 +90,14 @@ class PercepxionSource(JobsMixin, NetBoxModel):
 
     def clean(self):
         super().clean()
-        if self.endpoint not in (get_plugin_config("netbox_lantronix", "endpoints") or {}):
+        endpoints = get_plugin_config("netbox_lantronix", "endpoints") or {}
+        if self.endpoint not in endpoints:
             raise ValidationError(
                 {"endpoint": "No endpoint with this name in plugin configuration."}
+            )
+        if not organization_allowed(endpoints[self.endpoint], self.organization_id):
+            raise ValidationError(
+                {"organization_id": "This endpoint isn't configured to sync that organization."}
             )
         if self.sync_interval and self.sync_interval < 5:
             raise ValidationError({"sync_interval": "Use 0 (off) or at least 5 minutes."})

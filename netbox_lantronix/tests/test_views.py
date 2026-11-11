@@ -191,6 +191,42 @@ class ViewTest(TestCase):
         self.link.refresh_from_db()
         self.assertEqual(self.link.status, LinkStatusChoices.ACTIVE)
 
+    def test_organization_must_be_on_the_endpoint_allowlist(self):
+        limited = {
+            "percepxion-sandbox": {**ENDPOINTS["percepxion-sandbox"], "organizations": ["org-0001"]}
+        }
+        api = reverse(
+            "plugins-api:netbox_lantronix-api:percepxionsource-detail",
+            kwargs={"pk": self.source.pk},
+        )
+        self.client.force_login(self.admin)
+        with (
+            mock.patch(
+                "netbox_lantronix.models.get_plugin_config",
+                lambda p, k: {"endpoints": limited, "sync_user": "percepxion-sync"}.get(k),
+            ),
+            mock.patch("netbox_lantronix.jobs.schedule"),
+        ):
+            r = self.client.patch(
+                api, {"organization_id": "org-other"}, content_type="application/json"
+            )
+            self.assertEqual(r.status_code, 400)
+            self.assertIn("organization_id", r.json())
+            ok = self.client.patch(api, {"name": "renamed"}, content_type="application/json")
+            self.assertEqual(ok.status_code, 200)
+        self.source.refresh_from_db()
+        self.assertEqual((self.source.organization_id, self.source.name), ("org-0001", "renamed"))
+
+    def test_tls_warning_shows_whenever_verify_is_off(self):
+        off = {"percepxion-sandbox": {**ENDPOINTS["percepxion-sandbox"], "verify": False}}
+        with mock.patch(
+            "netbox_lantronix.models.get_plugin_config",
+            lambda p, k: {"endpoints": off, "sync_user": "percepxion-sync"}.get(k),
+        ):
+            r = self.get(self.admin, self.source.get_absolute_url())
+        self.assertTrue(r.context["tls_off"])
+        self.assertFalse(self.get(self.admin, self.source.get_absolute_url()).context["tls_off"])
+
     def test_editor_without_sync_action_suspends_schedule(self):
         editor = User.objects.create(username="editor")
         grant(editor, [Site, DeviceRole], ["view"])

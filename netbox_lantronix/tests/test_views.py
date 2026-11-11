@@ -88,6 +88,90 @@ class ViewTest(TestCase):
         body = self.get(self.admin, self.port.get_absolute_url()).content.decode()
         self.assertNotIn("ssh://", body)
 
+    def test_ssh_button_shows_its_target_and_refuses_local_addresses(self):
+        body = self.get(self.admin, self.port.get_absolute_url()).content.decode()
+        self.assertIn('title="SSH to 192.0.2.75:3002"', body)
+        Device.objects.filter(pk=self.device.pk).update(primary_ip4=None)
+        for address in ("127.0.0.1", "169.254.1.1", "::1", "0.0.0.0"):  # noqa: S104
+            DeviceLink.objects.filter(pk=self.link.pk).update(mgmt_ip=address)
+            body = self.get(self.admin, self.port.get_absolute_url()).content.decode()
+            self.assertNotIn("ssh://", body, address)
+
+    def test_mistyped_web_port_url_does_not_break_the_port_page(self):
+        bad = {
+            "percepxion-sandbox": {
+                **ENDPOINTS["percepxion-sandbox"],
+                "web_port_url": "https://px.example.com/{nope}/{",
+            }
+        }
+        PercepxionSource.objects.filter(pk=self.source.pk).update(percepxion_link=True)
+        with mock.patch(
+            "netbox_lantronix.models.get_plugin_config",
+            lambda p, k: {"endpoints": bad, "sync_user": "percepxion-sync"}.get(k),
+        ):
+            r = self.get(self.admin, self.port.get_absolute_url())
+        self.assertEqual(r.status_code, 200)
+        self.assertIn("ssh://192.0.2.75:3002", r.content.decode())
+        self.assertNotIn("Open in Percepxion", r.content.decode())
+
+    def test_links_follow_the_viewers_device_permissions(self):
+        other = Device.objects.create(
+            name="SLC-OTHER",
+            device_type=self.w["dtype"],
+            role=self.w["role"],
+            site=self.w["other_site"],
+        )
+        hidden = DeviceLink.objects.create(
+            source=self.source,
+            device=other,
+            percepxion_device_id="dev-0002",
+            mgmt_ip="198.51.100.9",
+        )
+        limited = User.objects.create(username="lab-only")
+        grant(limited, [Device], ["view"], {"site__slug": "lab"})
+        grant(limited, [DeviceLink], ["view", "delete"])
+        listing = self.get(
+            limited, reverse("plugins:netbox_lantronix:devicelink_list")
+        ).content.decode()
+        self.assertIn("SLC-A", listing)
+        self.assertNotIn("SLC-OTHER", listing)
+        self.assertEqual(self.get(limited, hidden.get_absolute_url()).status_code, 404)
+        self.assertEqual(self.get(limited, self.link.get_absolute_url()).status_code, 200)
+        api = reverse("plugins-api:netbox_lantronix-api:devicelink-list")
+        names = [row["device"]["name"] for row in self.client.get(api).json()["results"]]
+        self.assertEqual(names, ["SLC-A"])
+        detail = reverse(
+            "plugins-api:netbox_lantronix-api:devicelink-detail", kwargs={"pk": hidden.pk}
+        )
+        self.assertEqual(self.client.get(detail).status_code, 404)
+        self.assertEqual(self.client.delete(detail).status_code, 404)
+        self.assertTrue(DeviceLink.objects.filter(pk=hidden.pk).exists())
+
+    def test_approving_needs_change_permission_on_the_device(self):
+        DeviceLink.objects.filter(pk=self.link.pk).update(status=LinkStatusChoices.PENDING)
+        url = self.link.get_absolute_url() + "approve/"
+        approver = User.objects.create(username="approver")
+        grant(approver, [DeviceLink], ["view", "approve"])
+        grant(approver, [Device], ["view"])
+        self.client.force_login(approver)
+        self.client.post(url)
+        self.link.refresh_from_db()
+        self.assertEqual(self.link.status, LinkStatusChoices.PENDING)
+        self.assertNotIn("Approve", self.client.get(self.link.get_absolute_url()).content.decode())
+        grant(approver, [Device], ["change"], name="approver change device")
+        self.client.post(url)
+        self.link.refresh_from_db()
+        self.assertEqual(self.link.status, LinkStatusChoices.ACTIVE)
+
+    def test_ssh_base_port_must_leave_room_for_port_numbers(self):
+        from django.core.exceptions import ValidationError
+
+        self.source.ssh_base_port = 65500
+        with self.assertRaises(ValidationError):
+            self.source.full_clean()
+        self.source.ssh_base_port = 3000
+        self.source.full_clean()
+
     def test_port_facts_without_make_or_os_name(self):
         PortFacts.objects.create(
             port=self.port,

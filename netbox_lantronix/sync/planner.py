@@ -14,7 +14,7 @@ from dataclasses import dataclass, field, replace
 
 from ..percepxion.records import PxDevice, PxPort
 from ..percepxion.resolver import emg_sku, is_default_port_name, resolve_sku, slug_for
-from ..sanitize import clean_text, safe_id, safe_ip, safe_name, safe_serial
+from ..sanitize import clean_text, host_ip, safe_id, safe_name, safe_serial
 
 LANTRONIX = "lantronix"
 PLATFORM = "lantronix_itmgos"
@@ -311,7 +311,7 @@ def plan(
 
 
 def _record_ip(result: Plan, dev: PxDevice) -> None:
-    ip = safe_ip(dev.ip)
+    ip = host_ip(dev.ip)
     if ip:
         result.mgmt_ips[dev.device_id] = ip
     firmware = clean_text(dev.firmware, 32)
@@ -355,7 +355,7 @@ def _match(dev, name, ctx, by_link, by_serial, by_name, result):
                         "conflict",
                         name,
                         dev.device_id,
-                        f"Matching serial has platform {d.platform}",
+                        "Matching serial is on a non-Lantronix platform",
                     )
                 )
                 return None, "skip"
@@ -391,9 +391,9 @@ def _match(dev, name, ctx, by_link, by_serial, by_name, result):
     if d.link_source is not None:
         reason = "Same-named device is linked to another Percepxion device"
     elif d.manufacturer != LANTRONIX:
-        reason = f"Same-named device is manufacturer {d.manufacturer}"
+        reason = "Same-named device isn't a Lantronix device"
     elif d.platform not in (None, PLATFORM):
-        reason = f"Same-named device has platform {d.platform}"
+        reason = "Same-named device is on a non-Lantronix platform"
     elif d.serial and d.serial != dev.serial:
         reason = "Same-named device has a different serial"
     if reason:

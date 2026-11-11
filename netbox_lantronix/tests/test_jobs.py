@@ -47,6 +47,11 @@ class FakeClient:
         FakeClient.tenant_ids.append(("cli", tenant_id))
         return None
 
+    logouts = 0
+
+    def logout(self):
+        FakeClient.logouts += 1
+
     port_state_error = None
     port_state_calls = []
 
@@ -97,6 +102,7 @@ class SyncJobTest(TestCase):
         FakeClient.sysconfig_jobs = {}
         FakeClient.tenant_ids = []
         FakeClient.port_state_calls = []
+        FakeClient.logouts = 0
 
     def test_run_creates_and_records_counts(self):
         job = make_job(self.source)
@@ -156,6 +162,28 @@ class SyncJobTest(TestCase):
         self.assertIn("Percepxion read failed", str(exc.exception))
         self.source.refresh_from_db()
         self.assertIsNone(self.source.backoff_until)
+
+    def test_session_is_ended_after_a_good_run_and_after_a_failed_read(self):
+        SyncJob(make_job(self.source)).run()
+        self.assertEqual(FakeClient.logouts, 1)
+        Job.objects.all().update(status=JobStatusChoices.STATUS_COMPLETED)
+        denied = PercepxionUnavailable("POST /v3/device/search returned HTTP 500")
+        with (
+            mock.patch.object(FakeClient, "iter_devices", side_effect=denied),
+            self.assertRaises(JobFailed),
+        ):
+            SyncJob(make_job(self.source)).run()
+        self.assertEqual(FakeClient.logouts, 2)
+
+    def test_unreadable_sysconfig_does_not_stop_the_run(self):
+        # The model rule from setUp settles the type once the stored output can't be read.
+        FakeClient.sysconfig_jobs = {"dev-0001": ("jg-0001", "2026-11-10T00:00:00Z")}
+        refused = PercepxionUnavailable("POST /v1/telemetry/result/search returned HTTP 400")
+        job = make_job(self.source)
+        with mock.patch.object(FakeClient, "cli_output", side_effect=refused):
+            SyncJob(job).run()
+        self.assertTrue(Device.objects.filter(name="SLC-A").exists())
+        self.assertIn("show sysconfig output unavailable", str(job.log_entries))
 
     def test_port_state_failure_keeps_the_run_going(self):
         with mock.patch.object(FakeClient, "port_state_error", PercepxionUnavailable("HTTP 500")):

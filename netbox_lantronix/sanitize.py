@@ -33,9 +33,9 @@ def safe_name(value: object) -> str | None:
 
 
 def clean_text(value: object, max_len: int) -> str:
-    """Return display-safe text: no control or bidi characters, single spaces, truncated.
+    """Return display-safe text: no control, bidi or invisible format characters.
 
-    Control characters become spaces, bidi overrides and isolates are removed,
+    Control characters become spaces, bidi and other format characters are removed,
     whitespace runs collapse to one space, and the result is cut to ``max_len``.
     None (or any non-string) gives an empty string; never raises.
     """
@@ -48,8 +48,8 @@ def clean_text(value: object, max_len: int) -> str:
             return ""
     chars = []
     for ch in value:
-        if ch in _BIDI:
-            continue
+        if ch in _BIDI or unicodedata.category(ch) == "Cf":
+            continue  # bidi controls, zero-width and other invisible format characters
         if unicodedata.category(ch) == "Cc":
             chars.append(" ")
         else:
@@ -104,3 +104,19 @@ def safe_ip(value: object) -> str | None:
     if getattr(ip, "scope_id", None):
         return None
     return str(ipaddress.ip_address(int(ip)) if ip.version == 4 else ipaddress.IPv6Address(int(ip)))
+
+
+def host_ip(value: object) -> str | None:
+    """Like ``safe_ip``, for an address a user's SSH client will be pointed at.
+
+    Loopback, link-local, multicast, unspecified and reserved addresses are refused: a
+    console server is never there, and a link to one would open a session on the user's
+    own machine or network segment.
+    """
+    clean = safe_ip(value)
+    if clean is None:
+        return None
+    ip = ipaddress.ip_address(clean)
+    if ip.is_loopback or ip.is_link_local or ip.is_multicast or ip.is_unspecified or ip.is_reserved:
+        return None
+    return clean

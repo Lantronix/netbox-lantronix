@@ -10,7 +10,7 @@ from urllib.parse import quote
 from netbox.plugins import PluginTemplateExtension
 
 from .models import LinkStatusChoices
-from .sanitize import safe_ip
+from .sanitize import host_ip
 
 _PORT = re.compile(r"^Port-0*(\d+)$")
 
@@ -29,29 +29,37 @@ def _can_view(context, obj):
 
 
 def console_urls(port):
-    """Return (ssh_url, percepxion_url) for a console server port, either may be None."""
+    """Return (ssh_url, percepxion_url, ssh_target) for a console server port.
+
+    Any of them may be None. ``ssh_target`` is the host and port the SSH link opens, shown
+    on the button so the user sees where it goes before they sign in."""
     device = port.device
     link = _link(device)
     match = _PORT.match(port.name or "")
     if link is None or match is None:
-        return None, None
+        return None, None, None
     number = int(match.group(1))
-    ssh_url = None
+    ssh_url = ssh_target = None
     raw = str(device.primary_ip.address.ip) if device.primary_ip else link.mgmt_ip
-    clean = safe_ip(raw)
+    clean = host_ip(raw)
     ip = ipaddress.ip_address(clean) if clean else None
-    if ip is not None:
+    tcp_port = link.source.ssh_base_port + number
+    if ip is not None and tcp_port <= 65535:
         host = f"[{ip}]" if ip.version == 6 else str(ip)
-        ssh_url = f"ssh://{host}:{link.source.ssh_base_port + number}"
+        ssh_target = f"{host}:{tcp_port}"
+        ssh_url = f"ssh://{ssh_target}"
     px_url = None
     template = (link.source.endpoint_config or {}).get("web_port_url")
     if link.source.percepxion_link and template and template.lower().startswith("https://"):
-        px_url = template.format(
-            device_id=quote(link.percepxion_device_id, safe=""),
-            device_name=quote(device.name or "", safe=""),
-            port_number=number,
-        )
-    return ssh_url, px_url
+        try:
+            px_url = template.format(
+                device_id=quote(link.percepxion_device_id, safe=""),
+                device_name=quote(device.name or "", safe=""),
+                port_number=number,
+            )
+        except (KeyError, IndexError, ValueError):
+            px_url = None  # a mistyped web_port_url must not break the port page
+    return ssh_url, px_url, ssh_target
 
 
 class ConsoleServerPortExtension(PluginTemplateExtension):
@@ -62,12 +70,12 @@ class ConsoleServerPortExtension(PluginTemplateExtension):
         link = _link(port.device)
         if link is None or not _can_view(self.context, link):
             return ""
-        ssh_url, px_url = console_urls(port)
+        ssh_url, px_url, ssh_target = console_urls(port)
         if not (ssh_url or px_url):
             return ""
         return self.render(
             "netbox_lantronix/inc/port_buttons.html",
-            extra_context={"ssh_url": ssh_url, "px_url": px_url},
+            extra_context={"ssh_url": ssh_url, "px_url": px_url, "ssh_target": ssh_target},
         )
 
     def right_page(self):

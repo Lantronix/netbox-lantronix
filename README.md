@@ -185,16 +185,20 @@ The plugin matches Percepxion devices to NetBox devices by its own link, then by
 | `netbox_lantronix.add/change/delete_percepxionsource` | manage sources |
 | `netbox_lantronix.sync_percepxionsource` | run **Sync now** or the sync API call, and schedule syncs when saving a source |
 | `netbox_lantronix.view_*` | see sources, links, rules, overrides, findings and run history |
-| `netbox_lantronix.approve_devicelink` | approve pending device adoptions |
+| `netbox_lantronix.approve_devicelink` | approve pending device adoptions, together with `dcim.change_device` on the device being adopted |
 | `netbox_lantronix.add/change_modelrule`, `..._devicetypeoverride` | resolve ambiguous models |
 
 The sync user needs `dcim.view/add/change_device` and `dcim.view/change_consoleserverport`, plus view on device types, sites, roles and platforms. Constrain these with NetBox object permissions, for example to one site, and the plugin stays inside them. A run that would write a device or port outside them fails as a whole, with the reason on the job, and changes no device or port. The plugin's own records (device links, port facts and findings) aren't covered by those permissions. A device that NetBox's own validation rejects is skipped with a "conflict" finding, and the rest of the run goes on.
 
-The **Open console** button and the facts panel are shown only to users who can view the device and its ports.
+The **Open console** button and the facts panel are shown only to users who can view the device and its ports. Device links are listed only for devices the user can view. Findings aren't tied to a NetBox device, so anyone with view permission on findings sees every finding for the source, including device names; grant it accordingly.
+
+A serial match inside the source's site adopts the device without approval, so permission to change a source's site is permission to adopt devices in that site. A schedule set by a user keeps running if that user later loses the sync permission; disable the source or set its interval to 0 to stop it.
+
+Each sync logs in to Percepxion, reads, then revokes its refresh token and closes the connection. Percepxion keeps the access token it issued valid until that token expires, which the plugin can't shorten.
 
 ## Open console
 
-The button builds `ssh://<address>:<SSH base port + port number>`. It uses the device's primary IP in NetBox, or the management address Percepxion reports when no primary IP is set. Your browser opens it with your SSH client and you sign in to the console server as yourself.
+The button builds `ssh://<address>:<SSH base port + port number>`. It uses the device's primary IP in NetBox, or the management address Percepxion reports when no primary IP is set. Hover over the button to see the address and port it opens. The button isn't shown for loopback, link-local, multicast or unspecified addresses. Set a primary IP in NetBox when you want NetBox, not Percepxion, to decide where the link goes. Your browser opens it with your SSH client and you sign in to the console server as yourself.
 
 On the console server, direct SSH access is off by default on every port. Turn it on for the ports you want to reach, for example `set deviceport port 1-48 sshin enable` (answer `yes` to the confirmation), or from the WebUI's device port settings with **Apply Settings** to the ports you choose.
 

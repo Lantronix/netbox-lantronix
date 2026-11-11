@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.urls import reverse
 from django.utils.http import urlencode
@@ -71,7 +72,9 @@ class PercepxionSource(JobsMixin, NetBoxModel):
     sync_interval = models.PositiveIntegerField(
         default=60, help_text="Minutes between scheduled syncs; 0 disables the schedule"
     )
-    ssh_base_port = models.PositiveIntegerField(default=3000)
+    ssh_base_port = models.PositiveIntegerField(
+        default=3000, validators=[MinValueValidator(1), MaxValueValidator(65000)]
+    )
     percepxion_link = models.BooleanField(default=False, verbose_name="Show 'Open in Percepxion'")
     enabled = models.BooleanField(default=True)
     backoff_until = models.DateTimeField(null=True, blank=True, editable=False)

@@ -138,6 +138,56 @@ class ApplyTest(TestCase):
             self.run_sync(devices=[px_device(name="SLC-RENAMED")], user=user)
         self.assertTrue(Device.objects.filter(name="SLC-A").exists())
 
+    def site_limited_user(self):
+        user = self.w["user"]
+        user.is_superuser = False
+        user.save()
+        grant(user, [Device], ["view", "add", "change"], {"site__slug": "lab"})
+        grant(user, [ConsoleServerPort], ["view", "change"], {"device__site__slug": "lab"})
+        return user
+
+    def test_no_pending_link_on_a_device_the_sync_user_cannot_change(self):
+        user = self.site_limited_user()
+        elsewhere = Device.objects.create(
+            name="OLD-NAME",
+            device_type=self.w["dtype"],
+            role=self.w["role"],
+            site=Site.objects.get(slug="other"),
+            serial="000000000001",
+        )
+        p, counts = self.run_sync(user=user)
+        self.assertEqual(counts["devices"]["pending"], 0)
+        self.assertFalse(DeviceLink.objects.filter(device=elsewhere).exists())
+        details = [f.detail for f in p.findings if f.kind == "conflict"]
+        self.assertEqual(
+            details, ["A matching NetBox device is outside the sync user's permissions"]
+        )
+
+    def test_pending_link_still_made_when_the_sync_user_can_change_the_device(self):
+        elsewhere = Device.objects.create(
+            name="OLD-NAME",
+            device_type=self.w["dtype"],
+            role=self.w["role"],
+            site=Site.objects.get(slug="other"),
+            serial="000000000001",
+        )
+        _, counts = self.run_sync()
+        self.assertEqual(counts["devices"]["pending"], 1)
+        self.assertEqual(DeviceLink.objects.get(device=elsewhere).status, "pending")
+
+    def test_no_facts_or_link_details_for_a_device_moved_out_of_scope(self):
+        user = self.site_limited_user()
+        self.run_sync(user=user)
+        device = Device.objects.get(name="SLC-A")
+        link = DeviceLink.objects.get(device=device)
+        PortFacts.objects.filter(port__device=device).delete()
+        DeviceLink.objects.filter(pk=link.pk).update(mgmt_ip="", firmware_version="")
+        Device.objects.filter(pk=device.pk).update(site=Site.objects.get(slug="other"))
+        _, counts = self.run_sync(user=user)  # nothing on the device or its ports changed
+        link.refresh_from_db()
+        self.assertEqual((counts["facts"]["updated"], link.mgmt_ip), (0, ""))
+        self.assertFalse(PortFacts.objects.filter(port__device=device).exists())
+
     def test_never_moves_or_retypes_existing_device(self):
         self.run_sync()
         device = Device.objects.get(name="SLC-A")

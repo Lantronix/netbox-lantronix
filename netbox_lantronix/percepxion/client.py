@@ -24,6 +24,7 @@ CLIENT_VERSION = "0.6.0"
 USER_AGENT = f"netbox-lantronix/{CLIENT_VERSION}"
 
 LOGIN_PATH = "/v2/user/login"
+LOGOUT_PATH = "/v1/user/token"
 
 ALLOWED: frozenset[tuple[str, str]] = frozenset(
     {
@@ -33,6 +34,8 @@ ALLOWED: frozenset[tuple[str, str]] = frozenset(
         ("POST", "/v1/job/jobgroup/search"),
         ("POST", "/v1/telemetry/result/search"),
         ("POST", "/v1/telemetry/stat/view"),
+        # Ends this client's own session; the only call that isn't a read.
+        ("DELETE", LOGOUT_PATH),
     }
 )
 
@@ -102,6 +105,7 @@ class PercepxionClient:
             }
         )
         self._logged_in = False
+        self._refresh = ""
 
     def __repr__(self) -> str:
         return f"PercepxionClient(url={self.url!r}, verify={self._session.verify!r})"
@@ -156,7 +160,29 @@ class PercepxionClient:
             raise AuthError("Percepxion login response held no session token")
         self._session.headers["x-mystq-token"] = str(token)
         self._session.headers["x-csrf-token"] = str(csrf)
+        self._refresh = str(data.get("refresh_token") or "")
         self._logged_in = True
+
+    def logout(self) -> None:
+        """End this client's session as far as Percepxion allows. Never raises.
+
+        Revokes the refresh token, forgets both tokens and closes the connection. Percepxion
+        keeps an issued access token valid until it expires, so this can't end it early;
+        it does stop the session being renewed.
+        """
+        try:
+            if self._logged_in and self._refresh:
+                self._request(
+                    "DELETE", LOGOUT_PATH, {"refresh_tokens": [self._refresh]}, retry_login=False
+                )
+        except PercepxionError:
+            pass  # best effort: an older Percepxion may not have the call
+        finally:
+            self._logged_in = False
+            self._refresh = ""
+            self._session.headers.pop("x-mystq-token", None)
+            self._session.headers.pop("x-csrf-token", None)
+            self._session.close()
 
     def _ensure_login(self) -> None:
         if not self._logged_in:

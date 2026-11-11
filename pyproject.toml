@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "netbox-lantronix"
-version = "0.6.0"
+version = "0.6.1"
 description = "NetBox plugin that keeps NetBox current with Lantronix SLC and EMG devices managed by Percepxion"
 readme = "README.md"
 requires-python = ">=3.12"

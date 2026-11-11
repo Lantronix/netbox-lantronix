@@ -1,4 +1,4 @@
-from dcim.models import Device, DeviceRole, DeviceType, Site
+from dcim.models import DeviceRole, DeviceType, Site
 from django import forms
 from netbox.forms import NetBoxModelFilterSetForm, NetBoxModelForm
 from netbox.plugins import get_plugin_config
@@ -85,6 +85,3 @@ class DeviceTypeOverrideForm(NetBoxModelForm):
         model = DeviceTypeOverride
         fields = ("source", "percepxion_device_id", "device_type", "tags")
 
-
-class DeviceSelectForm(forms.Form):
-    device = DynamicModelChoiceField(queryset=Device.objects.all())

@@ -1,7 +1,8 @@
 # Pure-Python tests (no NetBox) run with pytest; NetBox-backed tests run inside dev NetBox.
 VENV ?= .venv
-# Django-runner tests; the rest are pytest-only and run with `make test`.
-NETBOX_TESTS = netbox_lantronix.tests.test_apply netbox_lantronix.tests.test_jobs netbox_lantronix.tests.test_views
+# Django-runner tests: every test module that isn't in pytest's python_files (pyproject.toml),
+# worked out the same way CI does. The rest are pytest-only and run with `make test`.
+NETBOX_TESTS = $(shell $(PY) -c "import pathlib, tomllib; plain = set(tomllib.load(open('pyproject.toml', 'rb'))['tool']['pytest']['ini_options']['python_files']); print(' '.join('netbox_lantronix.tests.' + p.stem for p in sorted(pathlib.Path('netbox_lantronix/tests').glob('test_*.py')) if p.name not in plain))")
 PY = $(VENV)/bin/python
 
 .PHONY: venv test test-netbox lint scan audit sbom

@@ -180,6 +180,42 @@ def plan(
     sysconfig: Callable[[str], str | None] = lambda pxid: None,
 ) -> Plan:
     result = Plan()
+    by_link, by_serial, by_name = _index(ctx, nb_devices)
+    accepted = _screen(ctx, px_devices, result)
+    name_counts = Counter(name.casefold() for _, name in accepted)
+
+    matched: dict[str, int] = {}  # pxid -> NetBox device pk (existing devices with active link)
+    created: set[str] = set()
+    for dev, name in accepted:
+        if name_counts[name.casefold()] > 1:
+            result.findings.append(
+                Finding(
+                    "duplicate_name",
+                    name,
+                    dev.device_id,
+                    "More than one Percepxion device has this name",
+                )
+            )
+            continue
+        target, link_action = _match(dev, name, ctx, by_link, by_serial, by_name, result)
+        if target is not None:
+            _plan_update(target, link_action, dev, name, by_name, result)
+            matched[dev.device_id] = target.pk
+        elif link_action == "create" and _plan_create(dev, name, ctx, sysconfig, result):
+            created.add(dev.device_id)
+
+    # Devices this source linked before that Percepxion no longer returns.
+    returned = {dev.device_id for dev, _ in accepted}
+    for pxid, d in by_link.items():
+        if pxid not in returned and d.link_status == "active":
+            result.findings.append(Finding("missing", d.name, pxid, "Not returned by Percepxion"))
+
+    _plan_ports(result, px_ports, nb_ports, matched, created)
+    return result
+
+
+def _index(ctx: SourceContext, nb_devices: Iterable[NbDevice]):
+    """NetBox devices by this source's link, by serial and by case-folded name."""
     nb_devices = list(nb_devices)
     by_link = {d.link_pxid: d for d in nb_devices if d.link_source == ctx.pk and d.link_pxid}
     by_serial: dict[str, list[NbDevice]] = {}
@@ -189,8 +225,16 @@ def plan(
             by_serial.setdefault(d.serial, []).append(d)
         # NetBox device names are unique per site without regard to case.
         by_name.setdefault(d.name.casefold(), []).append(d)
+    return by_link, by_serial, by_name
 
-    # Screen Percepxion devices: organization, name safety, duplicate names.
+
+def _screen(
+    ctx: SourceContext, px_devices: Iterable[PxDevice], result: Plan
+) -> list[tuple[PxDevice, str]]:
+    """Percepxion devices fit to plan for, each with its validated name.
+
+    Drops devices outside the organization (counted in one finding) and devices whose ID,
+    serial or name has unexpected characters (one finding each)."""
     accepted: list[tuple[PxDevice, str]] = []
     outside = 0
     for dev in px_devices:
@@ -233,81 +277,53 @@ def plan(
                 "organization and were skipped",
             )
         )
-    name_counts = Counter(name.casefold() for _, name in accepted)
+    return accepted
 
-    matched: dict[str, int] = {}  # pxid -> NetBox device pk (existing devices with active link)
-    created: set[str] = set()
-    for dev, name in accepted:
-        if name_counts[name.casefold()] > 1:
-            result.findings.append(
-                Finding(
-                    "duplicate_name",
-                    name,
-                    dev.device_id,
-                    "More than one Percepxion device has this name",
-                )
-            )
-            continue
-        target, link_action = _match(dev, name, ctx, by_link, by_serial, by_name, result)
-        if target is None:
-            if link_action == "skip":
-                continue
-            slug, source, candidates = resolve_type(dev, ctx, sysconfig)
-            if slug is None:
-                kind = "ambiguous_model" if candidates else "no_device_type"
-                detail = (
-                    "Candidates: "
-                    + ", ".join(candidates)
-                    + ". Run show sysconfig on the device from Percepxion, or add a model rule."
-                    if candidates
-                    else f"Model {clean_text(dev.model, 32)} has no device type"
-                )
-                signature = (
-                    (clean_text(dev.model, 32).upper(), dev.rj45_ports, dev.usb_ports)
-                    if candidates
-                    else None
-                )
-                result.findings.append(Finding(kind, name, dev.device_id, detail[:500], signature))
-                continue
-            if slug not in ctx.available_types:
-                result.findings.append(
-                    Finding(
-                        "no_device_type",
-                        name,
-                        dev.device_id,
-                        f"Device type {slug} is not in NetBox",
-                    )
-                )
-                continue
-            result.creates.append(DeviceCreate(dev.device_id, name, dev.serial, slug, source))
-            result.seen.append(dev.device_id)
-            _record_ip(result, dev)
-            created.add(dev.device_id)
-            continue
-        changes = _device_changes(target, dev, name, by_name)
-        if changes is None:
-            result.findings.append(
-                Finding(
-                    "conflict", name, dev.device_id, "Another NetBox device already has this name"
-                )
-            )
-            changes = {}
-        if changes or link_action == "adopt":
-            result.updates.append(DeviceUpdate(target.pk, dev.device_id, changes, link_action))
-        else:
-            result.unchanged += 1
-        matched[dev.device_id] = target.pk
-        result.seen.append(dev.device_id)
-        _record_ip(result, dev)
 
-    # Devices this source linked before that Percepxion no longer returns.
-    returned = {dev.device_id for dev, _ in accepted}
-    for pxid, d in by_link.items():
-        if pxid not in returned and d.link_status == "active":
-            result.findings.append(Finding("missing", d.name, pxid, "Not returned by Percepxion"))
+def _plan_create(dev: PxDevice, name: str, ctx: SourceContext, sysconfig, result: Plan) -> bool:
+    """Plan a new NetBox device, or record why it can't be created. True if planned."""
+    slug, source, candidates = resolve_type(dev, ctx, sysconfig)
+    if slug is None:
+        kind = "ambiguous_model" if candidates else "no_device_type"
+        detail = (
+            "Candidates: "
+            + ", ".join(candidates)
+            + ". Run show sysconfig on the device from Percepxion, or add a model rule."
+            if candidates
+            else f"Model {clean_text(dev.model, 32)} has no device type"
+        )
+        signature = (
+            (clean_text(dev.model, 32).upper(), dev.rj45_ports, dev.usb_ports)
+            if candidates
+            else None
+        )
+        result.findings.append(Finding(kind, name, dev.device_id, detail[:500], signature))
+        return False
+    if slug not in ctx.available_types:
+        result.findings.append(
+            Finding("no_device_type", name, dev.device_id, f"Device type {slug} is not in NetBox")
+        )
+        return False
+    result.creates.append(DeviceCreate(dev.device_id, name, dev.serial, slug, source))
+    result.seen.append(dev.device_id)
+    _record_ip(result, dev)
+    return True
 
-    _plan_ports(result, px_ports, nb_ports, matched, created)
-    return result
+
+def _plan_update(target: NbDevice, link_action: str, dev: PxDevice, name: str, by_name, result):
+    """Plan the changes to a matched NetBox device, or count it as unchanged."""
+    changes = _device_changes(target, dev, name, by_name)
+    if changes is None:
+        result.findings.append(
+            Finding("conflict", name, dev.device_id, "Another NetBox device already has this name")
+        )
+        changes = {}
+    if changes or link_action == "adopt":
+        result.updates.append(DeviceUpdate(target.pk, dev.device_id, changes, link_action))
+    else:
+        result.unchanged += 1
+    result.seen.append(dev.device_id)
+    _record_ip(result, dev)
 
 
 def _record_ip(result: Plan, dev: PxDevice) -> None:
@@ -320,7 +336,12 @@ def _record_ip(result: Plan, dev: PxDevice) -> None:
 
 
 def _match(dev, name, ctx, by_link, by_serial, by_name, result):
-    """Return (NbDevice or None, link action). Action "skip" means record nothing more."""
+    """Return (NbDevice or None, link action).
+
+    With a device: "keep" its link or "adopt" it. Without one: "create" a new device, or
+    "skip" when a finding already says why nothing happens. Order: this source's link, then
+    serial, then name.
+    """
     linked = by_link.get(dev.device_id)
     if linked is not None:
         if linked.link_status == "pending":
@@ -334,58 +355,52 @@ def _match(dev, name, ctx, by_link, by_serial, by_name, result):
             )
             return None, "skip"
         return linked, "keep"
-
     if dev.serial:
-        same_serial = [d for d in by_serial.get(dev.serial, []) if d.manufacturer == LANTRONIX]
-        if len(same_serial) == 1:
-            d = same_serial[0]
-            if d.link_source is not None:
-                result.findings.append(
-                    Finding(
-                        "conflict",
-                        name,
-                        dev.device_id,
-                        "Matching serial is linked to another source",
-                    )
-                )
-                return None, "skip"
-            if d.platform not in (None, PLATFORM):
-                result.findings.append(
-                    Finding(
-                        "conflict",
-                        name,
-                        dev.device_id,
-                        "Matching serial is on a non-Lantronix platform",
-                    )
-                )
-                return None, "skip"
-            if ctx.site is not None and d.site != ctx.site:
-                # Outside this source's site: never adopt without approval.
-                result.pending.append((d.pk, dev.device_id))
-                result.findings.append(
-                    Finding(
-                        "adoption_pending",
-                        name,
-                        dev.device_id,
-                        "Matching serial is in another site; approve to link",
-                    )
-                )
-                return None, "skip"
-            return d, "adopt"
-        if len(same_serial) > 1:
-            result.findings.append(
-                Finding("conflict", name, dev.device_id, "Several NetBox devices have this serial")
-            )
-            return None, "skip"
+        by_serial_match = _match_serial(dev, name, ctx, by_serial, result)
+        if by_serial_match is not None:
+            return by_serial_match
+    return _match_name(dev, name, by_name, result)
 
+
+def _skip(result: Plan, kind: str, name: str, dev: PxDevice, detail: str):
+    result.findings.append(Finding(kind, name, dev.device_id, detail))
+    return None, "skip"
+
+
+def _match_serial(dev, name, ctx, by_serial, result):
+    """Match on serial among Lantronix devices. None means no device has the serial."""
+    same_serial = [d for d in by_serial.get(dev.serial, []) if d.manufacturer == LANTRONIX]
+    if not same_serial:
+        return None
+    if len(same_serial) > 1:
+        return _skip(result, "conflict", name, dev, "Several NetBox devices have this serial")
+    d = same_serial[0]
+    if d.link_source is not None:
+        return _skip(result, "conflict", name, dev, "Matching serial is linked to another source")
+    if d.platform not in (None, PLATFORM):
+        return _skip(
+            result, "conflict", name, dev, "Matching serial is on a non-Lantronix platform"
+        )
+    if ctx.site is not None and d.site != ctx.site:
+        # Outside this source's site: never adopt without approval.
+        result.pending.append((d.pk, dev.device_id))
+        return _skip(
+            result,
+            "adoption_pending",
+            name,
+            dev,
+            "Matching serial is in another site; approve to link",
+        )
+    return d, "adopt"
+
+
+def _match_name(dev, name, by_name, result):
+    """Match on name. A name match alone never adopts: it conflicts or waits for approval."""
     same_name = by_name.get(name.casefold(), [])
     if not same_name:
         return None, "create"
     if len(same_name) > 1:
-        result.findings.append(
-            Finding("conflict", name, dev.device_id, "Several NetBox devices have this name")
-        )
-        return None, "skip"
+        return _skip(result, "conflict", name, dev, "Several NetBox devices have this name")
     d = same_name[0]
     reason = None
     if d.link_source is not None:
@@ -397,19 +412,12 @@ def _match(dev, name, ctx, by_link, by_serial, by_name, result):
     elif d.serial and d.serial != dev.serial:
         reason = "Same-named device has a different serial"
     if reason:
-        result.findings.append(Finding("conflict", name, dev.device_id, reason))
-        return None, "skip"
+        return _skip(result, "conflict", name, dev, reason)
     # Same name, Lantronix, empty serial: never adopt without approval.
     result.pending.append((d.pk, dev.device_id))
-    result.findings.append(
-        Finding(
-            "adoption_pending",
-            name,
-            dev.device_id,
-            "Same-named device has no serial; approve to link",
-        )
+    return _skip(
+        result, "adoption_pending", name, dev, "Same-named device has no serial; approve to link"
     )
-    return None, "skip"
 
 
 def _device_changes(nb: NbDevice, dev: PxDevice, name: str, by_name) -> dict[str, str] | None:

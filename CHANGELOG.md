@@ -4,6 +4,10 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+### Changed
+
+- A "no device type" finding now offers **Set type for this device**, the way an "ambiguous model" finding does. This is the one-click path for SLC 8000 units, which need a device override.
+
 ## [0.6.1] - 2026-11-11
 
 ### Security
@@ -47,9 +51,6 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 ### Fixed
 
 - A sync with a Percepxion **project_admin** account no longer fails with `POST /v1/job/jobgroup/search returned HTTP 400`. The `show sysconfig` lookups now send the source's organization ID, which Percepxion requires from project_admin sessions.
-
-### Fixed
-
 - A failed or errored sync now writes the source, job number and reason to the NetBox worker log (`docker logs`), not only to the job's own log, so the cause shows up without opening the job.
 
 ## [0.5.3] - 2026-11-10

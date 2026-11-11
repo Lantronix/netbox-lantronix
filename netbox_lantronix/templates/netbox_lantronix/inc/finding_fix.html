@@ -1,4 +1,4 @@
-{% if record.kind == 'ambiguous_model' %}
+{% if record.kind == 'ambiguous_model' or record.kind == 'no_device_type' %}
   {% if record.rule_add_query and perms.netbox_lantronix.add_modelrule %}
     <a class="btn btn-sm btn-primary" href="{% url 'plugins:netbox_lantronix:modelrule_add' %}?{{ record.rule_add_query }}">Create rule</a>
   {% endif %}

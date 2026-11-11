@@ -119,16 +119,28 @@ class SyncJob(JobRunner):
         )
 
     def _sync(self, manual=False):
-        from .sync.apply import (
-            SyncPermissionDenied,
-            apply_plan,
-            build_context,
-            build_snapshot,
-            record_findings,
-        )
-        from .sync.planner import plan as make_plan
+        from .sync.apply import SyncPermissionDenied, apply_plan, record_findings
 
         source = self.job.object
+        cfg = self._check_can_run(source, manual)
+        user = _sync_user()
+        plan = self._read_and_plan(source, cfg)
+        try:
+            counts = apply_plan(plan, source, user)
+        except SyncPermissionDenied as exc:
+            raise JobFailed(f"Sync user lacks NetBox permission: {exc}") from None
+        counts["findings"] = record_findings(plan, source, self.job)
+        self.job.data = counts
+        _clear_backoff(source)
+        dev = counts["devices"]
+        self.logger.info(
+            f"Devices created {dev['created']}, updated {dev['updated']}, "
+            f"unchanged {dev['unchanged']}; ports updated {counts['ports']['updated']}"
+        )
+
+    def _check_can_run(self, source, manual):
+        """Fail the job before any Percepxion call if this run shouldn't happen. Returns the
+        endpoint settings."""
         if source is None or not source.enabled:
             raise JobFailed("Source is disabled or deleted")
         cfg = source.endpoint_config
@@ -139,18 +151,20 @@ class SyncJob(JobRunner):
             raise JobFailed(
                 f"Endpoint '{source.endpoint}' isn't configured to sync this source's organization"
             )
-        # During a login backoff only "Sync now" with changed credentials may try again, so
-        # repeated clicks can't hammer the Percepxion login with the rejected password.
-        if source.backoff_until and source.backoff_until > timezone.now():
-            if not (manual and cache.get(_backoff_key(source)) != _credential_tag(cfg)):
-                raise JobFailed(
-                    f"Login backoff until {source.backoff_until:%Y-%m-%d %H:%M} UTC; "
-                    "fix the endpoint credentials and restart NetBox, then Sync now"
-                )
+        if _backoff_blocks(source, cfg, manual):
+            raise JobFailed(
+                f"Login backoff until {source.backoff_until:%Y-%m-%d %H:%M} UTC; "
+                "fix the endpoint credentials and restart NetBox, then Sync now"
+            )
         if running_jobs(source, exclude_pk=self.job.pk).exists():
             raise JobFailed("Another sync for this source is running")
+        return cfg
 
-        user = _sync_user()
+    def _read_and_plan(self, source, cfg):
+        """Log in, read Percepxion and NetBox, and return the plan. Writes nothing to NetBox
+        except the login backoff after a rejected login."""
+        from .sync.apply import build_context, build_snapshot
+        from .sync.planner import plan as make_plan
 
         client = PercepxionClient(
             cfg["url"],
@@ -165,57 +179,75 @@ class SyncJob(JobRunner):
             px_devices = list(client.iter_devices())
             px_ports = list(client.iter_ports())
             px_ports = self._with_port_states(client, source, px_devices, px_ports)
-            sysconfig_jobs = None
-            org = source.organization_id
-
-            def sysconfig(pxid):
-                nonlocal sysconfig_jobs
-                try:
-                    if sysconfig_jobs is None:
-                        # A project_admin session gets HTTP 400 on job and telemetry searches
-                        # without tenant_id; tenant_user sessions accept it too.
-                        sysconfig_jobs = client.latest_sysconfig_jobs(org)
-                    job = sysconfig_jobs.get(pxid)
-                    if not job:
-                        return None
-                    text = client.cli_output(job[0], pxid, org)
-                except (PercepxionUnavailable, PartialData) as exc:
-                    # One unreadable result must not stop the sync: the planner falls back to
-                    # the model rules. A failed job search isn't retried for every device.
-                    if sysconfig_jobs is None:
-                        sysconfig_jobs = {}
-                    self.logger.warning(f"Stored show sysconfig output unavailable: {exc}")
-                    return None
-                return sku_from_sysconfig(parse_sysconfig(text))
-
             nb_devices, nb_ports = build_snapshot(source, px_devices)
-            plan = make_plan(
-                build_context(source), px_devices, px_ports, nb_devices, nb_ports, sysconfig
+            return make_plan(
+                build_context(source),
+                px_devices,
+                px_ports,
+                nb_devices,
+                nb_ports,
+                self._sysconfig_reader(client, source.organization_id),
             )
         except AuthError:
-            minutes = max(BACKOFF_MIN, source.sync_interval)
-            source.backoff_until = timezone.now() + timedelta(minutes=minutes)
-            cache.set(_backoff_key(source), _credential_tag(cfg), timeout=minutes * 60)
-            type(source).objects.filter(pk=source.pk).update(backoff_until=source.backoff_until)
+            _start_backoff(source, cfg)
             raise JobFailed("Percepxion rejected the login for this endpoint") from None
         except (PercepxionUnavailable, PartialData) as exc:
             raise JobFailed(f"Percepxion read failed: {exc}") from None
         finally:
             client.logout()  # everything Percepxion is asked for has been read by now
 
-        try:
-            counts = apply_plan(plan, source, user)
-        except SyncPermissionDenied as exc:
-            raise JobFailed(f"Sync user lacks NetBox permission: {exc}") from None
-        counts["findings"] = record_findings(plan, source, self.job)
-        self.job.data = counts
-        if source.backoff_until:
-            type(source).objects.filter(pk=source.pk).update(backoff_until=None)
-        dev = counts["devices"]
-        self.logger.info(
-            f"Devices created {dev['created']}, updated {dev['updated']}, "
-            f"unchanged {dev['unchanged']}; ports updated {counts['ports']['updated']}"
-        )
+    def _sysconfig_reader(self, client, org):
+        """Return a function giving the device-type slug from a device's stored
+        `show sysconfig` output, or None. The job list is fetched on first use."""
+        jobs = None
+
+        def sysconfig(pxid):
+            nonlocal jobs
+            try:
+                if jobs is None:
+                    # A project_admin session gets HTTP 400 on job and telemetry searches
+                    # without tenant_id; tenant_user sessions accept it too.
+                    jobs = client.latest_sysconfig_jobs(org)
+                job = jobs.get(pxid)
+                if not job:
+                    return None
+                text = client.cli_output(job[0], pxid, org)
+            except (PercepxionUnavailable, PartialData) as exc:
+                # One unreadable result must not stop the sync: the planner falls back to
+                # the model rules. A failed job search isn't retried for every device.
+                if jobs is None:
+                    jobs = {}
+                self.logger.warning(f"Stored show sysconfig output unavailable: {exc}")
+                return None
+            return sku_from_sysconfig(parse_sysconfig(text))
+
+        return sysconfig
+
+
+# -- login backoff ---------------------------------------------------------------------------
+#
+# After Percepxion rejects a login, scheduled runs stop until the backoff ends. Only "Sync now"
+# with changed credentials may try sooner, so repeated clicks can't hammer the Percepxion
+# login with the rejected password.
+
+
+def _backoff_blocks(source, cfg, manual) -> bool:
+    if not source.backoff_until or source.backoff_until <= timezone.now():
+        return False
+    credentials_changed = cache.get(_backoff_key(source)) != _credential_tag(cfg)
+    return not (manual and credentials_changed)
+
+
+def _start_backoff(source, cfg) -> None:
+    minutes = max(BACKOFF_MIN, source.sync_interval)
+    source.backoff_until = timezone.now() + timedelta(minutes=minutes)
+    cache.set(_backoff_key(source), _credential_tag(cfg), timeout=minutes * 60)
+    type(source).objects.filter(pk=source.pk).update(backoff_until=source.backoff_until)
+
+
+def _clear_backoff(source) -> None:
+    if source.backoff_until:
+        type(source).objects.filter(pk=source.pk).update(backoff_until=None)
 
 
 def _backoff_key(source):

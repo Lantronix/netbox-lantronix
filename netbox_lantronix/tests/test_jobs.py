@@ -221,6 +221,41 @@ class SyncJobTest(TestCase):
         self.assertTrue(Device.objects.exists())
         self.assertIsNone(self.source.backoff_until)
 
+    # -- through JobRunner.handle, the way the worker runs it -----------------------------------
+
+    def test_handle_completes_the_job_and_stores_counts(self):
+        job = make_job(self.source, JobStatusChoices.STATUS_PENDING)
+        with mock.patch.object(SyncJob, "enqueue") as enqueue:
+            SyncJob.handle(job, manual=True)
+        job.refresh_from_db()
+        self.assertEqual(job.status, JobStatusChoices.STATUS_COMPLETED)
+        self.assertEqual(job.data["devices"]["created"], 1)
+        enqueue.assert_not_called()  # a one-off run schedules nothing
+
+    def test_handle_keeps_the_failure_reason_on_the_job(self):
+        FakeClient.fail_login = True
+        job = make_job(self.source, JobStatusChoices.STATUS_PENDING)
+        with self.assertLogs("netbox_lantronix.sync", "WARNING"):
+            SyncJob.handle(job, manual=True)
+        job.refresh_from_db()
+        self.assertEqual(job.status, JobStatusChoices.STATUS_FAILED)
+        self.assertIn("rejected the login", job.error)
+        self.assertNotIn(SECRET, job.error)
+
+    def test_handle_schedules_the_next_periodic_run_only_for_the_live_chain(self):
+        PercepxionSource.objects.filter(pk=self.source.pk).update(sync_interval=15)
+        self.source.refresh_from_db()
+        live = make_job(self.source, JobStatusChoices.STATUS_PENDING, interval=15)
+        with mock.patch.object(SyncJob, "enqueue") as enqueue:
+            SyncJob.handle(live)
+        enqueue.assert_called_once()
+        self.assertEqual(enqueue.call_args.kwargs["interval"], 15)
+        # A run left over from an old interval ends its chain: nothing is scheduled after it.
+        stale = make_job(self.source, JobStatusChoices.STATUS_PENDING, interval=60)
+        with mock.patch.object(SyncJob, "enqueue") as enqueue:
+            SyncJob.handle(stale)
+        enqueue.assert_not_called()
+
     def test_refuses_while_another_run_is_running(self):
         make_job(self.source)
         with self.assertRaises(JobFailed):

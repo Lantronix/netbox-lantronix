@@ -4,6 +4,23 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+### Security
+
+- The Percepxion client no longer follows HTTP redirects. A redirect from the endpoint could carry the session token, and on a 307 or 308 the login request, to another host. A redirect now fails the sync with "was redirected".
+- Devices outside a source's organization are no longer named in findings, and the plugin no longer asks Percepxion for their port state. A sync records one "out of organization" finding with a count.
+- The endpoint setting `verify` must be `True` or `False`. Values such as `None`, `0` or an empty string turned certificate checking off without showing the warning; they now stop the plugin at startup with an error that names the endpoint.
+
+### Added
+
+- Endpoint setting `organizations`: the list of Percepxion organization IDs that sources on the endpoint may sync. Set it when the Percepxion account can see more than one organization. Without it, anyone who can add or edit a source can sync any organization the account can see.
+
+### Fixed
+
+- A refused Percepxion call no longer counts as a rejected login. Before, any HTTP 401 or 403, even for one device, paused the source for at least 30 minutes and blocked **Sync now**. Now only a rejected login does that. A session that ends mid-sync logs in again once, and a device whose port state is refused is skipped.
+- A device that NetBox validation rejects no longer fails every sync. It is skipped with a "conflict" finding that gives NetBox's reason, and the other devices sync.
+- A Percepxion device whose name differs only by letter case from a NetBox device is now matched to it. Before, the sync tried to create a second device, NetBox refused it, and every run failed.
+- The README no longer implies SLC 8000 units get a device type automatically. They need a device override.
+
 ## [0.5.4] - 2026-11-10
 
 ### Fixed

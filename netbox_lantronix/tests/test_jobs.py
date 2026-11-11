@@ -10,8 +10,9 @@ from dcim.models import Device
 from django.test import TestCase
 
 from ..jobs import SyncJob, apply_schedule_for, schedule, suspend, sync_is_active
-from ..models import ModelRule, PercepxionSource
+from ..models import ModelRule, PercepxionSource, SyncFinding
 from ..percepxion.client import AuthError, PercepxionUnavailable
+from ..percepxion.records import PxDevice
 from .netbox_fixtures import ORG, make_world, px_device, px_port
 
 SECRET = "sup3r-secret-pw"
@@ -47,8 +48,10 @@ class FakeClient:
         return None
 
     port_state_error = None
+    port_state_calls = []
 
     def port_states(self, device_id, org_id=None):
+        FakeClient.port_state_calls.append(device_id)
         if self.port_state_error:
             raise self.port_state_error
         return {}
@@ -93,6 +96,7 @@ class SyncJobTest(TestCase):
         FakeClient.fail_login = False
         FakeClient.sysconfig_jobs = {}
         FakeClient.tenant_ids = []
+        FakeClient.port_state_calls = []
 
     def test_run_creates_and_records_counts(self):
         job = make_job(self.source)
@@ -105,6 +109,53 @@ class SyncJobTest(TestCase):
         FakeClient.sysconfig_jobs = {"dev-0001": ("jg-0001", "2026-11-10T00:00:00Z")}
         SyncJob(make_job(self.source)).run()
         self.assertEqual(FakeClient.tenant_ids, [("jobs", ORG), ("cli", ORG)])
+
+    def test_other_organizations_devices_get_no_telemetry_call_and_no_name_in_findings(self):
+        other = PxDevice(
+            "dev-0009", "OTHER-TENANT", "000000000009", "SLC9032", 32, 0,
+            frozenset({"org-9999"}), None, "SLC",
+        )  # fmt: skip
+        ports = [px_port(1, name="SLC-B"), px_port(1, pxid="dev-0009")]
+        job = make_job(self.source)
+        with (
+            mock.patch.object(FakeClient, "devices", [px_device(), other]),
+            mock.patch.object(FakeClient, "ports", ports),
+        ):
+            SyncJob(job).run()
+        self.assertEqual(FakeClient.port_state_calls, ["dev-0001"])
+        finding = SyncFinding.objects.get(source=self.source, kind="out_of_org")
+        self.assertEqual((finding.device_name, finding.percepxion_device_id), ("", ""))
+        self.assertFalse(Device.objects.filter(name="OTHER-TENANT").exists())
+
+    def test_organization_outside_the_endpoint_allowlist_fails_before_any_login(self):
+        limited = {
+            "percepxion-sandbox": {**ENDPOINTS["percepxion-sandbox"], "organizations": ["x"]}
+        }
+        with (
+            mock.patch(
+                "netbox_lantronix.models.get_plugin_config",
+                lambda p, k: limited if k == "endpoints" else None,
+            ),
+            mock.patch("netbox_lantronix.jobs.PercepxionClient") as client,
+            self.assertRaises(JobFailed) as exc,
+        ):
+            SyncJob(make_job(self.source)).run()
+        client.assert_not_called()
+        self.assertIn("isn't configured to sync this source's organization", str(exc.exception))
+        self.source.refresh_from_db()
+        self.assertIsNone(self.source.backoff_until)
+
+    def test_refused_read_fails_the_run_without_a_login_backoff(self):
+        # A 403 on a read is not a rejected login: no backoff, so Sync now still works.
+        denied = PercepxionUnavailable("POST /v3/device/search not authorized (HTTP 403)")
+        with (
+            mock.patch.object(FakeClient, "iter_devices", side_effect=denied),
+            self.assertRaises(JobFailed) as exc,
+        ):
+            SyncJob(make_job(self.source)).run()
+        self.assertIn("Percepxion read failed", str(exc.exception))
+        self.source.refresh_from_db()
+        self.assertIsNone(self.source.backoff_until)
 
     def test_port_state_failure_keeps_the_run_going(self):
         with mock.patch.object(FakeClient, "port_state_error", PercepxionUnavailable("HTTP 500")):

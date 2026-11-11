@@ -7,8 +7,10 @@ from collections import Counter
 from contextlib import contextmanager
 from datetime import timedelta
 
+from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.models import Q
+from django.db.models.functions import Lower
 from django.utils import timezone
 from netbox.context import current_request, events_queue, query_cache
 from netbox.context_managers import event_tracking
@@ -21,7 +23,7 @@ from ..models import (
     PortFacts,
     SyncFinding,
 )
-from .planner import NbDevice, NbPort, Plan, SourceContext
+from .planner import Finding, NbDevice, NbPort, Plan, SourceContext
 
 FINDINGS_KEEP_RUNS = 20
 
@@ -51,12 +53,12 @@ def build_snapshot(source, px_devices) -> tuple[list[NbDevice], list[NbPort]]:
     """NetBox devices the planner might match (by link, serial or name) and their console ports."""
     from dcim.models import ConsoleServerPort, Device
 
-    names = {d.name for d in px_devices if d.name}
+    # Lower-cased: NetBox treats device names as unique per site without regard to case.
+    names = {d.name.strip().lower() for d in px_devices if d.name and d.name.strip()}
     serials = {d.serial.strip() for d in px_devices if d.serial and d.serial.strip()}
     qs = (
-        Device.objects.filter(
-            Q(name__in=names) | Q(serial__in=serials) | Q(percepxion_link__source=source)
-        )
+        Device.objects.annotate(name_lower=Lower("name"))
+        .filter(Q(name_lower__in=names) | Q(serial__in=serials) | Q(percepxion_link__source=source))
         .select_related("device_type__manufacturer", "platform", "percepxion_link")
         .distinct()
     )
@@ -123,8 +125,40 @@ def _tracking(user):
         query_cache.set(None)
 
 
+def _update_device(device, upd, platform, user, counts) -> None:
+    from dcim.models import Device
+
+    if not upd.changes:
+        return
+    # Before and after: the target must be in scope both ways (NetBox view pattern).
+    _check(Device, user, "change", device.pk)
+    device.snapshot()
+    if "name" in upd.changes:
+        device.name = upd.changes["name"]
+    if "serial" in upd.changes:
+        device.serial = upd.changes["serial"]
+    if "platform" in upd.changes:
+        device.platform = platform
+    if "cf_pxid" in upd.changes:
+        device.custom_field_data[CUSTOM_FIELD] = upd.changes["cf_pxid"]
+    device.full_clean()
+    device.save()
+    _check(Device, user, "change", device.pk)
+    counts["devices"]["updated"] += 1
+
+
+def _rejected(plan: Plan, name: str, pxid: str, exc: ValidationError) -> None:
+    """Record a device NetBox's own validation refused; the rest of the run goes on."""
+    reason = "; ".join(exc.messages)[:300]
+    plan.findings.append(Finding("conflict", name, pxid, f"NetBox rejected the device: {reason}"))
+
+
 def apply_plan(plan: Plan, source, user) -> dict:
-    """Write the plan in one transaction. Returns run counts. Raises on any failure."""
+    """Write the plan in one transaction. Returns run counts.
+
+    A permission failure raises and rolls the whole run back. A device that fails NetBox
+    validation is skipped with a finding (added to ``plan.findings``) and the run goes on.
+    """
     from dcim.models import ConsoleServerPort, Device, DeviceType
 
     _, platform, _ = ensure_objects()
@@ -147,24 +181,16 @@ def apply_plan(plan: Plan, source, user) -> dict:
             counts["devices"]["pending"] += int(made)
 
         pk_by_pxid: dict[str, int] = {}
+        rejected_pks: set[int] = set()
         for upd in plan.updates:
             device = Device.objects.get(pk=upd.pk)
-            if upd.changes:
-                # Before and after: the target must be in scope both ways (NetBox view pattern).
-                _check(Device, user, "change", device.pk)
-                device.snapshot()
-                if "name" in upd.changes:
-                    device.name = upd.changes["name"]
-                if "serial" in upd.changes:
-                    device.serial = upd.changes["serial"]
-                if "platform" in upd.changes:
-                    device.platform = platform
-                if "cf_pxid" in upd.changes:
-                    device.custom_field_data[CUSTOM_FIELD] = upd.changes["cf_pxid"]
-                device.full_clean()
-                device.save()
-                _check(Device, user, "change", device.pk)
-                counts["devices"]["updated"] += 1
+            try:
+                with transaction.atomic():
+                    _update_device(device, upd, platform, user, counts)
+            except ValidationError as exc:
+                _rejected(plan, upd.changes.get("name") or device.name or "", upd.pxid, exc)
+                rejected_pks.add(device.pk)
+                continue
             if upd.link == "adopt":
                 DeviceLink.objects.create(
                     source=source, device=device, percepxion_device_id=upd.pxid, last_seen=now
@@ -186,8 +212,13 @@ def apply_plan(plan: Plan, source, user) -> dict:
                 status="active",
                 custom_field_data={CUSTOM_FIELD: c.pxid},
             )
-            device.full_clean()
-            device.save()
+            try:
+                with transaction.atomic():
+                    device.full_clean()
+                    device.save()
+            except ValidationError as exc:
+                _rejected(plan, c.name, c.pxid, exc)
+                continue
             _check(Device, user, "add", device.pk)
             DeviceLink.objects.create(
                 source=source,
@@ -200,8 +231,10 @@ def apply_plan(plan: Plan, source, user) -> dict:
             counts["devices"]["created"] += 1
 
         # Ports: existing devices (diffed by the planner) and devices created above.
-        targets = dict(plan.port_changes)
+        targets = {k: v for k, v in plan.port_changes.items() if k[0] not in rejected_pks}
         for pxid, ports in plan.new_device_ports.items():
+            if pxid not in pk_by_pxid:
+                continue  # the device was rejected above
             for pname, change in ports.items():
                 targets[(pk_by_pxid[pxid], pname)] = change
         if targets:

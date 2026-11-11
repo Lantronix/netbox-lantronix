@@ -1,5 +1,7 @@
 """apply_plan against a real NetBox database."""
 
+from unittest import mock
+
 from core.models import ObjectChange
 from dcim.models import ConsoleServerPort, Device, Site
 from django.test import TestCase
@@ -42,6 +44,36 @@ class ApplyTest(TestCase):
         nb_devices, nb_ports = build_snapshot(self.source, devices)
         p = plan(ctx, devices, ports, nb_devices, nb_ports)
         return p, apply_plan(p, self.source, user or self.w["user"])
+
+    def test_case_variant_name_goes_to_approval_instead_of_failing_the_run(self):
+        Device.objects.create(
+            name="slc-a", device_type=self.w["dtype"], role=self.w["role"], site=self.w["site"]
+        )
+        p, counts = self.run_sync()
+        self.assertEqual((counts["devices"]["created"], counts["devices"]["pending"]), (0, 1))
+        self.assertEqual([f.kind for f in p.findings], ["adoption_pending"])
+        self.assertEqual(Device.objects.count(), 1)
+
+    def test_device_netbox_rejects_becomes_a_finding_and_the_rest_sync(self):
+        from django.core.exceptions import ValidationError
+
+        real_clean = Device.full_clean
+
+        def clean(device, *args, **kwargs):
+            if device.name == "SLC-BAD":
+                raise ValidationError("Site policy forbids this device")
+            return real_clean(device, *args, **kwargs)
+
+        devices = [px_device(), px_device("dev-0002", "SLC-BAD", "000000000002")]
+        with mock.patch.object(Device, "full_clean", clean):
+            p, counts = self.run_sync(devices=devices, ports=PORTS + [px_port(1, pxid="dev-0002")])
+        self.assertEqual(counts["devices"]["created"], 1)
+        self.assertTrue(Device.objects.filter(name="SLC-A").exists())
+        self.assertFalse(Device.objects.filter(name="SLC-BAD").exists())
+        self.assertFalse(DeviceLink.objects.filter(percepxion_device_id="dev-0002").exists())
+        (finding,) = p.findings
+        self.assertEqual((finding.kind, finding.device_name), ("conflict", "SLC-BAD"))
+        self.assertIn("NetBox rejected the device: Site policy forbids", finding.detail)
 
     def test_create_with_ports_facts_link_and_attribution(self):
         _, counts = self.run_sync()

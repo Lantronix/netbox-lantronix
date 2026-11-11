@@ -187,13 +187,16 @@ def plan(
     for d in nb_devices:
         if d.serial:
             by_serial.setdefault(d.serial, []).append(d)
-        by_name.setdefault(d.name, []).append(d)
+        # NetBox device names are unique per site without regard to case.
+        by_name.setdefault(d.name.casefold(), []).append(d)
 
     # Screen Percepxion devices: organization, name safety, duplicate names.
     accepted: list[tuple[PxDevice, str]] = []
+    outside = 0
     for dev in px_devices:
         if ctx.organization_id not in dev.org_ids:
-            result.findings.append(Finding("out_of_org", clean_text(dev.name, 64), dev.device_id))
+            # Counted, never named: another organization's inventory stays out of NetBox.
+            outside += 1
             continue
         pxid, serial = safe_id(dev.device_id), safe_serial(dev.serial)
         if pxid is None or serial is None:
@@ -220,12 +223,22 @@ def plan(
             )
             continue
         accepted.append((dev, name))
-    name_counts = Counter(name for _, name in accepted)
+    if outside:
+        result.findings.append(
+            Finding(
+                "out_of_org",
+                "",
+                "",
+                f"{outside} device(s) the Percepxion account can see are outside this source's "
+                "organization and were skipped",
+            )
+        )
+    name_counts = Counter(name.casefold() for _, name in accepted)
 
     matched: dict[str, int] = {}  # pxid -> NetBox device pk (existing devices with active link)
     created: set[str] = set()
     for dev, name in accepted:
-        if name_counts[name] > 1:
+        if name_counts[name.casefold()] > 1:
             result.findings.append(
                 Finding(
                     "duplicate_name",
@@ -365,7 +378,7 @@ def _match(dev, name, ctx, by_link, by_serial, by_name, result):
             )
             return None, "skip"
 
-    same_name = by_name.get(name, [])
+    same_name = by_name.get(name.casefold(), [])
     if not same_name:
         return None, "create"
     if len(same_name) > 1:
@@ -403,7 +416,7 @@ def _device_changes(nb: NbDevice, dev: PxDevice, name: str, by_name) -> dict[str
     """Fields to change on a matched device, or None if a rename would collide."""
     changes: dict[str, str] = {}
     if nb.name != name:
-        if any(other.pk != nb.pk for other in by_name.get(name, [])):
+        if any(other.pk != nb.pk for other in by_name.get(name.casefold(), [])):
             return None
         changes["name"] = name
     if dev.serial and nb.serial != dev.serial:

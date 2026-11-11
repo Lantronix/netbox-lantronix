@@ -236,6 +236,39 @@ def test_out_of_org_dropped():
     assert kinds(r) == ["out_of_org"] and r.is_empty()
 
 
+def test_out_of_org_devices_are_counted_never_named():
+    devs = [
+        px("dev-0008", "OTHER-TENANT-A", "000000000008", orgs=("org-9999",)),
+        px("dev-0009", "OTHER-TENANT-B", "000000000009", orgs=("org-9999",)),
+        px(),
+    ]
+    r = plan(ctx(), devs, [], [], [])
+    (finding,) = r.findings
+    assert (finding.kind, finding.device_name, finding.pxid) == ("out_of_org", "", "")
+    assert finding.detail.startswith("2 device(s)")
+    assert "OTHER-TENANT" not in repr(r) and "dev-0008" not in repr(r)
+    assert [c.name for c in r.creates] == ["SLC-A"]
+
+
+def test_name_differing_only_by_case_matches_the_existing_device():
+    # NetBox would refuse a second device named slc-a in the site, so this must not be a create.
+    d = nb(name="slc-a", serial="", platform=None, link_source=None, link_pxid=None, cf_pxid=None)
+    r = plan(ctx(), [px()], [], [d], [])
+    assert not r.creates and kinds(r) == ["adoption_pending"]
+
+
+def test_percepxion_names_differing_only_by_case_are_duplicates():
+    devs = [px("dev-0002", "SLC-D", "000000000002"), px("dev-0003", "slc-d", "000000000003")]
+    r = plan(ctx(), devs, [], [], [])
+    assert kinds(r) == ["duplicate_name", "duplicate_name"] and not r.creates
+
+
+def test_linked_rename_to_another_devices_name_in_other_case_is_conflict():
+    other = nb(pk=11, name="slc-b", serial="000000000002", link_pxid="dev-0002", cf_pxid="dev-0002")
+    r = plan(ctx(), [px(name="SLC-B")], [], [nb(), other], [])
+    assert "conflict" in kinds(r) and not any("name" in u.changes for u in r.updates)
+
+
 def test_rejected_and_duplicate_names():
     devs = [
         px(name="bad name<x>"),

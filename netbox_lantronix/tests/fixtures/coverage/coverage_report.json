@@ -1,0 +1,135 @@
+{
+  "schema": "aoob.console-coverage/v1",
+  "source": "netbox",
+  "generated": "2026-10-30T18:00:00Z",
+  "scope": {
+    "site": null,
+    "roles": [],
+    "tags": [],
+    "devices": [],
+    "exclude_roles": [
+      "oob-console-server"
+    ]
+  },
+  "ready_states": [
+    "Managed",
+    "Identified"
+  ],
+  "result": "fail",
+  "summary": {
+    "in_scope": 5,
+    "covered": 1,
+    "uncovered": 4
+  },
+  "devices": [
+    {
+      "device": "access-sw-01",
+      "device_id": "9",
+      "site": "site-a",
+      "role": "network-switch",
+      "platform": "lantronix-switch",
+      "console_port": "Console",
+      "slc": "slc-01",
+      "slc_id": "1",
+      "slc_port": "Port-04",
+      "slc_port_number": 4,
+      "slc_host": "192.0.2.10",
+      "slc_host_source": "primary_ip",
+      "ssh_base_port": 3000,
+      "ssh_port": 3004,
+      "slc_synced": true,
+      "port_state": null,
+      "covered": false,
+      "reasons": [
+        "port_state_unknown"
+      ]
+    },
+    {
+      "device": "emg-01",
+      "device_id": "10",
+      "site": "site-a",
+      "role": "edge-gateway",
+      "platform": "lantronix_itmgos",
+      "console_port": "Console",
+      "slc": "slc-01",
+      "slc_id": "1",
+      "slc_port": "Port-05",
+      "slc_port_number": 5,
+      "slc_host": "192.0.2.10",
+      "slc_host_source": "primary_ip",
+      "ssh_base_port": 3000,
+      "ssh_port": 3005,
+      "slc_synced": true,
+      "port_state": "Unidentified",
+      "covered": false,
+      "reasons": [
+        "port_state_not_ready"
+      ]
+    },
+    {
+      "device": "firewall-01",
+      "device_id": "7",
+      "site": "site-a",
+      "role": "firewall",
+      "platform": "linux",
+      "console_port": "Console",
+      "slc": "slc-01",
+      "slc_id": "1",
+      "slc_port": "Port-03",
+      "slc_port_number": 3,
+      "slc_host": "192.0.2.10",
+      "slc_host_source": "primary_ip",
+      "ssh_base_port": 3000,
+      "ssh_port": 3003,
+      "slc_synced": true,
+      "port_state": "Unidentified",
+      "covered": false,
+      "reasons": [
+        "port_state_not_ready"
+      ]
+    },
+    {
+      "device": "nas-01",
+      "device_id": "11",
+      "site": "site-a",
+      "role": "storage",
+      "platform": null,
+      "console_port": null,
+      "slc": null,
+      "slc_id": null,
+      "slc_port": null,
+      "slc_port_number": null,
+      "slc_host": null,
+      "slc_host_source": null,
+      "ssh_base_port": 3000,
+      "ssh_port": null,
+      "slc_synced": false,
+      "port_state": null,
+      "covered": false,
+      "reasons": [
+        "no_console_port"
+      ]
+    },
+    {
+      "device": "edge-switch-01",
+      "device_id": "8",
+      "site": "site-a",
+      "role": "network-switch",
+      "platform": "cisco_ios",
+      "console_port": "Console",
+      "slc": "slc-01",
+      "slc_id": "1",
+      "slc_port": "Port-14",
+      "slc_port_number": 14,
+      "slc_host": "192.0.2.10",
+      "slc_host_source": "primary_ip",
+      "ssh_base_port": 3000,
+      "ssh_port": 3014,
+      "slc_synced": true,
+      "port_state": "Managed",
+      "covered": true,
+      "reasons": []
+    }
+  ],
+  "not_found": []
+}

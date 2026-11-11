@@ -84,4 +84,3 @@ class DeviceTypeOverrideForm(NetBoxModelForm):
     class Meta:
         model = DeviceTypeOverride
         fields = ("source", "percepxion_device_id", "device_type", "tags")
-

@@ -32,6 +32,7 @@ class CoverageGateScriptTests(TestCase):
             device=self.slc,
             percepxion_device_id="dev-0001",
             status=LinkStatusChoices.ACTIVE,
+            mgmt_ip="192.0.2.10",
         )
         port = ConsoleServerPort.objects.get(device=self.slc, name="Port-02")
         PortFacts.objects.create(port=port, state="Managed", last_reported=timezone.now())
@@ -61,14 +62,15 @@ class CoverageGateScriptTests(TestCase):
         self.assertEqual(report["schema"], "aoob.console-coverage/v1")
         self.assertEqual(report["result"], "fail")
         by = {d["device"]: d for d in report["devices"]}
-        self.assertTrue(by["sw-01"]["covered"])
+        self.assertTrue(by["sw-01"]["covered"], by["sw-01"]["reasons"])
         self.assertEqual(by["sw-01"]["slc"], "slc-01")
         self.assertEqual(by["sw-01"]["ssh_port"], 3002)
         self.assertEqual(by["sw-02"]["reasons"], ["no_console_cable"])
 
     def test_passes_when_every_device_in_scope_is_covered(self):
         report = self.run_gate(devices="sw-01")
-        self.assertEqual(report["result"], "pass")
+        self.assertEqual(report["result"], "pass", report["devices"])
+        self.assertEqual(report["devices"][0]["slc_host"], "192.0.2.10")
 
     def test_console_servers_are_left_out_by_default(self):
         report = self.run_gate()

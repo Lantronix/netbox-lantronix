@@ -82,7 +82,8 @@ def test_clean_text_strips_invisible_format_characters(cp):
 
 
 @pytest.mark.parametrize(
-    "value", ["127.0.0.1", "::1", "169.254.10.1", "fe80::1", "224.0.0.5", "0.0.0.0", "240.0.0.1"]  # noqa: S104
+    "value",
+    ["127.0.0.1", "::1", "169.254.10.1", "fe80::1", "224.0.0.5", "0.0.0.0", "240.0.0.1"],  # noqa: S104
 )
 def test_host_ip_refuses_addresses_no_console_server_is_at(value):
     from netbox_lantronix.sanitize import host_ip

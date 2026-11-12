@@ -5,7 +5,7 @@ VENV ?= .venv
 NETBOX_TESTS = $(shell $(PY) -c "import pathlib, tomllib; plain = set(tomllib.load(open('pyproject.toml', 'rb'))['tool']['pytest']['ini_options']['python_files']); print(' '.join('netbox_lantronix.tests.' + p.stem for p in sorted(pathlib.Path('netbox_lantronix/tests').glob('test_*.py')) if p.name not in plain))")
 PY = $(VENV)/bin/python
 
-.PHONY: venv test test-netbox lint scan audit sbom
+.PHONY: venv test test-netbox lint check-shared scan audit sbom
 venv:
 	uv venv --python 3.12 $(VENV) && uv pip install --python $(PY) -e ".[dev]"
 
@@ -17,6 +17,12 @@ test-netbox:
 
 lint:
 	$(VENV)/bin/ruff check netbox_lantronix
+
+# The code shared with nautobot-app-ssot-lantronix must match it (CI: shared-code.yml).
+OTHER ?= ../nautobot-app-ssot-lantronix
+
+check-shared:
+	python3 scripts/check_shared.py $(OTHER)
 
 scan:
 	gitleaks detect --no-banner --redact

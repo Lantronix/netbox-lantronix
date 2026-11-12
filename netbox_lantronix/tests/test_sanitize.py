@@ -1,3 +1,5 @@
+# Shared code: this file is the same in netbox-lantronix and nautobot-app-ssot-lantronix.
+# scripts/check_shared.py fails CI when the copies differ, so change both.
 import pytest
 
 from netbox_lantronix.sanitize import clean_text, safe_name

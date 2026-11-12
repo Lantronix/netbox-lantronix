@@ -1,7 +1,9 @@
+# Shared code: this file is the same in netbox-lantronix and nautobot-app-ssot-lantronix.
+# scripts/check_shared.py fails CI when the copies differ, so change both.
 """Console path records and the console coverage gate (report schema aoob.console-coverage/v1).
 
-Standard library only, so the gate logic is tested without NetBox. The ORM reader is in orm.py
-and the NetBox script that runs it is console_coverage_gate.py.
+Standard library only, so the gate logic is tested without NetBox or Nautobot. The ORM reader
+is in orm.py; the NetBox script and the Nautobot job that run the gate live outside this package.
 """
 
 import re

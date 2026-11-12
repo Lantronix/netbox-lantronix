@@ -1,3 +1,5 @@
+# Shared code: this file is the same in netbox-lantronix and nautobot-app-ssot-lantronix.
+# scripts/check_shared.py fails CI when the copies differ, so change both.
 """Per-port attached-device state from Percepxion's device telemetry view.
 
 Port search reports stale connection status and keeps a previously cabled device's facts on a

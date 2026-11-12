@@ -1,0 +1,45 @@
+name: Shared code
+
+# This repository and nautobot-app-ssot-lantronix carry the same Percepxion client, sanitizers and
+# coverage gate. This fails when the copies differ (scripts/check_shared.py).
+#
+# A change to shared code goes up as a pull request in each repository, from branches with
+# the same name, so each is checked against the other before either merges. It doesn't run on
+# pushes to main: between the two merges the copies differ by design. The weekly run catches
+# a change that merged in one repository only.
+on:
+  pull_request:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: shared-code-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compare:
+    name: Same as nautobot-app-ssot-lantronix
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Compare with nautobot-app-ssot-lantronix
+        env:
+          OTHER: https://github.com/Lantronix/nautobot-app-ssot-lantronix.git
+          BRANCH: ${{ github.head_ref }}
+        run: |
+          other="$RUNNER_TEMP/other"
+          git clone --quiet --depth 1 "$OTHER" "$other"
+          if python3 scripts/check_shared.py "$other"; then
+            exit 0
+          fi
+          if [ -n "$BRANCH" ] && git -C "$other" fetch --quiet --depth 1 origin "refs/heads/$BRANCH" 2>/dev/null; then
+            echo "Differs from main there; comparing with its $BRANCH branch instead."
+            git -C "$other" checkout --quiet FETCH_HEAD
+            python3 scripts/check_shared.py "$other"
+          else
+            exit 1
+          fi

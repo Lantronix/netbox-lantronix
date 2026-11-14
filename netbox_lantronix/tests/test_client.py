@@ -1,3 +1,5 @@
+# Shared code: this file is the same in netbox-lantronix and nautobot-app-ssot-lantronix.
+# scripts/check_shared.py fails CI when the copies differ, so change both.
 """PercepxionClient tests: pure pytest, no NetBox, no network (Session.request is patched)."""
 
 from __future__ import annotations
@@ -228,15 +230,16 @@ def test_login_sets_session_headers_and_user_agent(server):
     c.login()
     list(c.iter_devices())
     login_call, search_call = server.calls
+    user_agent = f"netbox-lantronix/{client_mod.CLIENT_VERSION}"
     assert login_call["json"] == {"username": USER, "password": PASSWORD}
-    assert login_call["headers"]["User-Agent"] == f"netbox-lantronix/{client_mod.CLIENT_VERSION}"
+    assert login_call["headers"]["User-Agent"] == user_agent
     assert login_call["headers"]["Accept"] == "application/json"
     assert login_call["headers"]["Content-Type"] == "application/json"
     assert login_call["timeout"] == (30, 60)
     assert "x-mystq-token" not in login_call["headers"]
     assert search_call["headers"]["x-mystq-token"] == TOKEN
     assert search_call["headers"]["x-csrf-token"] == CSRF
-    assert search_call["headers"]["User-Agent"] == f"netbox-lantronix/{client_mod.CLIENT_VERSION}"
+    assert search_call["headers"]["User-Agent"] == user_agent
     assert search_call["timeout"] == (30, 60)
 
 

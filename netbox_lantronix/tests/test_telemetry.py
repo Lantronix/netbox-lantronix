@@ -1,3 +1,5 @@
+# Shared code: this file is the same in netbox-lantronix and nautobot-app-ssot-lantronix.
+# scripts/check_shared.py fails CI when the copies differ, so change both.
 """Telemetry view parsing and merge into port-search records (scrubbed sandbox fixture)."""
 
 import json

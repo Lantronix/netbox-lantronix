@@ -1,4 +1,6 @@
-"""Read-only Percepxion API client. No NetBox or Django imports (reused by the Nautobot app).
+# Shared code: this file is the same in netbox-lantronix and nautobot-app-ssot-lantronix.
+# scripts/check_shared.py fails CI when the copies differ, so change both.
+"""Read-only Percepxion API client. No NetBox, Nautobot or Django imports.
 
 Every request goes through ``PercepxionClient._request``, which refuses any (method, path)
 outside ``ALLOWED`` before touching the network. Credentials and session tokens never
@@ -18,7 +20,7 @@ import requests
 from .records import PxDevice, PxPort
 from .telemetry import PxPortState, parse_port_states
 
-# netbox_lantronix/__init__.py imports NetBox, so the version is pinned here rather than imported.
+# The package __init__ imports NetBox or Nautobot, so the version is pinned here, not imported.
 CLIENT_VERSION = "0.7.0"
 USER_AGENT = f"netbox-lantronix/{CLIENT_VERSION}"
 

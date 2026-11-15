@@ -78,6 +78,79 @@ def console_urls(port):
     return ssh_url, px_url, ssh_target
 
 
+def _viewable(user, model, pk) -> bool:
+    return model.objects.restrict(user, "view").filter(pk=pk).exists()
+
+
+def server_port_urls(user, port):
+    """``console_urls`` for a console server port, or all None unless ``user`` may view the
+    port and the console server's Percepxion link."""
+    link = _link(port.device)
+    if link is None or not user.has_perm("netbox_lantronix.view_devicelink", link):
+        return None, None, None
+    if not _viewable(user, type(port), port.pk):
+        return None, None, None
+    return console_urls(port)
+
+
+def device_console_paths(user, device) -> list[dict]:
+    """Console access to ``device`` itself: one entry per console port of the device that is
+    cabled to a synced console server port the user may view.
+
+    The cable, the far port and the console server's link are each checked against the
+    user's view permissions; anything they can't see gives no entry.
+    """
+    from dcim.models import Cable, ConsolePort, ConsoleServerPort
+
+    paths = []
+    ports = ConsolePort.objects.restrict(user, "view").filter(device=device, cable__isnull=False)
+    for console_port in ports.order_by("name"):
+        if not _viewable(user, Cable, console_port.cable_id):
+            continue
+        for peer in console_port.link_peers:
+            if not isinstance(peer, ConsoleServerPort):
+                continue
+            ssh_url, px_url, ssh_target = server_port_urls(user, peer)
+            if ssh_url or px_url:
+                paths.append(
+                    {
+                        "console_port": console_port,
+                        "server_port": peer,
+                        "ssh_url": ssh_url,
+                        "px_url": px_url,
+                        "ssh_target": ssh_target,
+                    }
+                )
+    return paths
+
+
+def served_ports(user, device) -> list[dict]:
+    """The console server's ports worth listing on its own page: those with a cable in NetBox
+    or an attached device reported by Percepxion, each with its console links."""
+    from dcim.models import ConsoleServerPort
+
+    rows = []
+    ports = ConsoleServerPort.objects.restrict(user, "view").filter(device=device)
+    for port in ports.select_related("percepxion_facts", "cable"):
+        facts = getattr(port, "percepxion_facts", None)
+        if not port.cable_id and not (facts is not None and facts.attached):
+            continue
+        ssh_url, px_url, ssh_target = server_port_urls(user, port)
+        peers = (
+            [p for p in port.link_peers if _viewable(user, type(p), p.pk)] if port.cable_id else []
+        )
+        rows.append(
+            {
+                "port": port,
+                "peer": peers[0] if peers else None,
+                "ssh_url": ssh_url,
+                "px_url": px_url,
+                "ssh_target": ssh_target,
+            }
+        )
+    return rows
+
+
 class ConsoleServerPortExtension(PluginTemplateExtension):
     models = ["dcim.consoleserverport"]
 
@@ -104,11 +177,31 @@ class ConsoleServerPortExtension(PluginTemplateExtension):
 class DeviceExtension(PluginTemplateExtension):
     models = ["dcim.device"]
 
+    def buttons(self):
+        """Open console on the page of a device whose console port is cabled to a synced
+        console server port, so nobody has to find that port first."""
+        user = getattr(self.context.get("request"), "user", None)
+        if not user:
+            return ""
+        paths = device_console_paths(user, self.context["object"])
+        if not paths:
+            return ""
+        return self.render(
+            "netbox_lantronix/inc/device_console_buttons.html",
+            extra_context={"paths": paths, "several": len(paths) > 1},
+        )
+
     def right_page(self):
-        link = getattr(self.context["object"], "percepxion_link", None)
+        device = self.context["object"]
+        link = getattr(device, "percepxion_link", None)
         if link is None or not _can_view(self.context, link):
             return ""
-        return self.render("netbox_lantronix/inc/device_panel.html", extra_context={"link": link})
+        rows = []
+        if link.status == LinkStatusChoices.ACTIVE:
+            rows = served_ports(self.context["request"].user, device)
+        return self.render(
+            "netbox_lantronix/inc/device_panel.html", extra_context={"link": link, "rows": rows}
+        )
 
 
 template_extensions = [ConsoleServerPortExtension, DeviceExtension]

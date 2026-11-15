@@ -144,6 +144,7 @@ def netbox(monkeypatch):
             percepxion_device_id=f"px-{slc.pk}",
             mgmt_ip=f"192.0.2.{slc.pk}",
             source=src,
+            ssh_ports={},
         )
     for pk, target, slc, port in (
         (10, t_a, slc_a, 14),
@@ -207,3 +208,15 @@ def test_netbox_slc_primary_ip_needs_view_permission(netbox):
 
     full = coverage_report("netbox", netbox_targets(None), Scope(exclude_roles=[]))
     assert {d["device"]: d for d in full["devices"]}["target-a"]["slc_host"] == "198.51.100.50"
+
+
+def test_synced_ssh_port_reads_what_the_last_sync_stored():
+    from netbox_lantronix.coverage.orm import _synced_ssh_port
+
+    link = ns(ssh_ports={"14": 22014, "2": 0, "3": "3003", "4": True, "5": 70000, "6": None})
+    assert _synced_ssh_port(link, "Port-14") == 22014
+    assert _synced_ssh_port(link, "Port-02") == 0  # SSH to the port is off
+    for name in ("Port-03", "Port-04", "Port-05", "Port-06", "Port-07", "ttyS1"):
+        assert _synced_ssh_port(link, name) is None, name
+    assert _synced_ssh_port(None, "Port-14") is None
+    assert _synced_ssh_port(ns(ssh_ports=None), "Port-14") is None

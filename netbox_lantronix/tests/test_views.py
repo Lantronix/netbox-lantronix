@@ -121,6 +121,67 @@ class ViewTest(TestCase):
             body = self.get(self.admin, self.port.get_absolute_url()).content.decode()
             self.assertNotIn("ssh://", body, address)
 
+    def cable_a_switch(self, name="sw-01", port=None):
+        from dcim.models import Cable, ConsolePort, DeviceType, Manufacturer
+
+        vendor, _ = Manufacturer.objects.get_or_create(name="Vendor", slug="vendor")
+        dtype, _ = DeviceType.objects.get_or_create(
+            manufacturer=vendor, model="Switch", slug="switch"
+        )
+        switch = Device.objects.create(
+            name=name, device_type=dtype, role=self.w["role"], site=self.w["site"]
+        )
+        console = ConsolePort.objects.create(device=switch, name="Console")
+        Cable(a_terminations=[console], b_terminations=[port or self.port]).save()
+        return switch
+
+    def test_cabled_device_page_has_the_console_button(self):
+        switch = self.cable_a_switch()
+        DeviceLink.objects.filter(pk=self.link.pk).update(ssh_ports={"2": 22002})
+        body = self.get(self.admin, switch.get_absolute_url()).content.decode()
+        self.assertIn('href="ssh://192.0.2.75:22002"', body)
+        self.assertIn("SLC-A Port-02", body)  # the tooltip says which port it goes through
+
+    def test_device_with_no_console_cable_has_no_console_button(self):
+        other = Device.objects.create(
+            name="sw-09", device_type=self.w["dtype"], role=self.w["role"], site=self.w["site"]
+        )
+        self.assertNotIn("ssh://", self.get(self.admin, other.get_absolute_url()).content.decode())
+
+    def test_cabled_device_page_has_no_button_when_ssh_to_the_port_is_off(self):
+        switch = self.cable_a_switch()
+        DeviceLink.objects.filter(pk=self.link.pk).update(ssh_ports={"2": 0})
+        self.assertNotIn("ssh://", self.get(self.admin, switch.get_absolute_url()).content.decode())
+
+    def test_cabled_device_page_button_needs_view_on_the_console_server_side(self):
+        from dcim.models import Cable, ConsolePort
+
+        switch = self.cable_a_switch()
+        # May view the switch and its console port, but not the console server's port.
+        limited = User.objects.create(username="limited")
+        grant(limited, [Device, ConsolePort, Cable, Site, DeviceRole], ["view"])
+        body = self.get(limited, switch.get_absolute_url()).content.decode()
+        self.assertNotIn("ssh://", body)
+        # With the port too, but still not the device link: no button.
+        grant(limited, [ConsoleServerPort], ["view"])
+        body = self.get(limited, switch.get_absolute_url()).content.decode()
+        self.assertNotIn("ssh://", body)
+        grant(limited, [DeviceLink], ["view"])
+        body = self.get(limited, switch.get_absolute_url()).content.decode()
+        self.assertIn("ssh://192.0.2.75:3002", body)
+
+    def test_console_server_page_lists_its_ports_in_use(self):
+        switch = self.cable_a_switch()
+        body = self.get(self.admin, self.device.get_absolute_url()).content.decode()
+        self.assertIn("Console ports in use", body)
+        self.assertIn("ssh://192.0.2.75:3002", body)
+        self.assertIn(switch.get_absolute_url(), body)
+        self.assertNotIn(":3001", body)  # Port-01 has no cable and nothing attached
+
+    def test_console_server_page_has_no_port_list_when_nothing_is_in_use(self):
+        body = self.get(self.admin, self.device.get_absolute_url()).content.decode()
+        self.assertNotIn("Console ports in use", body)
+
     def test_mistyped_web_port_url_does_not_break_the_port_page(self):
         bad = {
             "percepxion-sandbox": {

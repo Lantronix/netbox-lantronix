@@ -12,3 +12,20 @@
     <tr><th scope="row">Last seen</th><td>{{ link.last_seen|isodatetime|placeholder }}</td></tr>
   </table>
 </div>
+{% if rows %}
+<div class="card">
+  <h2 class="card-header">Console ports in use</h2>
+  <table class="table table-hover attr-table">
+    {% for row in rows %}
+    <tr>
+      <th scope="row">{{ row.port|linkify }}</th>
+      <td>{% if row.peer %}{{ row.peer.device|linkify }}{% elif row.port.description %}{{ row.port.description }}{% else %}{{ None|placeholder }}{% endif %}</td>
+      <td class="text-end">
+        {% if row.ssh_url %}<a href="{{ row.ssh_url }}" class="btn btn-sm btn-primary" rel="noopener noreferrer" title="SSH to {{ row.ssh_target }}"><i class="mdi mdi-console" aria-hidden="true"></i> Open console</a>{% endif %}
+        {% if row.px_url %}<a href="{{ row.px_url }}" class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer"><i class="mdi mdi-open-in-new" aria-hidden="true"></i> Percepxion</a>{% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endif %}

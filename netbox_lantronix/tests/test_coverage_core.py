@@ -48,6 +48,21 @@ def test_covered_path_has_ssh_port():
     assert (r["slc_port_number"], r["ssh_port"], r["slc_host_source"]) == (14, 3014, "primary_ip")
 
 
+def test_ssh_port_is_the_slc_ports_own_when_synced():
+    link = cabled()
+    link.ssh_port = 22014
+    r = console_path(target(link))
+    assert r["covered"] and r["ssh_port"] == 22014
+
+
+def test_ssh_turned_off_on_the_slc_port_is_not_covered():
+    link = cabled()
+    link.ssh_port = 0
+    r = console_path(target(link))
+    assert not r["covered"] and r["reasons"] == [core.SSH_DISABLED]
+    assert r["ssh_port"] is None
+
+
 def test_custom_base_port():
     assert console_path(target(cabled(s=slc(ssh_base_port=4000))))["ssh_port"] == 4014
 

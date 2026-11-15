@@ -1,0 +1,8 @@
+{% for path in paths %}
+  {% if path.ssh_url %}
+    <a href="{{ path.ssh_url }}" class="btn btn-primary" rel="noopener noreferrer" title="SSH to {{ path.ssh_target }}: {{ path.server_port.device }} {{ path.server_port.name }}"><i class="mdi mdi-console" aria-hidden="true"></i> Open console{% if several %} ({{ path.console_port.name }}){% endif %}</a>
+  {% endif %}
+  {% if path.px_url %}
+    <a href="{{ path.px_url }}" class="btn btn-outline-primary" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" title="{{ path.server_port.device }} {{ path.server_port.name }}"><i class="mdi mdi-open-in-new" aria-hidden="true"></i> Open in Percepxion{% if several %} ({{ path.console_port.name }}){% endif %}</a>
+  {% endif %}
+{% endfor %}

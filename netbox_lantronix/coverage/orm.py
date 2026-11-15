@@ -6,7 +6,7 @@ view, or whose far end they can't view, is reported as peer_not_visible with no 
 SLC primary IP the user can't view is not used. user=None means unrestricted (shell use only).
 """
 
-from .core import DEFAULT_SSH_BASE_PORT, ConsoleLink, Slc, Target
+from .core import DEFAULT_SSH_BASE_PORT, ConsoleLink, Slc, Target, port_number
 
 
 def _restrict(qs, user):
@@ -48,6 +48,15 @@ def netbox_slc(device, cache: dict, link, ip_visible: bool = True) -> Slc:
     )
     cache[device.pk] = slc
     return slc
+
+
+def _synced_ssh_port(link, port_name) -> int | None:
+    """The port's SSH TCP port as the last sync stored it (0: SSH off), or None if unknown."""
+    stored = link.ssh_ports if link is not None and isinstance(link.ssh_ports, dict) else {}
+    value = stored.get(str(port_number(port_name)))
+    if isinstance(value, bool) or not isinstance(value, int) or not 0 <= value <= 65535:
+        return None
+    return value
 
 
 def netbox_targets(user=None):
@@ -100,6 +109,7 @@ def netbox_targets(user=None):
                     link.slc = netbox_slc(peer.device, cache, links.get(peer.device_id), ip_ok)
                     link.slc_port = peer.name
                     link.port_state = (f.state or None) if f is not None else None
+                    link.ssh_port = _synced_ssh_port(links.get(peer.device_id), peer.name)
                 else:
                     link.peer_visible = False
             result.append(link)

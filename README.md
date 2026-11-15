@@ -202,6 +202,14 @@ Each sync logs in to Percepxion, reads, then revokes its refresh token and close
 
 The button opens `ssh://<address>:<SSH port>` with your SSH client, and you sign in to the console server as yourself. Hover over the button to see the address and port it opens.
 
+The button is in three places:
+
+- **The device you want to reach.** Any device whose console port is cabled in NetBox to a synced console server port gets **Open console** on its own page, so you don't need to know which console server port it's on. The tooltip names the console server and port. With several console ports cabled, each gets a button labelled with its port name.
+- **The console server port**, as before.
+- **The console server.** Its Percepxion panel lists the ports in use (cabled in NetBox, or with a device attached according to Percepxion), each with its button.
+
+A user sees a button only for a cable, console server port and device link they may view.
+
 **Address.** The device's primary IP in NetBox, or the management address the console server reports to Percepxion when no primary IP is set. The button isn't shown for loopback, link-local, multicast or unspecified addresses. Set a primary IP in NetBox when you want NetBox, not Percepxion, to decide where the link goes.
 
 **SSH port.** Each sync reads every port's SSH port and whether SSH to the port is on from the console server's configuration in Percepxion (the Device Ports settings: **Starting SSH Port**, or `set deviceport port <n> sshport <tcp port>` for one port). When someone changes them on the console server, the button follows after the console server next uploads its configuration and the plugin next syncs. The device link shows where a unit's ports come from under **Console SSH ports**.
@@ -229,7 +237,7 @@ To install it, upload [`netbox_lantronix/coverage/console_coverage_gate.py`](net
 
 The gate needs the console cables in NetBox: each device's console port cabled to the SLC console server port that reaches it. The plugin doesn't create those cables. The script is read only and reports only what the requesting user may view; a cable whose SLC end the user can't see is reported as `peer_not_visible`, with no SLC details.
 
-Each device in the report gets a reason when it isn't covered: `no_console_port`, `no_console_cable`, `peer_not_visible`, `peer_not_console_server`, `slc_not_synced`, `port_name_unparsed`, `no_slc_host`, `port_state_unknown` or `port_state_not_ready`. The script returns the full report as JSON (schema `aoob.console-coverage/v1`).
+Each device in the report gets a reason when it isn't covered: `no_console_port`, `no_console_cable`, `peer_not_visible`, `peer_not_console_server`, `slc_not_synced`, `port_name_unparsed`, `no_slc_host`, `port_state_unknown`, `port_state_not_ready` or `ssh_disabled` (SSH to that console server port is turned off on the unit). The report's `ssh_port` is the port's own SSH port when a sync has read it. The script returns the full report as JSON (schema `aoob.console-coverage/v1`).
 
 ## Troubleshooting
 

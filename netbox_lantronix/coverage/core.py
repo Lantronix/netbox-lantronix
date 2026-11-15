@@ -24,6 +24,7 @@ PORT_NAME_UNPARSED = "port_name_unparsed"
 NO_SLC_HOST = "no_slc_host"
 PORT_STATE_UNKNOWN = "port_state_unknown"
 PORT_STATE_NOT_READY = "port_state_not_ready"
+SSH_DISABLED = "ssh_disabled"
 
 # Order a device's console ports are ranked in when none is covered: the one that got furthest
 # along explains the device best.
@@ -36,6 +37,7 @@ _PROGRESS = (
     NO_SLC_HOST,
     PORT_STATE_UNKNOWN,
     PORT_STATE_NOT_READY,
+    SSH_DISABLED,
 )
 
 
@@ -69,6 +71,9 @@ class ConsoleLink:
     slc: Slc | None = None
     slc_port: str | None = None
     port_state: str | None = None
+    # The SLC port's own SSH TCP port, as synced from the unit's configuration. 0: SSH to the
+    # port is turned off on the unit. None: not known; the base port plus the port number.
+    ssh_port: int | None = None
 
 
 @dataclass
@@ -121,6 +126,13 @@ def port_number(name: str | None) -> int | None:
     return int(m.group(1)) if m else None
 
 
+def _ssh_port(link: ConsoleLink | None, base: int, number: int | None) -> int | None:
+    """The TCP port that opens an SSH session to the SLC port, or None when there is none."""
+    if link is None or number is None or link.ssh_port == 0:
+        return None
+    return link.ssh_port if link.ssh_port is not None else base + number
+
+
 def _link_record(t: Target, link: ConsoleLink | None, ready_states) -> dict:
     slc = link.slc if link else None
     number = port_number(link.slc_port) if link else None
@@ -139,7 +151,7 @@ def _link_record(t: Target, link: ConsoleLink | None, ready_states) -> dict:
         "slc_host": slc.host if slc else None,
         "slc_host_source": slc.host_source if slc and slc.host else None,
         "ssh_base_port": base,
-        "ssh_port": base + number if number is not None else None,
+        "ssh_port": _ssh_port(link, base, number),
         "slc_synced": bool(slc and slc.synced),
         "port_state": link.port_state if link else None,
     }
@@ -163,6 +175,8 @@ def _link_record(t: Target, link: ConsoleLink | None, ready_states) -> dict:
             reasons.append(PORT_STATE_UNKNOWN)
         elif link.port_state not in ready_states:
             reasons.append(PORT_STATE_NOT_READY)
+        if link.ssh_port == 0:
+            reasons.append(SSH_DISABLED)
     rec["covered"] = not reasons
     rec["reasons"] = reasons
     return rec

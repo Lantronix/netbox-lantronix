@@ -63,6 +63,7 @@ class DeviceLinkSerializer(NetBoxModelSerializer):
             "type_source",
             "mgmt_ip",
             "firmware_version",
+            "ssh_ports",
             "last_seen",
             "tags",
             "custom_fields",

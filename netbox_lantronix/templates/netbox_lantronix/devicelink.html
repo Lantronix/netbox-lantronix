@@ -21,6 +21,7 @@
       <tr><th scope="row">Type chosen from</th><td>{{ object.get_type_source_display|placeholder }}</td></tr>
       <tr><th scope="row">Management IP</th><td>{{ object.mgmt_ip|placeholder }}</td></tr>
       <tr><th scope="row">Firmware version</th><td>{{ object.firmware_version|placeholder }}</td></tr>
+      <tr><th scope="row">Console SSH ports</th><td>{{ object.ssh_ports_origin }}</td></tr>
       <tr><th scope="row">Last seen</th><td>{{ object.last_seen|isodatetime|placeholder }}</td></tr>
     </table>
   </div></div></div>

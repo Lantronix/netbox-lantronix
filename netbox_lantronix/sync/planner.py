@@ -102,6 +102,10 @@ class Plan:
     # the last known value.
     firmware: dict[str, str] = field(default_factory=dict)
     unchanged: int = 0
+    # SSH TCP port per device port, by Percepxion device ID, read from the unit's stored
+    # configuration (0: SSH to the port is off). Set by the job after planning. None: the
+    # endpoint has the read turned off. A device left out keeps what an earlier run stored.
+    ssh_ports: dict[str, dict[int, int]] | None = None
     # Ports for existing devices: (device pk, port name) -> change. Only differing ports.
     port_changes: dict[tuple[int, str], PortChange] = field(default_factory=dict)
     # Ports for devices created this run: pxid -> port name -> desired values (non-empty only).

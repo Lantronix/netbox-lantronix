@@ -180,7 +180,7 @@ class SyncJob(JobRunner):
             px_ports = list(client.iter_ports())
             px_ports = self._with_port_states(client, source, px_devices, px_ports)
             nb_devices, nb_ports = build_snapshot(source, px_devices)
-            return make_plan(
+            plan = make_plan(
                 build_context(source),
                 px_devices,
                 px_ports,
@@ -188,6 +188,8 @@ class SyncJob(JobRunner):
                 nb_ports,
                 self._sysconfig_reader(client, source.organization_id),
             )
+            plan.ssh_ports = self._ssh_ports(client, source, cfg, plan.seen)
+            return plan
         except AuthError:
             _start_backoff(source, cfg)
             raise JobFailed("Percepxion rejected the login for this endpoint") from None
@@ -195,6 +197,29 @@ class SyncJob(JobRunner):
             raise JobFailed(f"Percepxion read failed: {exc}") from None
         finally:
             client.logout()  # everything Percepxion is asked for has been read by now
+
+    def _ssh_ports(self, client, source, cfg, device_ids):
+        """Each synced unit's SSH TCP port per device port, from its configuration in
+        Percepxion: one call per unit. None when the endpoint turns the read off.
+
+        A unit whose configuration can't be read is left out and keeps what an earlier run
+        stored; the run goes on. Percepxion has no configuration for a unit that never
+        uploaded one, so that is reported as a count, not as a warning per unit.
+        """
+        if not cfg.get("read_port_config", True):
+            return None
+        ssh_ports, unread = {}, 0
+        for device_id in sorted(device_ids):
+            try:
+                ssh_ports[device_id] = client.port_ssh(device_id, source.organization_id)
+            except PercepxionUnavailable:
+                unread += 1
+        if unread:
+            self.logger.info(
+                f"Port SSH settings unavailable for {unread} of {len(device_ids)} devices; "
+                "their Open console links keep the last known ports, or the source's base port"
+            )
+        return ssh_ports
 
     def _sysconfig_reader(self, client, org):
         """Return a function giving the device-type slug from a device's stored

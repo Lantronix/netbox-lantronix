@@ -66,3 +66,15 @@ def test_organization_allowlist():
     assert organization_allowed(limited, "org-2")
     assert not organization_allowed(limited, "org-3")
     assert not organization_allowed(dict(GOOD["px"], organizations=[]), "org-1")
+
+
+@pytest.mark.parametrize("value", [None, 0, 1, "", "no", "false"])
+def test_read_port_config_must_be_a_bool(value):
+    cfg = {"px": dict(GOOD["px"], read_port_config=value)}
+    with pytest.raises(ConfigError, match="'read_port_config' must be True or False"):
+        validate_endpoints(cfg)
+
+
+@pytest.mark.parametrize("value", [True, False])
+def test_read_port_config_bool_accepted(value):
+    assert validate_endpoints({"px": dict(GOOD["px"], read_port_config=value)}) == ["px"]

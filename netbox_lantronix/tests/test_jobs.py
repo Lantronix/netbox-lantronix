@@ -10,7 +10,7 @@ from dcim.models import Device
 from django.test import TestCase
 
 from ..jobs import SyncJob, apply_schedule_for, schedule, suspend, sync_is_active
-from ..models import ModelRule, PercepxionSource, SyncFinding
+from ..models import DeviceLink, ModelRule, PercepxionSource, SyncFinding
 from ..percepxion.client import AuthError, PercepxionUnavailable
 from ..percepxion.records import PxDevice
 from .netbox_fixtures import ORG, make_world, px_device, px_port
@@ -62,6 +62,17 @@ class FakeClient:
         return {}
 
 
+    port_ssh_result = {1: 3001, 2: 0, 3: 22003}
+    port_ssh_error = None
+    port_ssh_calls = []
+
+    def port_ssh(self, device_id, org_id=None):
+        FakeClient.port_ssh_calls.append((device_id, org_id))
+        if self.port_ssh_error:
+            raise self.port_ssh_error
+        return dict(self.port_ssh_result)
+
+
 def make_job(source, status=JobStatusChoices.STATUS_RUNNING, interval=None):
     return Job.objects.create(
         object_type=ObjectType.objects.get_for_model(source),
@@ -102,6 +113,7 @@ class SyncJobTest(TestCase):
         FakeClient.sysconfig_jobs = {}
         FakeClient.tenant_ids = []
         FakeClient.port_state_calls = []
+        FakeClient.port_ssh_calls = []
         FakeClient.logouts = 0
 
     def test_run_creates_and_records_counts(self):
@@ -109,6 +121,54 @@ class SyncJobTest(TestCase):
         SyncJob(job).run()
         self.assertTrue(Device.objects.filter(name="SLC-A").exists())
         self.assertEqual(job.data["devices"]["created"], 1)
+
+    def sync(self):
+        """One finished sync run."""
+        job = make_job(self.source)
+        SyncJob(job).run()
+        Job.objects.filter(pk=job.pk).update(status=JobStatusChoices.STATUS_COMPLETED)
+
+    def test_port_ssh_settings_are_stored_on_the_link(self):
+        self.sync()
+        link = DeviceLink.objects.get(percepxion_device_id="dev-0001")
+        self.assertEqual(link.ssh_ports, {"1": 3001, "2": 0, "3": 22003})
+        self.assertEqual(FakeClient.port_ssh_calls, [("dev-0001", ORG)])
+
+    def test_port_ssh_settings_follow_a_change_on_the_unit(self):
+        self.sync()
+        with mock.patch.object(FakeClient, "port_ssh_result", {1: 4001}):
+            self.sync()
+        link = DeviceLink.objects.get(percepxion_device_id="dev-0001")
+        self.assertEqual(link.ssh_ports, {"1": 4001})
+
+    def test_unreadable_port_ssh_settings_keep_the_last_known_ports(self):
+        self.sync()
+        error = PercepxionUnavailable("POST /v1/telemetry/config/edit returned HTTP 400")
+        with mock.patch.object(FakeClient, "port_ssh_error", error):
+            self.sync()  # the run still succeeds
+        link = DeviceLink.objects.get(percepxion_device_id="dev-0001")
+        self.assertEqual(link.ssh_ports, {"1": 3001, "2": 0, "3": 22003})
+
+    def test_endpoint_can_turn_the_port_configuration_read_off(self):
+        self.sync()
+        FakeClient.port_ssh_calls = []
+        off = {"percepxion-sandbox": {**ENDPOINTS["percepxion-sandbox"], "read_port_config": False}}
+        with mock.patch(
+            "netbox_lantronix.models.get_plugin_config",
+            lambda p, k: off if k == "endpoints" else None,
+        ):
+            self.sync()
+        self.assertEqual(FakeClient.port_ssh_calls, [])
+        self.assertEqual(DeviceLink.objects.get(percepxion_device_id="dev-0001").ssh_ports, {})
+
+    def test_other_organizations_devices_get_no_configuration_read(self):
+        other = PxDevice(
+            "dev-0009", "OTHER-TENANT", "000000000009", "SLC9032", 32, 0,
+            frozenset({"org-9999"}), None, "SLC",
+        )  # fmt: skip
+        with mock.patch.object(FakeClient, "devices", [px_device(), other]):
+            self.sync()
+        self.assertEqual(FakeClient.port_ssh_calls, [("dev-0001", ORG)])
 
     def test_sysconfig_reads_pass_the_organization(self):
         # project_admin sessions get HTTP 400 on these searches without tenant_id.

@@ -4,6 +4,11 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+### Added
+
+- The **Open console** button now uses each port's real SSH port, read from the console server's configuration in Percepxion on every sync, so it follows a change to **Starting SSH Port** or to one port's `sshport`. A port with SSH turned off gets no button. Before, the port was always the source's SSH base port plus the port number, which is wrong on a unit whose ports were renumbered. Units Percepxion holds no configuration for keep using the base port.
+- Endpoint setting `read_port_config` (on by default) turns that read off. The read returns the unit's whole configuration; the plugin keeps two settings per port and drops the rest. See **Open console** in the README. Run `manage.py migrate` after upgrading.
+
 ## [0.7.0] - 2026-11-11
 
 ### Added

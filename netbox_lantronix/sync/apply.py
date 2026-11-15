@@ -324,7 +324,7 @@ def _apply_ports(plan: Plan, user, pk_by_pxid, rejected_pks, counts) -> None:
 
 
 def _apply_link_details(plan: Plan, source, in_scope, now) -> None:
-    """Refresh each seen link's last-seen time, management address and firmware."""
+    """Refresh each seen link's last-seen time, management address, firmware and SSH ports."""
     # last_seen is bookkeeping: a queryset update writes no change record.
     DeviceLink.objects.filter(source=source, percepxion_device_id__in=plan.seen).update(
         last_seen=now
@@ -334,11 +334,23 @@ def _apply_link_details(plan: Plan, source, in_scope, now) -> None:
     ):
         ip = plan.mgmt_ips.get(link.percepxion_device_id, "")
         firmware = plan.firmware.get(link.percepxion_device_id) or link.firmware_version
-        if ip != link.mgmt_ip or firmware != link.firmware_version:
+        ssh_ports = _ssh_ports(plan, link)
+        if (ip, firmware, ssh_ports) != (link.mgmt_ip, link.firmware_version, link.ssh_ports):
             link.snapshot()
             link.mgmt_ip = ip
             link.firmware_version = firmware
+            link.ssh_ports = ssh_ports
             link.save()
+
+
+def _ssh_ports(plan: Plan, link) -> dict:
+    """The link's console SSH ports after this run, keyed by port number as JSON text."""
+    if plan.ssh_ports is None:
+        return {}  # the read is turned off: links go back to the source's base port
+    read = plan.ssh_ports.get(link.percepxion_device_id)
+    if read is None:
+        return link.ssh_ports  # not readable this run: keep what an earlier run stored
+    return {str(number): read[number] for number in sorted(read)}
 
 
 def _apply_facts(plan: Plan, pk_by_pxid, now) -> int:

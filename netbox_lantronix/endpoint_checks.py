@@ -1,7 +1,14 @@
 """Plugin configuration checks. No NetBox imports."""
 
 REQUIRED_KEYS = ("url", "username", "password")
-OPTIONAL_KEYS = ("verify", "ca_bundle", "web_port_url", "proxy", "organizations")
+OPTIONAL_KEYS = (
+    "verify",
+    "ca_bundle",
+    "web_port_url",
+    "proxy",
+    "organizations",
+    "read_port_config",
+)
 
 
 class ConfigError(ValueError):
@@ -23,6 +30,10 @@ def validate_endpoints(endpoints):
         # None, 0 or "" would turn certificate checks off as surely as False, without the warning.
         if not isinstance(settings.get("verify", True), bool):
             raise ConfigError(f"netbox_lantronix: endpoint '{name}' 'verify' must be True or False")
+        if not isinstance(settings.get("read_port_config", True), bool):
+            raise ConfigError(
+                f"netbox_lantronix: endpoint '{name}' 'read_port_config' must be True or False"
+            )
         if "organizations" in settings:
             orgs = settings["organizations"]
             if not isinstance(orgs, (list, tuple, set, frozenset)) or not all(

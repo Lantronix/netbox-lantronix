@@ -7,7 +7,7 @@ On each sync the plugin reads Percepxion and:
 - creates the console server in NetBox with the right device type, so its console server ports come from the device type
 - labels each console server port with the name configured on the console server, and describes it with the hostname of the attached device
 - shows the attached device's make, model, OS and serial on the port, when the console server reports them
-- adds an **Open console** button on each port that launches an SSH session through the console server (`ssh://<console server>:<base port + port number>`)
+- adds an **Open console** button on each port that launches an SSH session through the console server (`ssh://<console server>:<the port's SSH port>`), kept in step with the console server's own settings
 - lists anything it couldn't decide, such as an ambiguous model or a name conflict, as findings with a one-click fix
 
 The plugin never writes to Percepxion or to a console server. It reads from Percepxion and writes to NetBox only.
@@ -130,6 +130,7 @@ PLUGINS_CONFIG = {
                 # "verify": True,                      # TLS verification, on by default
                 # "ca_bundle": "/etc/ssl/px-ca.pem",   # CA bundle for on-premises Percepxion
                 # "proxy": "http://proxy.example.com:3128",
+                # "read_port_config": False,         # don't read each port's SSH port (see Open console)
             },
         },
     },
@@ -141,6 +142,7 @@ PLUGINS_CONFIG = {
 - A missing key stops the plugin at startup with an error that names the endpoint and the key, never the value.
 - `organizations` limits which Percepxion organizations a source on this endpoint may sync. Set it whenever the Percepxion account can see more than one organization. Without it, anyone who can add or edit a source can sync any organization the account can see. A source whose organization isn't listed can't be saved and won't sync.
 - `verify` must be `True` or `False`; any other value stops the plugin at startup. Turning it off shows a warning on every source that uses the endpoint.
+- `read_port_config` must be `True` or `False`. It is on by default: see [Open console](#open-console).
 - The plugin never follows HTTP redirects from the endpoint. Set `url` to the address that answers directly.
 - Endpoint changes take effect after a NetBox restart.
 
@@ -198,9 +200,24 @@ Each sync logs in to Percepxion, reads, then revokes its refresh token and close
 
 ## Open console
 
-The button builds `ssh://<address>:<SSH base port + port number>`. It uses the device's primary IP in NetBox, or the management address Percepxion reports when no primary IP is set. Hover over the button to see the address and port it opens. The button isn't shown for loopback, link-local, multicast or unspecified addresses. Set a primary IP in NetBox when you want NetBox, not Percepxion, to decide where the link goes. Your browser opens it with your SSH client and you sign in to the console server as yourself.
+The button opens `ssh://<address>:<SSH port>` with your SSH client, and you sign in to the console server as yourself. Hover over the button to see the address and port it opens.
+
+**Address.** The device's primary IP in NetBox, or the management address the console server reports to Percepxion when no primary IP is set. The button isn't shown for loopback, link-local, multicast or unspecified addresses. Set a primary IP in NetBox when you want NetBox, not Percepxion, to decide where the link goes.
+
+**SSH port.** Each sync reads every port's SSH port and whether SSH to the port is on from the console server's configuration in Percepxion (the Device Ports settings: **Starting SSH Port**, or `set deviceport port <n> sshport <tcp port>` for one port). When someone changes them on the console server, the button follows after the console server next uploads its configuration and the plugin next syncs. The device link shows where a unit's ports come from under **Console SSH ports**.
+
+- A port with SSH turned off on the console server gets no button.
+- A unit whose configuration Percepxion doesn't hold, or can't return, keeps the ports from the last sync that read them. A unit never read uses the source's **SSH base port** plus the port number, which is the factory numbering (3001 for port 1).
 
 On the console server, direct SSH access is off by default on every port. Turn it on for the ports you want to reach, for example `set deviceport port 1-48 sshin enable` (answer `yes` to the confirmation), or from the WebUI's device port settings with **Apply Settings** to the ports you choose.
+
+### What the configuration read involves
+
+Percepxion's port search doesn't report a port's SSH port, so the plugin reads it from the unit's stored configuration, one request per console server per sync (`POST /v1/telemetry/config/edit`; despite the name it changes nothing, and the request that saves a configuration isn't on the plugin's list of allowed requests).
+
+That response is the unit's whole settings tree. Percepxion masks its password fields, but SNMP community strings and similar detail are in it. The plugin reads two settings per port, the SSH port and whether SSH is on, and drops the rest before anything else sees it: nothing else is stored, logged or put in a finding or error. The account needs no extra rights for this; it can already read the configuration.
+
+To turn the read off, set `"read_port_config": False` on the endpoint. Every button on that endpoint then uses the source's SSH base port plus the port number.
 
 ## Console coverage gate
 

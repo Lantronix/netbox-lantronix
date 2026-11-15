@@ -17,6 +17,7 @@ from urllib.parse import urlsplit
 
 import requests
 
+from .portconfig import parse_port_ssh
 from .records import PxDevice, PxPort
 from .telemetry import PxPortState, parse_port_states
 
@@ -26,6 +27,7 @@ USER_AGENT = f"netbox-lantronix/{CLIENT_VERSION}"
 
 LOGIN_PATH = "/v2/user/login"
 LOGOUT_PATH = "/v1/user/token"
+CONFIG_PATH = "/v1/telemetry/config/edit"
 
 ALLOWED: frozenset[tuple[str, str]] = frozenset(
     {
@@ -35,6 +37,9 @@ ALLOWED: frozenset[tuple[str, str]] = frozenset(
         ("POST", "/v1/job/jobgroup/search"),
         ("POST", "/v1/telemetry/result/search"),
         ("POST", "/v1/telemetry/stat/view"),
+        # Percepxion's name for reading a device's stored configuration. It changes nothing;
+        # the call that saves a configuration is a different path and isn't listed.
+        ("POST", CONFIG_PATH),
         # Ends this client's own session; the only call that isn't a read.
         ("DELETE", LOGOUT_PATH),
     }
@@ -239,6 +244,18 @@ class PercepxionClient:
         if org_id:
             body["tenant_id"] = org_id
         return parse_port_states(self._request("POST", "/v1/telemetry/stat/view", body))
+
+    def port_ssh(self, device_id: str, org_id: str | None = None) -> dict[int, int]:
+        """SSH TCP port per device port for one device, 0 where SSH to the port is off.
+
+        Read from the device's stored configuration, one call per device. Only the port
+        settings leave this method: see ``portconfig``.
+        """
+        self._ensure_login()
+        body: dict[str, Any] = {"device_id": device_id}
+        if org_id:
+            body["tenant_id"] = org_id
+        return parse_port_ssh(self._request("POST", CONFIG_PATH, body))
 
     def latest_sysconfig_jobs(self, tenant_id: str | None = None) -> dict[str, tuple[str, str]]:
         """device_id -> (job_group_id, created_at) for the newest Completed `show sysconfig` job."""

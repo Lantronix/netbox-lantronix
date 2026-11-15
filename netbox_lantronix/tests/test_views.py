@@ -76,6 +76,30 @@ class ViewTest(TestCase):
         body = self.get(self.admin, self.port.get_absolute_url()).content.decode()
         self.assertIn("/details/dev-0001/SLC-A/ports", body)
 
+    def test_ssh_button_uses_the_port_the_unit_reports(self):
+        # Port-02 on the unit was given its own SSH port.
+        DeviceLink.objects.filter(pk=self.link.pk).update(ssh_ports={"1": 3001, "2": 22002})
+        body = self.get(self.admin, self.port.get_absolute_url()).content.decode()
+        self.assertIn('href="ssh://192.0.2.75:22002"', body)
+        self.assertNotIn(":3002", body)
+
+    def test_no_ssh_button_when_ssh_to_the_port_is_off(self):
+        DeviceLink.objects.filter(pk=self.link.pk).update(ssh_ports={"1": 3001, "2": 0})
+        body = self.get(self.admin, self.port.get_absolute_url()).content.decode()
+        self.assertNotIn("ssh://", body)
+
+    def test_ssh_button_falls_back_to_the_base_port_for_a_port_with_no_setting(self):
+        for stored in ({}, {"1": 3001}, {"2": None}):
+            DeviceLink.objects.filter(pk=self.link.pk).update(ssh_ports=stored)
+            body = self.get(self.admin, self.port.get_absolute_url()).content.decode()
+            self.assertIn("ssh://192.0.2.75:3002", body, stored)
+
+    def test_no_ssh_button_for_a_stored_port_that_is_not_a_tcp_port(self):
+        for stored in ({"2": 70000}, {"2": -1}, {"2": "3002"}, {"2": True}, {"2": [3002]}):
+            DeviceLink.objects.filter(pk=self.link.pk).update(ssh_ports=stored)
+            body = self.get(self.admin, self.port.get_absolute_url()).content.decode()
+            self.assertNotIn("ssh://", body, stored)
+
     def test_ssh_falls_back_to_percepxion_ip(self):
         Device.objects.filter(pk=self.device.pk).update(primary_ip4=None)
         DeviceLink.objects.filter(pk=self.link.pk).update(mgmt_ip="198.51.100.7")

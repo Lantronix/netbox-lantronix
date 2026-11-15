@@ -34,6 +34,7 @@ DEVICES = ("POST", "/v3/device/search")
 PORTS = ("POST", "/v3/port/search")
 JOBS = ("POST", "/v1/job/jobgroup/search")
 RESULTS = ("POST", "/v1/telemetry/result/search")
+CONFIG = ("POST", "/v1/telemetry/config/edit")
 
 
 # -- fixtures ----------------------------------------------------------------------------------
@@ -158,7 +159,7 @@ def assert_no_secrets(text: str):
 
 
 def test_allowed_is_exactly_the_contract_pairs():
-    # Six reads (login is a POST) and the call that ends the client's own session.
+    # Seven reads (login is a POST) and the call that ends the client's own session.
     assert set(ALLOWED) == {
         ("POST", "/v2/user/login"),
         ("POST", "/v3/device/search"),
@@ -166,9 +167,10 @@ def test_allowed_is_exactly_the_contract_pairs():
         ("POST", "/v1/job/jobgroup/search"),
         ("POST", "/v1/telemetry/result/search"),
         ("POST", "/v1/telemetry/stat/view"),
+        ("POST", "/v1/telemetry/config/edit"),
         ("DELETE", "/v1/user/token"),
     }
-    assert len(ALLOWED) == 7
+    assert len(ALLOWED) == 8
 
 
 @pytest.mark.parametrize(
@@ -668,3 +670,65 @@ def test_logout_never_raises_and_never_logs_in_again(server, answer):
 def test_logout_without_a_login_makes_no_call(server):
     make_client().logout()
     assert server.calls == []
+
+
+# -- port SSH settings from the stored configuration --------------------------------------------
+
+CONFIG_SECRETS = ("Canary-rw-community", "Canary-host-key", "Canary-port-banner")
+
+
+def stored_config():
+    base = "telemetry/cm/config_record/"
+
+    def record(name, **fields):
+        return {
+            "name": base + name,
+            "field": [{"name": f"{base}{name}/{name}_{k}", "value": v} for k, v in fields.items()],
+        }
+
+    return {
+        "device_id": "dev-0001",
+        "config_record": [
+            record("snmp", readwrite=CONFIG_SECRETS[0]),
+            record("servssh", opthostkey=CONFIG_SECRETS[1]),
+            record("dpgen1", sshin="Enable", sshport="3001", banner=CONFIG_SECRETS[2]),
+            record("dpgen2", sshin="Disable", sshport="3002"),
+            record("dpgen3", sshin="Enable", sshport="22003"),
+        ],
+    }
+
+
+def test_port_ssh_returns_only_port_settings(server):
+    server.add(*LOGIN, ok_login())
+    server.add(*CONFIG, FakeResponse(200, stored_config()))
+    ports = make_client().port_ssh("dev-0001", "org-0001")
+    assert ports == {1: 3001, 2: 0, 3: 22003}
+    assert not any(secret in repr(ports) for secret in CONFIG_SECRETS)
+    (body,) = server.bodies("/v1/telemetry/config/edit")
+    assert body == {"device_id": "dev-0001", "tenant_id": "org-0001"}
+
+
+def test_port_ssh_without_an_organization_sends_no_tenant(server):
+    server.add(*LOGIN, ok_login())
+    server.add(*CONFIG, FakeResponse(200, stored_config()))
+    make_client().port_ssh("dev-0001")
+    (body,) = server.bodies("/v1/telemetry/config/edit")
+    assert body == {"device_id": "dev-0001"}
+
+
+def test_port_ssh_error_names_no_configuration_content(server):
+    # Percepxion answers HTTP 400 for a unit that never uploaded a configuration.
+    server.add(*LOGIN, ok_login())
+    server.add(*CONFIG, FakeResponse(400, stored_config()))
+    with pytest.raises(PercepxionUnavailable) as exc:
+        make_client().port_ssh("dev-0001", "org-0001")
+    assert not any(secret in str(exc.value) for secret in CONFIG_SECRETS)
+    assert "HTTP 400" in str(exc.value)
+
+
+@pytest.mark.parametrize("path", ["/v1/telemetry/config/save", "/v1/telemetry/config/get"])
+def test_saving_a_configuration_is_not_on_the_allowlist(path):
+    with mock.patch.object(requests.Session, "request") as req:
+        with pytest.raises(ForbiddenRequest):
+            make_client()._request("POST", path, {})
+        req.assert_not_called()

@@ -148,6 +148,13 @@ class DeviceLink(NetBoxModel):
         verbose_name="Firmware version (Percepxion)",
         help_text="Running firmware reported by Percepxion",
     )
+    ssh_ports = models.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name="Console SSH ports",
+        help_text="SSH TCP port of each device port, from the unit's configuration in "
+        "Percepxion. 0: SSH to the port is off. Empty: not read; the source's base port is used.",
+    )
     last_seen = models.DateTimeField(null=True, blank=True)
 
     class Meta:
@@ -164,6 +171,13 @@ class DeviceLink(NetBoxModel):
 
     def get_absolute_url(self):
         return reverse("plugins:netbox_lantronix:devicelink", args=[self.pk])
+
+    @property
+    def ssh_ports_origin(self):
+        """Where the Open console links for this unit get their TCP ports."""
+        if self.ssh_ports:
+            return f"Unit configuration ({len(self.ssh_ports)} ports)"
+        return "Source base port"
 
     def get_status_color(self):
         return LinkStatusChoices.colors.get(self.status)

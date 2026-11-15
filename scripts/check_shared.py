@@ -22,6 +22,7 @@ from pathlib import Path
 SHARED = (
     "percepxion/__init__.py",
     "percepxion/client.py",
+    "percepxion/portconfig.py",
     "percepxion/records.py",
     "percepxion/resolver.py",
     "percepxion/telemetry.py",
@@ -31,6 +32,7 @@ SHARED = (
     "tests/coverage_fixtures.py",
     "tests/test_client.py",
     "tests/test_coverage_core.py",
+    "tests/test_portconfig.py",
     "tests/test_resolver.py",
     "tests/test_sanitize.py",
     "tests/test_telemetry.py",

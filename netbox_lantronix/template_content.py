@@ -28,6 +28,22 @@ def _can_view(context, obj):
     return bool(user) and user.has_perm(f"{obj._meta.app_label}.view_{obj._meta.model_name}", obj)
 
 
+def ssh_port(link, number):
+    """The TCP port that opens an SSH session to device port ``number``, or None.
+
+    The unit's own setting for the port, as last read from Percepxion, wins. None when SSH
+    to the port is turned off on the unit. A port with no setting on record falls back to
+    the source's base port plus the port number, the unit's factory numbering.
+    """
+    stored = link.ssh_ports if isinstance(link.ssh_ports, dict) else {}
+    tcp_port = stored.get(str(number))
+    if tcp_port is None:
+        tcp_port = link.source.ssh_base_port + number
+    if isinstance(tcp_port, bool) or not isinstance(tcp_port, int) or not 1 <= tcp_port <= 65535:
+        return None
+    return tcp_port
+
+
 def console_urls(port):
     """Return (ssh_url, percepxion_url, ssh_target) for a console server port.
 
@@ -43,8 +59,8 @@ def console_urls(port):
     raw = str(device.primary_ip.address.ip) if device.primary_ip else link.mgmt_ip
     clean = host_ip(raw)
     ip = ipaddress.ip_address(clean) if clean else None
-    tcp_port = link.source.ssh_base_port + number
-    if ip is not None and tcp_port <= 65535:
+    tcp_port = ssh_port(link, number)
+    if ip is not None and tcp_port is not None:
         host = f"[{ip}]" if ip.version == 6 else str(ip)
         ssh_target = f"{host}:{tcp_port}"
         ssh_url = f"ssh://{ssh_target}"

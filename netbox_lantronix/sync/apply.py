@@ -23,9 +23,12 @@ from ..models import (
     PortFacts,
     SyncFinding,
 )
-from .planner import Finding, NbDevice, NbPort, Plan, SourceContext
+from ..percepxion.cabling import OTHER, ConsolePortRef, ObservedPort, Target, plan_cables
+from .planner import Finding, NbDevice, NbPort, Plan, SourceContext, port_name
 
 FINDINGS_KEEP_RUNS = 20
+CABLE_TAG = "lantronix-discovered"
+CABLE_DESCRIPTION = "Observed by SLC discovery (Percepxion sync)"
 # Port states that mean nothing is plugged in.
 IDLE_STATES = frozenset({"", "Disconnected", "Unknown"})
 
@@ -197,6 +200,8 @@ def apply_plan(plan: Plan, source, user) -> dict:
         pk_by_pxid = {pxid: pk for pxid, pk in pk_by_pxid.items() if pk in in_scope}
         counts["facts"]["updated"] = _apply_facts(plan, pk_by_pxid, now)
         _apply_link_details(plan, source, in_scope, now)
+        if source.manage_cables:
+            counts["cables"] = _apply_cables(plan, pk_by_pxid, user)
     return counts
 
 
@@ -382,6 +387,139 @@ def _apply_facts(plan: Plan, pk_by_pxid, now) -> int:
             obj.save()
             updated += 1
     return updated
+
+
+def _far_end(termination_owner):
+    """The single object at the far end of a cabled port, or None."""
+    peers = list(termination_owner.link_peers or [])
+    return peers[0] if len(peers) == 1 else None
+
+
+def build_cable_inputs(plan: Plan, pk_by_pxid, user):
+    """Observed SLC ports, their current cables and candidate attached devices, from NetBox.
+
+    Candidates are limited to the SLCs' own sites and to devices the sync user may change:
+    the attached device reports its serial and hostname, so they mustn't reach further."""
+    from dcim.models import ConsolePort, ConsoleServerPort, Device
+
+    wanted = [(pk_by_pxid[p.device_id], p) for p in plan.observed if p.device_id in pk_by_pxid]
+    if not wanted:
+        return [], {}, []
+    csps = {
+        (c.device_id, c.name): c
+        for c in ConsoleServerPort.objects.filter(
+            device_id__in={pk for pk, _ in wanted}
+        ).select_related("device")
+    }
+    observed, cables = [], {}
+    for device_pk, p in wanted:
+        csp = csps.get((device_pk, port_name(p.number)))
+        if csp is None:
+            continue
+        observed.append(
+            ObservedPort(
+                slc=device_pk,
+                port=csp.pk,
+                state=p.facts.get("state", ""),
+                attached=p.facts.get("attached") == "yes",
+                serial=p.facts.get("serial", ""),
+                hostname=p.hostname,
+                label=f"{csp.device.name} {csp.name}",
+            )
+        )
+        if csp.cable_id:
+            far = _far_end(csp)
+            cables[csp.pk] = far.pk if isinstance(far, ConsolePort) else OTHER
+    serials = {o.serial for o in observed if o.attached and o.serial}
+    names = {o.hostname.lower() for o in observed if o.attached and o.hostname}
+    if not serials and not names:
+        return observed, cables, []
+    slc_pks = {o.slc for o in observed}
+    sites = set(Device.objects.filter(pk__in=slc_pks).values_list("site_id", flat=True))
+    devices = (
+        Device.objects.restrict(user, "change")
+        .annotate(name_lower=Lower("name"))
+        .filter(Q(serial__in=serials) | Q(name_lower__in=names), site_id__in=sites)
+        .exclude(pk__in=slc_pks)
+        .prefetch_related("consoleports")
+    )
+    targets = []
+    for d in devices:
+        refs = []
+        for cp in d.consoleports.all():
+            cabled_to = None
+            if cp.cable_id:
+                far = _far_end(cp)
+                cabled_to = far.pk if isinstance(far, ConsoleServerPort) else OTHER
+            refs.append(ConsolePortRef(cp.pk, cp.name, cabled_to))
+        targets.append(Target(d.pk, d.name or "", d.serial or "", tuple(refs)))
+    return observed, cables, targets
+
+
+def _journal(device, user, text) -> None:
+    from extras.models import JournalEntry
+
+    JournalEntry.objects.create(assigned_object=device, kind="info", comments=text, created_by=user)
+
+
+def _apply_cables(plan: Plan, pk_by_pxid, user) -> dict:
+    """Make console cables on synced SLC ports match what the SLCs report."""
+    from dcim.models import Cable, ConsolePort, ConsoleServerPort
+    from extras.models import Tag
+
+    counts = {"created": 0, "deleted": 0, "unchanged": 0}
+    cable_plan = plan_cables(*build_cable_inputs(plan, pk_by_pxid, user))
+    counts["unchanged"] = cable_plan.unchanged
+    for f in cable_plan.findings:
+        plan.findings.append(Finding(f.kind, f.label[:64], "", f.detail))
+    if cable_plan.is_empty():
+        return counts
+    for d in cable_plan.deletes:
+        csp = ConsoleServerPort.objects.select_related("device").get(pk=d.port)
+        cable = csp.cable
+        if cable is None:
+            continue
+        _check(Cable, user, "delete", cable.pk)
+        far = _far_end(csp)
+        cable.delete()
+        counts["deleted"] += 1
+        why = {
+            "disconnected": "the SLC reports the port Disconnected",
+            "replaced": "the SLC reports a different device on the port",
+            "moved": f"the device now reports on {d.label}",
+        }.get(d.reason, d.reason)
+        if isinstance(far, ConsolePort):
+            _journal(
+                far.device,
+                user,
+                f"Console cable to {csp.device.name} {csp.name} removed: {why}.",
+            )
+    tag, _ = Tag.objects.get_or_create(
+        slug=CABLE_TAG, defaults={"name": CABLE_TAG, "color": "2196f3"}
+    )
+    for c in cable_plan.creates:
+        csp = ConsoleServerPort.objects.select_related("device").get(pk=c.port)
+        cp = ConsolePort.objects.select_related("device").get(pk=c.console_port)
+        if csp.cable_id or cp.cable_id:
+            continue  # a delete above didn't take (permissions) or someone cabled it meanwhile
+        cable = Cable(
+            a_terminations=[csp],
+            b_terminations=[cp],
+            status="connected",
+            description=CABLE_DESCRIPTION,
+        )
+        cable.full_clean()
+        cable.save()
+        cable.tags.add(tag)
+        _check(Cable, user, "add", cable.pk)
+        counts["created"] += 1
+        _journal(
+            cp.device,
+            user,
+            f"Console cable to {csp.device.name} {csp.name} created: the SLC reports this "
+            f"device there (matched on {c.matched_on}).",
+        )
+    return counts
 
 
 def record_findings(plan: Plan, source, job) -> dict:

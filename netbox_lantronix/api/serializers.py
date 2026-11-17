@@ -32,6 +32,7 @@ class PercepxionSourceSerializer(NetBoxModelSerializer):
             "sync_interval",
             "ssh_base_port",
             "percepxion_link",
+            "manage_cables",
             "enabled",
             "backoff_until",
             "tags",

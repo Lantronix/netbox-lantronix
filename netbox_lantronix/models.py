@@ -45,6 +45,14 @@ class FindingKindChoices(ChoiceSet):
     OUT_OF_ORG = "out_of_org"
     MISSING = "missing"
     DUPLICATE_NAME = "duplicate_name"
+    ATTACHED_UNMATCHED = "attached_unmatched"
+    ATTACHED_AMBIGUOUS = "attached_ambiguous"
+    CONSOLE_PORT_UNCLEAR = "console_port_unclear"
+    CONSOLE_PORT_CABLED_ELSEWHERE = "console_port_cabled_elsewhere"
+    PORT_CABLED_ELSEWHERE = "port_cabled_elsewhere"
+    DUPLICATE_ATTACHMENT = "duplicate_attachment"
+    HOSTNAME_ONLY_MATCH = "hostname_only_match"
+    STILL_REPORTED_ELSEWHERE = "still_reported_elsewhere"
 
     CHOICES = (
         (CONFLICT, "Conflict", "red"),
@@ -55,6 +63,14 @@ class FindingKindChoices(ChoiceSet):
         (OUT_OF_ORG, "Outside organization", "gray"),
         (MISSING, "Missing from Percepxion", "yellow"),
         (DUPLICATE_NAME, "Duplicate name", "red"),
+        (ATTACHED_UNMATCHED, "Attached device not in NetBox", "yellow"),
+        (ATTACHED_AMBIGUOUS, "Attached device ambiguous", "orange"),
+        (CONSOLE_PORT_UNCLEAR, "Console port unclear", "orange"),
+        (CONSOLE_PORT_CABLED_ELSEWHERE, "Console port cabled elsewhere", "orange"),
+        (PORT_CABLED_ELSEWHERE, "SLC port cabled to a non-console port", "gray"),
+        (DUPLICATE_ATTACHMENT, "Device reported on two ports", "red"),
+        (HOSTNAME_ONLY_MATCH, "Matched on hostname only", "yellow"),
+        (STILL_REPORTED_ELSEWHERE, "Old port not Disconnected", "yellow"),
     )
 
 
@@ -76,6 +92,12 @@ class PercepxionSource(JobsMixin, NetBoxModel):
         default=3000, validators=[MinValueValidator(1), MaxValueValidator(65000)]
     )
     percepxion_link = models.BooleanField(default=False, verbose_name="Show 'Open in Percepxion'")
+    manage_cables = models.BooleanField(
+        default=False,
+        verbose_name="Manage console cables",
+        help_text="Create and delete console cables on this source's SLC ports to match what "
+        "each SLC reports. Percepxion becomes the source of truth for those cables.",
+    )
     enabled = models.BooleanField(default=True)
     backoff_until = models.DateTimeField(null=True, blank=True, editable=False)
 

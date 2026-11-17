@@ -23,7 +23,13 @@ class PercepxionSourceForm(NetBoxModelForm):
     fieldsets = (
         FieldSet("name", "endpoint", "organization_id", "enabled", name="Source"),
         FieldSet("site", "role", name="New devices"),
-        FieldSet("sync_interval", "ssh_base_port", "percepxion_link", name="Sync and console"),
+        FieldSet(
+            "sync_interval",
+            "ssh_base_port",
+            "percepxion_link",
+            "manage_cables",
+            name="Sync and console",
+        ),
         FieldSet("tags", name="Tags"),
     )
 
@@ -39,6 +45,7 @@ class PercepxionSourceForm(NetBoxModelForm):
             "sync_interval",
             "ssh_base_port",
             "percepxion_link",
+            "manage_cables",
             "tags",
         )
 

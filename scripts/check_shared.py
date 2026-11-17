@@ -21,6 +21,7 @@ from pathlib import Path
 # Relative to the Python package directory.
 SHARED = (
     "percepxion/__init__.py",
+    "percepxion/cabling.py",
     "percepxion/client.py",
     "percepxion/portconfig.py",
     "percepxion/records.py",
@@ -30,6 +31,7 @@ SHARED = (
     "coverage/__init__.py",
     "coverage/core.py",
     "tests/coverage_fixtures.py",
+    "tests/test_cabling.py",
     "tests/test_client.py",
     "tests/test_coverage_core.py",
     "tests/test_portconfig.py",

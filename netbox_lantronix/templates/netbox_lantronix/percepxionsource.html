@@ -30,6 +30,7 @@
           <tr><th scope="row">Schedule</th><td>{% if object.sync_interval %}Every {{ object.sync_interval }} min{% if next_job %}, next {{ next_job.scheduled|isodatetime }}{% endif %}{% else %}Off{% endif %}</td></tr>
           <tr><th scope="row">SSH base port</th><td>{{ object.ssh_base_port }}</td></tr>
           <tr><th scope="row">"Open in Percepxion"</th><td>{% checkmark object.percepxion_link %}</td></tr>
+          <tr><th scope="row">Manage console cables</th><td>{% checkmark object.manage_cables %}</td></tr>
           {% if object.backoff_until %}<tr><th scope="row">Login backoff until</th><td>{{ object.backoff_until|isodatetime }}</td></tr>{% endif %}
         </table>
       </div>

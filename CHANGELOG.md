@@ -4,6 +4,8 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-11-18
+
 ### Added
 
 - **Manage console cables**, a per-source setting (off by default). Each sync creates and deletes console cables on the source's console server ports to match what the console server reports: a cable goes only when the port is Disconnected, and a cable is created only when the attached device matches exactly one NetBox device by serial or hostname. Created cables are tagged `lantronix-discovered`, and each change writes a journal entry on the attached device. The sync user needs `dcim.view/add/delete_cable`. Run `manage.py migrate` after upgrading. See **Console cables** in the README.
@@ -135,7 +137,8 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 ### Added
 - First release. NetBox plugin that keeps NetBox current with the Lantronix SLC 9000, SLC 8000 and EMG console servers managed by Percepxion: devices, console server ports, port labels and attached-device facts.
 
-[Unreleased]: https://github.com/Lantronix/netbox-lantronix/compare/v0.8.0...HEAD
+[Unreleased]: https://github.com/Lantronix/netbox-lantronix/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/Lantronix/netbox-lantronix/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/Lantronix/netbox-lantronix/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/Lantronix/netbox-lantronix/compare/v0.6.2...v0.7.0
 [0.6.2]: https://github.com/Lantronix/netbox-lantronix/compare/v0.6.1...v0.6.2

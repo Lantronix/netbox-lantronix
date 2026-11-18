@@ -4,6 +4,10 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+### Added
+
+- **Manage console cables**, a per-source setting (off by default). Each sync creates and deletes console cables on the source's console server ports to match what the console server reports: a cable goes only when the port is Disconnected, and a cable is created only when the attached device matches exactly one NetBox device by serial or hostname. Created cables are tagged `lantronix-discovered`, and each change writes a journal entry on the attached device. The sync user needs `dcim.view/add/delete_cable`. Run `manage.py migrate` after upgrading. See **Console cables** in the README.
+
 ## [0.8.0] - 2026-11-15
 
 ### Added

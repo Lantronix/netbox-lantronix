@@ -137,6 +137,9 @@ class SyncJob(JobRunner):
             f"Devices created {dev['created']}, updated {dev['updated']}, "
             f"unchanged {dev['unchanged']}; ports updated {counts['ports']['updated']}"
         )
+        if "cables" in counts:
+            c = counts["cables"]
+            self.logger.info(f"Console cables created {c['created']}, deleted {c['deleted']}")
 
     def _check_can_run(self, source, manual):
         """Fail the job before any Percepxion call if this run shouldn't happen. Returns the
@@ -189,6 +192,9 @@ class SyncJob(JobRunner):
                 self._sysconfig_reader(client, source.organization_id),
             )
             plan.ssh_ports = self._ssh_ports(client, source, cfg, plan.seen)
+            if source.manage_cables:
+                # Only telemetry says whether a port is plugged in; port search alone is stale.
+                plan.observed = [p for p in px_ports if p.number > 0 and "attached" in p.facts]
             return plan
         except AuthError:
             _start_backoff(source, cfg)

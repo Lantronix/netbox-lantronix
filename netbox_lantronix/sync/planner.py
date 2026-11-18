@@ -114,6 +114,8 @@ class Plan:
     facts: dict[str, dict[str, dict]] = field(default_factory=dict)
     ports_unchanged: int = 0
     findings: list[Finding] = field(default_factory=list)
+    # Ports with a telemetry state this run, set by the job when the source manages cables.
+    observed: list[PxPort] = field(default_factory=list)
 
     def is_empty(self) -> bool:
         return not (

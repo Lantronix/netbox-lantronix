@@ -173,12 +173,24 @@ When none of these settles it, the device isn't created and an "ambiguous model"
 | Object | Plugin writes | Plugin never changes |
 |---|---|---|
 | Console server (device) | created with name, type, site, role, platform, serial; name kept in step with Percepxion | site, role or type of an existing device |
-| Console server port | label (the port's name on the console server), description (attached device hostname) | name, cables, anything else |
+| Console server port | label (the port's name on the console server), description (attached device hostname) | name, anything else |
+| Console cable on a synced port | only with **Manage console cables** on: created and deleted to match what the console server reports, see below | cables that don't end on a console port, such as patch panel cables |
 | Port facts panel | attached device make, model, OS, version, serial, last reported time | |
 
 The console server is the source of truth for port labels and descriptions. A label edited by hand in NetBox is overwritten on the next sync. Rename the port on the console server instead.
 
 The plugin matches Percepxion devices to NetBox devices by its own link, then by serial number, then by name. When a serial match is in a different site from the source, or a name match has no serial to confirm it, the link is created as **pending** and nothing is written until someone with the approve permission approves it. A run writes only objects that changed, so a sync with no changes in Percepxion records no change log entries.
+
+### Console cables
+
+Turn on **Manage console cables** on a source to make Percepxion the source of truth for console cables on that source's console server ports. Each sync compares what every console server reports per port with the cables in NetBox:
+
+- A port the console server reports **Disconnected** (no line signals) loses its cable. A port that is Identifying, Unidentified or Authenticating has something plugged in that discovery hasn't named yet, so its cable stays.
+- A port with an identified attached device gets a cable to that device's console port. The device is matched on serial number, then on hostname, only among devices in the console server's site that the sync user may change, and only when exactly one matches. The attached device reports its own hostname, so a hostname-only match fills free ports only; replacing or moving a cable takes a serial match. Its console port must be its only one, or the one named Console. A device that shows up on a different port is moved, but only once its old port reports Disconnected: the serial and hostname are the attached device's own claim, so a report alone never pulls a cable off a port that still has something plugged in.
+- The plugin never touches a cable that ends on something other than a console port (a patch panel), or a console port cabled outside the sync. Those become findings, as do attached devices that match no NetBox device.
+- Ports Percepxion returned no telemetry state for in this run are never changed.
+
+Created cables carry the tag `lantronix-discovered`. Every created or removed cable writes a journal entry on the attached device saying which port and why. It's off by default. The sync user also needs `dcim.view/add/delete_cable`.
 
 ## Permissions
 

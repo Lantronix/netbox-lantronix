@@ -217,11 +217,7 @@ def plan_cables(
             )
             result.unchanged += 1
             continue
-        if (
-            cp.cabled_to is not None
-            and cp.cabled_to != o.port
-            and cp.cabled_to not in disconnected
-        ):
+        if cp.cabled_to is not None and cp.cabled_to != o.port and cp.cabled_to not in disconnected:
             result.findings.append(
                 CableFinding(
                     "still_reported_elsewhere",
@@ -248,9 +244,7 @@ def plan_cables(
             delete(o.port, "replaced", o.label)
         if cp.cabled_to is not None and cp.cabled_to != o.port:
             delete(cp.cabled_to, "moved", o.label)
-        result.creates.append(
-            Create(o.port, target.key, cp.key, o.label, target.name, matched_on)
-        )
+        result.creates.append(Create(o.port, target.key, cp.key, o.label, target.name, matched_on))
     return result
 
 

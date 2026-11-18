@@ -34,8 +34,13 @@ def test_recabled_booth_moves_the_cisco_and_drops_disconnected_cables():
         port(5, "Unidentified"),
         port(14),
     ]
-    cables = {"p1": "dvt1-con", "p3": "firewall-con", "p4": "switch-con", "p5": "emg-con",
-              "p14": "cisco-con"}
+    cables = {
+        "p1": "dvt1-con",
+        "p3": "firewall-con",
+        "p4": "switch-con",
+        "p5": "emg-con",
+        "p14": "cisco-con",
+    }
     plan = plan_cables(observed, cables, [cisco, EMG])
     assert {(d.port, d.reason) for d in plan.deletes} == {
         ("p1", "disconnected"),
@@ -129,9 +134,7 @@ def test_same_device_on_two_ports_creates_one_cable():
 
 def test_moved_and_disconnected_delete_once():
     cisco = Target("cisco", "e", "S1", (ConsolePortRef("cc", "Console", "p14"),))
-    plan = plan_cables(
-        [port(14), port(3, "Managed", True, "S1")], {"p14": "cc"}, [cisco]
-    )
+    plan = plan_cables([port(14), port(3, "Managed", True, "S1")], {"p14": "cc"}, [cisco])
     assert plan.deletes == [Delete("p14", "moved", "SLC Port-03")]
 
 

@@ -408,6 +408,7 @@ class ViewTest(TestCase):
             "site": self.w["site"].pk,
             "role": self.w["role"].pk,
             "sync_interval": 60,
+            "watch_interval": 0,
             "ssh_base_port": 3000,
         }
         with (

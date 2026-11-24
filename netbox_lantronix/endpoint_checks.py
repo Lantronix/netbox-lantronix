@@ -1,5 +1,7 @@
 """Plugin configuration checks. No NetBox imports."""
 
+from .percepxion.events import usable_secrets
+
 REQUIRED_KEYS = ("url", "username", "password")
 OPTIONAL_KEYS = (
     "verify",
@@ -8,6 +10,7 @@ OPTIONAL_KEYS = (
     "proxy",
     "organizations",
     "read_port_config",
+    "webhook_secrets",
 )
 
 
@@ -43,11 +46,23 @@ def validate_endpoints(endpoints):
                     f"netbox_lantronix: endpoint '{name}' 'organizations' must be a list of "
                     "Percepxion organization IDs"
                 )
+        try:
+            usable_secrets(settings.get("webhook_secrets"))
+        except ValueError as exc:
+            raise ConfigError(f"netbox_lantronix: endpoint '{name}': {exc}") from None
         unknown = set(settings) - set(REQUIRED_KEYS) - set(OPTIONAL_KEYS)
         if unknown:
             keys = ", ".join(sorted(unknown))
             raise ConfigError(f"netbox_lantronix: endpoint '{name}' has unknown keys: {keys}")
     return sorted(endpoints)
+
+
+def webhook_secrets(settings) -> list[str]:
+    """The endpoint's webhook secrets, or [] when events are off or the setting is invalid."""
+    try:
+        return usable_secrets((settings or {}).get("webhook_secrets"))
+    except ValueError:
+        return []
 
 
 def organization_allowed(settings, organization_id) -> bool:

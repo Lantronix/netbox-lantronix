@@ -4,6 +4,13 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+### Added
+
+- **Events URL** for each source, `POST /api/plugins/lantronix/sources/<id>/events/`, turned on by the new endpoint setting `webhook_secrets`. A signed Percepxion event (webhook-payload v1) for a port attach, port state or device status change syncs that console server within seconds. No NetBox token; the HMAC signature is the authentication.
+- **Focused sync**: events, the change watch and the sync API with `device_ids` sync only the console servers that changed, reading and writing only their ports and cables. Requests made while one waits to start join it.
+- **Change watch interval**, a per-source setting (off by default): checks each linked console server's port state on that interval and syncs the ones whose ports changed. For sites where nothing can reach NetBox. Run `manage.py migrate` after upgrading.
+- The sync API takes `{"device_ids": [...]}` for a focused sync, accepted even while another sync runs.
+
 ## [0.9.0] - 2026-11-18
 
 ### Added

@@ -1,0 +1,26 @@
+{
+  "secret": "fixture-secret-not-real-0123456789abcdef",
+  "timestamp": 1793368800,
+  "vectors": [
+    {
+      "fixture": "rule-triggered",
+      "signature": "v1=00a167f6f01764fb9ef6f96e9feb10c6b4cca05c08cfb22bf8b49e7547bcc741"
+    },
+    {
+      "fixture": "device-status-changed",
+      "signature": "v1=aebb1be3bee7a8edbc05cd67d6cb61df04f38aeab8aca6cee4bc254a060085ba"
+    },
+    {
+      "fixture": "port-attached",
+      "signature": "v1=0c5015e793cf5681aea89216f538b51e320599b7da48b0d6c9f14f4458f300d6"
+    },
+    {
+      "fixture": "port-state-changed",
+      "signature": "v1=186c92f70f99ad385ec7b8dfb226847dbe784e41310fc1a5b5e21f0f237d2386"
+    },
+    {
+      "fixture": "port-detached",
+      "signature": "v1=8996b7b39c4eac3bdd5365bbb6eb99791f4506773d44dca5601e34ba78d225a9"
+    }
+  ]
+}

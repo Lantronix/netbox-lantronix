@@ -4,6 +4,8 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-11-24
+
 ### Added
 
 - **Events URL** for each source, `POST /api/plugins/lantronix/sources/<id>/events/`, turned on by the new endpoint setting `webhook_secrets`. A signed Percepxion event (webhook-payload v1) for a port attach, port state or device status change syncs that console server within seconds. No NetBox token; the HMAC signature is the authentication.
@@ -144,7 +146,8 @@ Versions follow [Semantic Versioning](https://semver.org/). Add each user-visibl
 ### Added
 - First release. NetBox plugin that keeps NetBox current with the Lantronix SLC 9000, SLC 8000 and EMG console servers managed by Percepxion: devices, console server ports, port labels and attached-device facts.
 
-[Unreleased]: https://github.com/Lantronix/netbox-lantronix/compare/v0.9.0...HEAD
+[Unreleased]: https://github.com/Lantronix/netbox-lantronix/compare/v0.10.0...HEAD
+[0.10.0]: https://github.com/Lantronix/netbox-lantronix/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/Lantronix/netbox-lantronix/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/Lantronix/netbox-lantronix/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/Lantronix/netbox-lantronix/compare/v0.6.2...v0.7.0

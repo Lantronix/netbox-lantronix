@@ -131,6 +131,7 @@ PLUGINS_CONFIG = {
                 # "ca_bundle": "/etc/ssl/px-ca.pem",   # CA bundle for on-premises Percepxion
                 # "proxy": "http://proxy.example.com:3128",
                 # "read_port_config": False,         # don't read each port's SSH port (see Open console)
+                # "webhook_secrets": [os.environ["PERCEPXION_WEBHOOK_SECRET"]],  # turns on the events URL
             },
         },
     },
@@ -143,6 +144,7 @@ PLUGINS_CONFIG = {
 - `organizations` limits which Percepxion organizations a source on this endpoint may sync. Set it whenever the Percepxion account can see more than one organization. Without it, anyone who can add or edit a source can sync any organization the account can see. A source whose organization isn't listed can't be saved and won't sync.
 - `verify` must be `True` or `False`; any other value stops the plugin at startup. Turning it off shows a warning on every source that uses the endpoint.
 - `read_port_config` must be `True` or `False`. It is on by default: see [Open console](#open-console).
+- `webhook_secrets` is a list of signing secrets, each at least 32 characters, or one comma-separated string. Set it to turn on the events URL for sources on this endpoint; see [Syncing on change](#syncing-on-change). List two while rotating a secret.
 - The plugin never follows HTTP redirects from the endpoint. Set `url` to the address that answers directly.
 - Endpoint changes take effect after a NetBox restart.
 
@@ -153,7 +155,7 @@ PLUGINS_CONFIG = {
 3. Save, then click **Sync now**. The job appears under the source with its counts and log.
 4. Open **Findings**. Each one names the device and the fix.
 
-To sync on events instead of waiting for the schedule, call `POST /api/plugins/lantronix/sources/<id>/sync/` with an API token whose user has the sync permission. It answers 202 with the queued job, or 409 when a run is already queued or running, which will pick up the change.
+To keep NetBox current between scheduled syncs, see [Syncing on change](#syncing-on-change).
 
 ### Device models
 
@@ -191,6 +193,22 @@ Turn on **Manage console cables** on a source to make Percepxion the source of t
 - Ports Percepxion returned no telemetry state for in this run are never changed.
 
 Created cables carry the tag `lantronix-discovered`. Every created or removed cable writes a journal entry on the attached device saying which port and why. It's off by default. The sync user also needs `dcim.view/add/delete_cable`.
+
+## Syncing on change
+
+A full sync reads every console server. Three ways to sync just the console servers that changed, within seconds, all of which run a **focused sync**: it reads port state, port names and SSH settings only for those units and changes only their ports and cables. Requests that arrive while a focused sync waits to start join it, so a burst of changes across a few units becomes one run. A focused sync that finds another sync running waits for it and runs after. It records no findings; the next full sync does.
+
+**Events.** With `webhook_secrets` set on the endpoint, each enabled source has an events URL, shown on the source page:
+
+```
+POST /api/plugins/lantronix/sources/<id>/events/
+```
+
+It takes signed Percepxion events (webhook-payload v1: HMAC-SHA256 over `<timestamp>.<body>`, headers `X-Percepxion-Timestamp` and `X-Percepxion-Signature: v1=<hex>`) and needs no NetBox token; the signature is the authentication. A port attach, port state or device status event for the source's organization requests a focused sync of that console server and answers 202. Other event types and repeated event IDs answer 204. A bad signature or a timestamp more than 5 minutes off answers 401, a malformed body or another organization's event 400, and a source without secrets 404. Nothing from the event body is logged or stored beyond the device ID. NetBox has to be reachable from whatever sends the events.
+
+**Change watch.** Set **Change watch interval** on a source (1 to 60 minutes, 0 is off) to check every linked console server's port state on that interval and request a focused sync for the ones whose ports changed since the last check. It needs no inbound connection, so it works where nothing can reach NetBox, at the cost of one port-state read per linked unit per check. With events flowing, leave it off or set it long.
+
+**Sync API.** `POST /api/plugins/lantronix/sources/<id>/sync/` with `{"device_ids": ["<Percepxion device ID>", ...]}` (1 to 500) requests a focused sync and answers 202, even while another sync runs. Without a body it queues a full sync as **Sync now** does: 202 with the job, or 409 when a run is already queued or running. Both need an API token whose user has the sync permission.
 
 ## Permissions
 

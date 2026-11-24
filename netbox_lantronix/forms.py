@@ -25,6 +25,7 @@ class PercepxionSourceForm(NetBoxModelForm):
         FieldSet("site", "role", name="New devices"),
         FieldSet(
             "sync_interval",
+            "watch_interval",
             "ssh_base_port",
             "percepxion_link",
             "manage_cables",
@@ -43,6 +44,7 @@ class PercepxionSourceForm(NetBoxModelForm):
             "site",
             "role",
             "sync_interval",
+            "watch_interval",
             "ssh_base_port",
             "percepxion_link",
             "manage_cables",

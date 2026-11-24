@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
 from django.views.generic import View
 from netbox.views import generic
 from utilities.views import register_model_view
@@ -49,10 +50,13 @@ class PercepxionSourceView(generic.ObjectView):
     queryset = PercepxionSource.objects.all()
 
     def get_extra_context(self, request, instance):
-        last_job = SyncJob.get_jobs(instance).exclude(started=None).order_by("-started").first()
+        runs = SyncJob.get_jobs(instance).exclude(started=None).order_by("-started")
+        last_job = runs.first()
+        # Focused runs record no findings: show the last full run's.
+        last_full = runs.exclude(data__has_key="focus").first()
         findings = SyncFinding.objects.restrict(request.user, "view").filter(source=instance)
-        if last_job:
-            findings = findings.filter(job=last_job)
+        if last_full:
+            findings = findings.filter(job=last_full)
         cfg = instance.endpoint_config or {}
         findings_table = tables.SyncFindingTable(findings[:200])
         findings_table.configure(request)
@@ -65,6 +69,14 @@ class PercepxionSourceView(generic.ObjectView):
             "findings_table": findings_table,
             "tls_off": not cfg.get("verify", True),
             "can_sync": request.user.has_perm(SYNC_PERM, instance),
+            "events_url": request.build_absolute_uri(
+                reverse(
+                    "plugins-api:netbox_lantronix-api:percepxionsource-events",
+                    kwargs={"pk": instance.pk},
+                )
+            )
+            if instance.events_enabled
+            else None,
         }
 
 

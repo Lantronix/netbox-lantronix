@@ -30,6 +30,7 @@ class PercepxionSourceSerializer(NetBoxModelSerializer):
             "site",
             "role",
             "sync_interval",
+            "watch_interval",
             "ssh_base_port",
             "percepxion_link",
             "manage_cables",

@@ -9,7 +9,7 @@ from netbox.plugins import get_plugin_config
 from utilities.choices import ChoiceSet
 from utilities.querysets import RestrictedQuerySet
 
-from .endpoint_checks import organization_allowed
+from .endpoint_checks import organization_allowed, webhook_secrets
 
 
 class LinkStatusChoices(ChoiceSet):
@@ -98,6 +98,12 @@ class PercepxionSource(JobsMixin, NetBoxModel):
         help_text="Create and delete console cables on this source's SLC ports to match what "
         "each SLC reports. Percepxion becomes the source of truth for those cables.",
     )
+    watch_interval = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Change watch interval",
+        help_text="Minutes between port-state checks that sync only the SLCs whose ports "
+        "changed; 0 turns the watch off. Each check reads every linked SLC's port state.",
+    )
     enabled = models.BooleanField(default=True)
     backoff_until = models.DateTimeField(null=True, blank=True, editable=False)
 
@@ -126,6 +132,8 @@ class PercepxionSource(JobsMixin, NetBoxModel):
             )
         if self.sync_interval and self.sync_interval < 5:
             raise ValidationError({"sync_interval": "Use 0 (off) or at least 5 minutes."})
+        if self.watch_interval > 60:
+            raise ValidationError({"watch_interval": "Use 0 (off) or 1 to 60 minutes."})
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -144,6 +152,11 @@ class PercepxionSource(JobsMixin, NetBoxModel):
     @property
     def endpoint_config(self):
         return (get_plugin_config("netbox_lantronix", "endpoints") or {}).get(self.endpoint)
+
+    @property
+    def events_enabled(self) -> bool:
+        """True when the endpoint has webhook secrets, so the events URL accepts deliveries."""
+        return bool(webhook_secrets(self.endpoint_config))
 
 
 class DeviceLink(NetBoxModel):

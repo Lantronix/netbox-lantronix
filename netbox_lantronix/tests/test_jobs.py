@@ -61,7 +61,6 @@ class FakeClient:
             raise self.port_state_error
         return {}
 
-
     port_ssh_result = {1: 3001, 2: 0, 3: 22003}
     port_ssh_error = None
     port_ssh_calls = []
